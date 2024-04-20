@@ -12,10 +12,10 @@ export default function NewsLetter() {
             <h1 className="text-[40px] font-extrabold">
               Subscribe to our news letter
             </h1>
-            <p className="ps-5">
+            <p className="">
               <span className="font-bold text-lg">
                 Dive deeper into the world of agriculture.
-              </span>{" "}
+              </span>
               <br />
               <br />
               Go beyond the headlines with our exclusive newsletter. We'll
@@ -26,10 +26,11 @@ export default function NewsLetter() {
           </div>
           <div className="w-96 px-10 flex flex-col gap-4 mx-auto border py-20 hover:shadow-lg">
             <Input type="email" name="email" placeholder="E-mail"></Input>
-
-            <Button className="bg-green-500 hover:bg-blue-500 mx-auto">
-              Subscribe
-            </Button>
+            <div className="w-full flex justify-end">
+              <Button className="bg-green-500 hover:bg-blue-500">
+                Subscribe
+              </Button>
+            </div>
           </div>
         </div>
       </Container>
