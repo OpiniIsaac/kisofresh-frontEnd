@@ -25,7 +25,7 @@ export default function HeroCard({ details }: HeroCardProps) {
         className="w-full h-[500px] max-w-[700px] object-cover object-center rounded-md"
       />
       <div className="flex flex-col justify-center max-w-[500px] ps-40">
-        <h1 className="text-4xl font-extrabold pb-8 ">{title}</h1>
+        <h1 className="text-4xl font-extrabold pb-4 ">{title}</h1>
         <p>{desc}</p>
       </div>
     </div>

@@ -3,10 +3,10 @@ import Container from "./Container";
 
 export default function About() {
   return (
-    <section>
+    <section className="bg-blue-500/10">
       <Container>
         <div className="w-[700px] flex flex-col justify-center h-[600px]">
-          <h1 className="font-extrabold text-4xl">What is KisoIndex?</h1><br /><br />
+          <h1 className="font-extrabold text-4xl">What is KisoIndex?</h1><br />
           <p>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius
             accusantium ut ipsum est minus eum facere soluta. Iure quam placeat,

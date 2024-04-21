@@ -40,7 +40,7 @@ export default function Hero() {
   );
 
   return (
-    <section className="pt-10 h-[650px]">
+    <section className="pt-10 h-[650px] bg-blue-500/5">
       <Container>
         <div className="flex justify-between items-center h-[600px]">
           <div>
