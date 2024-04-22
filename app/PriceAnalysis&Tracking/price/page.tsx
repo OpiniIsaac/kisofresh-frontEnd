@@ -6,7 +6,7 @@ export default function ProductTable() {
  const [rowsPerPage, setRowsPerPage] = useState(10);
  const [searchTerm, setSearchTerm] = useState('');
 
- // Dummy data
+ // Dummy data//👌understood
  const products = [
     { id: 1, name: 'Apple', price: 1.50, unit: 'kg' },
     { id: 2, name: 'Banana', price: 0.75, unit: 'kg' },
@@ -33,10 +33,10 @@ export default function ProductTable() {
  return (
     <div className="p-4 bg-white rounded shadow">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Product Table</h2>
+        <h2 className="text-xl min-w-36 font-bold">Product Table</h2>
         <div className="flex items-center">
           <input
-            className="border border-gray-300 rounded p-2 mr-2"
+            className="border border-gray-300 rounded p-2 w-96"
             type="text"
             placeholder="Search products"
             value={searchTerm}

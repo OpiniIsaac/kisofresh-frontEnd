@@ -80,10 +80,11 @@ export default function Header() {
               </nav>
               {/*The button below will navigate to the auth route on which the user will find login page, no need for signup button as there will be option to sign up on login page, two buttons looked ugly  */}
               <Link href="/login">
+                <div className="bg-white"></div>
                 <Button
                   className={`"" ${
                     isScrolled
-                      ? "bg-green-500 text-white hover:bg-white hover:text-black"
+                      ? "bg-white text-black hover:bg-blue-700 hover:text-white"
                       : ""
                   }`}
                 >
