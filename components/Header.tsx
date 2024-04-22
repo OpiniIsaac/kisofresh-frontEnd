@@ -65,7 +65,7 @@ export default function Header() {
                   className={`"" ${
                     isScrolled
                       ? "bg-green-500 text-white hover:bg-white hover:text-black"
-                      : "bg-blue-500 hover:bg-green-500"
+                      : ""
                   }`}
                 >
                   Log in
