@@ -32,9 +32,9 @@ export default function ProductTable() {
 
  return (
     <div className="p-4 bg-white rounded shadow">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl min-w-36 font-bold">Product Table</h2>
-        <div className="flex items-center">
+      <div className="flex justify-center items-center mb-4">
+     
+        
           <input
             className="border border-gray-300 rounded p-2 w-96"
             type="text"
@@ -43,7 +43,7 @@ export default function ProductTable() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
          
-        </div>
+      
       </div>
       <div className="overflow-auto max-h-96">
         <table className="w-full text-left table-auto">
