@@ -6,11 +6,6 @@ import Link from "next/link";
 import clsx from "clsx";
 import { usePathname } from 'next/navigation';
 
-interface Navbutton {
-  title: string;
-  route: string;
-}
-
 const buttonCollection: { title: string; route: string }[] = [
   {
     title: "Prices",
@@ -26,19 +21,16 @@ const buttonCollection: { title: string; route: string }[] = [
   },
 ];
 
-const NavButtons: Navbutton[] = buttonCollection.map((item) => {
-  return item as Navbutton;
-});
 
 export default function SideNav() {
   const pathname = usePathname();
   return (
     <div className="rounded-lg h-full fixed w-52 my-20 flex flex-col justify-between">
       <div>
-        {NavButtons.map((item) => (
-          <Link href={item.route}>
-            <Button className= {clsx("bg-blue-500/5 w-full mt-2 text-black justify-start hover:bg-blue-500 font-semibold text-sm hover:text-white",{"bg-blue-500 text-white": pathname ===item.route})}>
-              {item.title}
+        {buttonCollection.map(({title,route}) => (
+          <Link href={route}>
+            <Button className= {clsx("bg-blue-500/5 w-full mt-2 text-black justify-start hover:bg-blue-500 font-semibold text-sm hover:text-white",{"bg-blue-500 text-white": pathname === route})}>
+              {title}
             </Button>
           </Link>
         ))}
