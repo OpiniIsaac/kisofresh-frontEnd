@@ -38,7 +38,7 @@ export default function CropInterestForm() {
         country,
         region,
         cropType,
-        quantity: 100,
+        quantity,
       });
       console.log("Farmers matching criteria:", response);
       console.log(country, region, cropType, quantity);

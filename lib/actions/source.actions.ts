@@ -70,7 +70,7 @@ export async function fetchFarmersByCriteria({
     const cursor = collection
       .find({
         'Country ': country,
-        // 'Yield Estimation.result' : { $gte: quantity },
+        'Yield Estimation .result' : { $gte: quantity },
         Region: region,
         "Crop Type": cropType,
         
