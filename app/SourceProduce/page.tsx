@@ -2,23 +2,42 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
-  fetchFarmersByCriteria,
-  fetchUploadedData,
+ fetchFarmersByCriteria,
+ fetchUploadedData,
 } from "@/lib/actions/source.actions";
 import React from "react";
 
 export default function CropInterestForm() {
-  const [country, setCountry] = useState("");
-  const [region, setRegion] = useState("");
-  const [cropType, setCropType] = useState("");
-  const [quantity, setQuantity] = useState(0);
-  const [farmers, setFarmers] = useState([]);
+ interface Farmer {
+    _id: string;
+    'Farm Code': string;
+    'Family Name': string;
+    'Christian Name': string;
+    'Phone Number': number;
+    District: string;
+    Subcounty: string;
+    Village: string;
+    'Acres for Cotton': number;
+    'Yield Estimation': {
+      formula?: string;
+      result: number;
+      sharedFormula?: string;
+      ref?: string;
+      shareType?: string;
+    };
+    'Crop Type': string;
+    'Country': string;
+    Region: string;
+ }
+ const [country, setCountry] = useState("");
+ const [region, setRegion] = useState("");
+ const [cropType, setCropType] = useState("");
+ const [quantity, setQuantity] = useState(0);
+ const [farmers, setFarmers] = useState<Farmer[]>([]);
 
-  // Handle form submission
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
+ const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     try {
-      // Fetch farmers by criteria
       const response = await fetchFarmersByCriteria({
         country,
         region,
@@ -26,24 +45,18 @@ export default function CropInterestForm() {
         quantity: 100,
       });
       console.log("Farmers matching criteria:", response);
-
-      console.log(country,
-        region,
-        cropType,
-        quantity);
-
-      // Update state with fetched farmers
+      console.log(country, region, cropType, quantity);
       setFarmers(response);
     } catch (error) {
       console.error("Error:", error);
     }
-  };
+ };
 
-  return (
-    <div className="w-screen h-screen flex justify-center items-center">
+ return (
+    <div className="min-h-screen bg-gray-100 flex justify-center items-center">
       <form
         onSubmit={handleSubmit}
-        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-lg"
       >
         {/* Form inputs */}
         {/* Select Country */}
@@ -135,18 +148,44 @@ export default function CropInterestForm() {
         </div>
       </form>
       {/* Display fetched farmers */}
-      <div>
-        {farmers.length > 0 && (
-          <div>
-            <h2>Farmers Matching Criteria:</h2>
-            <ul>
+      {farmers.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold mb-4">Farmers Matching Criteria:</h2>
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Family Name</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Christian Name</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone Number</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">District</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subcounty</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Village</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acres for Cotton</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Yield Estimation Result</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Crop Type</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Country</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Region</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
               {farmers.map((farmer, index) => (
-                <li key={index}>{}</li>
+                <tr key={index}>
+                 <td className="px-6 py-4 whitespace-nowrap">{farmer['Family Name']}</td>
+                 <td className="px-6 py-4 whitespace-nowrap">{farmer['Christian Name']}</td>
+                 <td className="px-6 py-4 whitespace-nowrap">{farmer['Phone Number']}</td>
+                 <td className="px-6 py-4 whitespace-nowrap">{farmer.District}</td>
+                 <td className="px-6 py-4 whitespace-nowrap">{farmer.Subcounty}</td>
+                 <td className="px-6 py-4 whitespace-nowrap">{farmer.Village}</td>
+                 <td className="px-6 py-4 whitespace-nowrap">{farmer['Acres for Cotton']}</td>
+                 {/* <td className="px-6 py-4 whitespace-nowrap">{farmer['Yield Estimation'].result}</td> */}
+                 <td className="px-6 py-4 whitespace-nowrap">{farmer['Crop Type']}</td>
+                 <td className="px-6 py-4 whitespace-nowrap">{farmer['Country']}</td>
+                 <td className="px-6 py-4 whitespace-nowrap">{farmer.Region}</td>
+                </tr>
               ))}
-            </ul>
-          </div>
-        )}
-      </div>
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
-  );
-}
+ );}
