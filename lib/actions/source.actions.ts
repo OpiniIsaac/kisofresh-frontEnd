@@ -74,8 +74,7 @@ export async function fetchFarmersByCriteria({
         Region: region,
         "Crop Type": cropType,
         
-      })
-      .limit(10);
+      }).sort({ 'Yield Estimation .result': 1 });
 
     // Convert cursor to array of documents
     const documents = await cursor.toArray();
