@@ -14,16 +14,12 @@ export default function CropInterestForm() {
     'Family Name': string;
     'Christian Name': string;
     'Phone Number': number;
-    District: string;
+    Districk: string;
     Subcounty: string;
     Village: string;
     'Acres for Cotton': number;
-    'Yield Estimation': {
-      formula?: string;
+    'Yield Estimation ': {
       result: number;
-      sharedFormula?: string;
-      ref?: string;
-      shareType?: string;
     };
     'Crop Type': string;
     'Country': string;
@@ -148,6 +144,8 @@ export default function CropInterestForm() {
         </div>
       </form>
       {/* Display fetched farmers */}
+
+
       {farmers.length > 0 && (
         <div className="mt-8">
           <h2 className="text-2xl font-bold mb-4">Farmers Matching Criteria:</h2>
@@ -162,9 +160,8 @@ export default function CropInterestForm() {
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Village</th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acres for Cotton</th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Yield Estimation Result</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Crop Type</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Country</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Region</th>
+            
+               
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -173,14 +170,13 @@ export default function CropInterestForm() {
                  <td className="px-6 py-4 whitespace-nowrap">{farmer['Family Name']}</td>
                  <td className="px-6 py-4 whitespace-nowrap">{farmer['Christian Name']}</td>
                  <td className="px-6 py-4 whitespace-nowrap">{farmer['Phone Number']}</td>
-                 <td className="px-6 py-4 whitespace-nowrap">{farmer.District}</td>
+                 <td className="px-6 py-4 whitespace-nowrap">{farmer.Districk}</td>
                  <td className="px-6 py-4 whitespace-nowrap">{farmer.Subcounty}</td>
                  <td className="px-6 py-4 whitespace-nowrap">{farmer.Village}</td>
                  <td className="px-6 py-4 whitespace-nowrap">{farmer['Acres for Cotton']}</td>
-                 {/* <td className="px-6 py-4 whitespace-nowrap">{farmer['Yield Estimation'].result}</td> */}
-                 <td className="px-6 py-4 whitespace-nowrap">{farmer['Crop Type']}</td>
-                 <td className="px-6 py-4 whitespace-nowrap">{farmer['Country']}</td>
-                 <td className="px-6 py-4 whitespace-nowrap">{farmer.Region}</td>
+                 <td className="px-6 py-4 whitespace-nowrap">{farmer['Yield Estimation '].result}</td>
+                
+              
                 </tr>
               ))}
             </tbody>
