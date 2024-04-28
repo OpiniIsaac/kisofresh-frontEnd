@@ -61,6 +61,8 @@ export default function Header() {
               <nav className="flex gap-10 text-sm">
                 {NavLinks.map((item) => (
                   <Link
+                  key={item.title}
+                
                     href={item.route}
                     className={clsx(
                       `${

@@ -5,8 +5,6 @@ export default function ProductTable() {
  const [page, setPage] = useState(0);
  const [rowsPerPage, setRowsPerPage] = useState(10);
  const [searchTerm, setSearchTerm] = useState('');
-
- // Dummy data//👌understood
  const products = [
     { id: 1, name: 'Apple', price: 1.50, unit: 'kg' },
     { id: 2, name: 'Banana', price: 0.75, unit: 'kg' },
