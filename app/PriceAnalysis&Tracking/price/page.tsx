@@ -115,14 +115,16 @@ export default function ProductTable() {
               ))}
           </tbody>
         </table>
-      </div>
-      <div className="w-full flex justify-between my-4">
+
+        <div className="w-full flex justify-between my-4">
         <Button onClick={handlePrevClick}>Previous</Button>
         <p>
           Showing {page * rowsPerPage} to {page * rowsPerPage + rowsPerPage} of {products.length}
         </p>
         <Button onClick={handleNextClick}>Next</Button>
       </div>
+      </div>
+     
     </div>
   );
 }
