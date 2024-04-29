@@ -1,5 +1,5 @@
 "use client";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
  fetchFarmersByCriteria,
@@ -8,7 +8,7 @@ import {
 import React from "react";
 
 const LoadingIndicator = () => (
-  <div className="mt-8 text-center">
+  <div  className="min-h-screen bg-gray-100 flex justify-center items-center">
      <p>Loading...</p>
   </div>
  );
@@ -39,8 +39,9 @@ export default function CropInterestForm() {
  const [phoneNumberVisibility, setPhoneNumberVisibility] = useState<{ [key: string]: boolean[] }>({});
  const [page, setPage] = useState(0);
  const [rowsPerPage, setRowsPerPage] = useState(10);
- const [isLoading, setIsLoading] = useState(false);
+
  const [showPhone, setShowPhone] = useState(false);
+ const [isLoading, SetIsLoading] = useState(false);
 
  const handleTogglePhone = () => setShowPhone(!showPhone);
 
@@ -53,36 +54,37 @@ export default function CropInterestForm() {
 const handlePrevClick = () => {
   setPage((prevPage) => (prevPage > 0 ? prevPage - 1 : 0));
 };
-const handleSubmit = async (e: { preventDefault: () => void }) => {
-  e.preventDefault();
-  setIsLoading(true); 
-  try {
-     const response = await fetchFarmersByCriteria({
-       country,
-       region,
-       cropType,
-       quantity,
-     });
-   
-     setFarmers(response);
-     setIsLoading(false); 
-  } catch (error) {
-     console.error("Error:", error);
-     setIsLoading(false); 
-  } 
+ const handleSubmit = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+
+    try {
+      SetIsLoading(true);
+      const response = await fetchFarmersByCriteria({
+        country,
+        region,
+        cropType,
+        quantity,
+      });
+     
+      console.log(country, region, cropType, quantity);
+      setFarmers(response);
+      SetIsLoading(false);
+    } catch (error) {
+      console.error("Error:", error);
+    }
  };
- 
  const togglePhoneNumberVisibility = (farmerId: string, phoneNumberIndex: number) => {
   setPhoneNumberVisibility(prevState => ({
-     ...prevState,
-     [farmerId]: prevState[farmerId] ? prevState[farmerId].map((visible, index) => index === phoneNumberIndex ? !visible : visible) : [true]
+    ...prevState,
+    [farmerId]: prevState[farmerId] ? prevState[farmerId].map((visible, index) => index === phoneNumberIndex ? !visible : visible) : [true]
   }));
- };
- 
+};
+if(isLoading) return  <LoadingIndicator/>
 
  return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center">
-      {isLoading ? <LoadingIndicator /> :      <form
+      
+      <form
         onSubmit={handleSubmit}
         className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-lg"
       >
@@ -175,9 +177,9 @@ const handleSubmit = async (e: { preventDefault: () => void }) => {
           </Button>
         </div>
       </form>
-}
+      {/* Display fetched farmers */}
 
-     
+
       {farmers.length > 0 && (
         <div className="mt-8">
           <h2 className="text-2xl font-bold mb-4">Farmers Matching Criteria:</h2>
@@ -198,17 +200,22 @@ const handleSubmit = async (e: { preventDefault: () => void }) => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {farmers
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((farmer, index) => (
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((farmer, index) => (
                 <tr key={index}>
                  <td className="px-6 py-4 whitespace-nowrap">{farmer['Family Name']}</td>
                  <td className="px-6 py-4 whitespace-nowrap">{farmer['Christian Name']}</td>
                  <td className="px-6 py-4 whitespace-nowrap">
-                 {showPhone  ? (
-          farmer['Phone Number']
+        {showPhone ? (
+          <a href={`tel:${farmer['Phone Number']}`}>
+            {farmer['Phone Number']}
+            <i className="fas fa-phone-alt"></i>
+          </a>
         ) : (
-          <button className="fas fa-eye cursor-pointer" onClick={() => togglePhoneNumberVisibility(farmer._id, index)}></button>
+          <button onClick={handleTogglePhone}>
+            <i className="fas fa-eye"></i> View Phone Number
+          </button>
         )}
-          
       </td>
                  <td className="px-6 py-4 whitespace-nowrap">{farmer.Districk}</td>
                  <td className="px-6 py-4 whitespace-nowrap">{farmer.Subcounty}</td>
@@ -234,6 +241,5 @@ const handleSubmit = async (e: { preventDefault: () => void }) => {
         
       )}
     
- 
     </div>
  );}

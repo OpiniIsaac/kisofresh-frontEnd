@@ -68,13 +68,13 @@ export async function fetchFarmersByCriteria({
 
     // Fetch documents matching the criteria
     const cursor = collection
-    .find({
-      'Country ': country,
-      'Yield Estimation .result' : { $gte: quantity },
-      Region: region,
-      "Crop Type": cropType,
-      
-    }).sort({ 'Yield Estimation .result': 1 });
+      .find({
+        'Country ': country,
+        'Yield Estimation .result' : { $gte: quantity },
+        Region: region,
+        "Crop Type": cropType,
+        
+      }).sort({ 'Yield Estimation .result': 1 });
 
     // Convert cursor to array of documents
     const documents = await cursor.toArray();
