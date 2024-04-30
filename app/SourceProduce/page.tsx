@@ -32,6 +32,7 @@ export default function CropInterestForm() {
   const [cropType, setCropType] = useState("");
   const [quantity, setQuantity] = useState(0);
   const [farmers, setFarmers] = useState<Farmer[]>([]);
+  const [submitted, setSubmitted] = useState(false);
   const [phoneNumberVisibility, setPhoneNumberVisibility] = useState<{
     [key: string]: boolean[];
   }>({});
@@ -41,7 +42,9 @@ export default function CropInterestForm() {
   const [showPhone, setShowPhone] = useState(false);
 
   const handleTogglePhone = () => setShowPhone(!showPhone);
-
+  const handlePage = () => {
+    setSubmitted(true);
+  }
   const handleNextClick = () => {
     const totalPages = Math.ceil(farmers.length / rowsPerPage);
     setPage((prevPage) =>
@@ -85,7 +88,7 @@ export default function CropInterestForm() {
 
   return (
     <Container>
-      <section className="h-[700px]">
+      <section className={`${submitted ? "hidden" : "block h-[700px]"}`}>
         <div className="flex w-full justify-center h-full items-center">
           {" "}
           <form
@@ -172,8 +175,10 @@ export default function CropInterestForm() {
               />
             </div>
             {/* Submit button */}
-            <div className="flex items-center justify-end pt-6">              
-              <Button type="submit">Find Farmers</Button>             
+            <div className="flex items-center justify-end pt-6">
+              <Button type="submit" onClick={handlePage}>
+                Find Farmers
+              </Button>
             </div>
           </form>
         </div>
@@ -181,13 +186,13 @@ export default function CropInterestForm() {
 
       {/* Display fetched farmers */}
 
-      <section id="farmers">
+      <section id="farmers" className="">
         {farmers.length > 0 && (
           <div className="mt-8">
-            <h2 className="text-2xl font-bold mb-4">
+            <h2 className="text-2xl font-bold mb-4 pt-20">
               Farmers Matching Criteria:
             </h2>
-            <table className="min-w-full divide-y divide-gray-200">
+            <table className="min-w-full h-screen divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
                   <th
