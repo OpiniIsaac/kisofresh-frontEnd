@@ -217,7 +217,7 @@ const LoadingIndicator = () => (
         </div>
         <LoadingIndicator/>
         {farmers.length > 0 && (
-          <div className="mt-8">
+          <div className="">
             <h2 className="text-2xl font-bold mb-4 pt-20">
               Farmers Matching Criteria:
             </h2>
@@ -226,7 +226,7 @@ const LoadingIndicator = () => (
                 <tr>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     Surname
                   </th>
