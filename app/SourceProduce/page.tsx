@@ -126,7 +126,7 @@ const LoadingIndicator = () => (
             className="bg-blue-500/10 flex justify-between border hover:shadow-lg rounded px-8 pt-6 pb-8 mb-4 w-full"
           >
             {/* Form inputs */}
-            <div className="flex">
+            <div className="flex gap-4">
               {/* Select Country */}
               <div className="mb-4">
                 <label
@@ -208,7 +208,7 @@ const LoadingIndicator = () => (
             </div>
 
             {/* Submit button */}
-            <div className="flex items-center justify-end pt-6">
+            <div className="flex items-center justify-end">
               <Button type="submit" onClick={handlePage}>
                 Find Farmers
               </Button>
