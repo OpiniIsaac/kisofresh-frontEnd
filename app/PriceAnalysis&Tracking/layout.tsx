@@ -7,7 +7,6 @@ export default function layout({ children }: { children: React.ReactNode }) {
     <Container>
       <div className="flex">
         <SideNav />
-
         <div className="w-full h-screen mt-20 rounded-t-lg ms-64 border">
           {children}
         </div>

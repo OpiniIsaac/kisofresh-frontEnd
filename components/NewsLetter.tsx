@@ -2,10 +2,11 @@ import React from "react";
 import Container from "./Container";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import Link from "next/link";
 
 export default function NewsLetter() {
   return (
-    <section className="h-[600px] bg-blue-500/5">
+    <section className="h-[600px] bg-blue-500/5" id="news">
       <Container>
         <div className="w-full h-screen flex items-center justify-between">
           <div className="w-[700px] flex flex-col gap-4">
@@ -16,19 +17,27 @@ export default function NewsLetter() {
               <span className="font-bold text-lg">
                 Dive deeper into the world of agriculture.
               </span>
-              <p>Go beyond the headlines with our exclusive newsletter. We'll
-              unveil hidden trends, groundbreaking research, and practical tips
-              to keep you informed and at the forefront of agricultural
-              innovation.</p>
-              
+              <p>
+                Go beyond the headlines with our exclusive newsletter. We'll
+                unveil hidden trends, groundbreaking research, and practical
+                tips to keep you informed and at the forefront of agricultural
+                innovation.
+              </p>
             </div>
           </div>
           <div className="w-96 px-10 flex flex-col gap-4 mx-auto border bg-blue-500/10 rounded-sm py-20 hover:shadow-xl">
-            <Input type="email" name="email" placeholder="E-mail" className=""></Input>
+            <Input
+              type="email"
+              name="email"
+              placeholder="E-mail"
+              className=""
+            ></Input>
             <div className="w-full flex justify-end">
-              <Button className="bg-green-500 hover:bg-blue-500">
-                Subscribe
-              </Button>
+              <Link href='#hero'>
+                <Button className="bg-green-500 hover:bg-blue-500">
+                  Subscribe
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
