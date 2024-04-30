@@ -8,7 +8,7 @@ export default function layout({ children }: { children: React.ReactNode }) {
 
       
 
-        <div className="w-full h-screen ">
+        <div className="w-full h-full ">
           {children}
         </div>
     
