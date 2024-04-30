@@ -8,6 +8,11 @@ import {
 import React from "react";
 import Container from "@/components/Container";
 import Link from "next/link";
+const LoadingIndicator = () => (
+  <div className="min-h-screen bg-gray-100 flex justify-center items-center">
+    <p>Loading...</p>
+  </div>
+);
 
 export default function CropInterestForm() {
   interface Farmer {
@@ -89,7 +94,7 @@ export default function CropInterestForm() {
         : [true],
     }));
   };
-
+  if (isLoading) return <LoadingIndicator />;
   return (
     <Container>
       <section className={`${submitted ? "hidden" : "block h-[700px]"}`}>
@@ -247,6 +252,12 @@ export default function CropInterestForm() {
                   >
                     Yield Estimation Result
                   </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -286,6 +297,9 @@ export default function CropInterestForm() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {farmer["Yield Estimation "].result}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                       <Button> Request Quot</Button>
                       </td>
                     </tr>
                   ))}
