@@ -299,7 +299,11 @@ export default function CropInterestForm() {
                         {farmer["Yield Estimation "].result}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                       <Button> Request Quot</Button>
+                       <Button> 
+                        <Link href='/SourceForm/Form'>
+                        Request Quot
+                        </Link>
+                        </Button>
                       </td>
                     </tr>
                   ))}
