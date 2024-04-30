@@ -6,13 +6,8 @@ import {
   fetchUploadedData,
 } from "@/lib/actions/source.actions";
 import React from "react";
+import Container from "@/components/Container";
 import Link from "next/link";
-
-const LoadingIndicator = () => (
-  <div className="min-h-screen bg-gray-100 flex justify-center items-center">
-    <p>Loading...</p>
-  </div>
-);
 
 export default function CropInterestForm() {
   interface Farmer {
@@ -37,6 +32,7 @@ export default function CropInterestForm() {
   const [cropType, setCropType] = useState("");
   const [quantity, setQuantity] = useState(0);
   const [farmers, setFarmers] = useState<Farmer[]>([]);
+  const [submitted, setSubmitted] = useState(false);
   const [phoneNumberVisibility, setPhoneNumberVisibility] = useState<{
     [key: string]: boolean[];
   }>({});
@@ -47,7 +43,9 @@ export default function CropInterestForm() {
   const [isLoading, SetIsLoading] = useState(false);
 
   const handleTogglePhone = () => setShowPhone(!showPhone);
-
+  const handlePage = () => {
+    setSubmitted(true);
+  }
   const handleNextClick = () => {
     const totalPages = Math.ceil(farmers.length / rowsPerPage);
     setPage((prevPage) =>
@@ -91,114 +89,114 @@ export default function CropInterestForm() {
         : [true],
     }));
   };
-  if (isLoading) return <LoadingIndicator />;
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center items-center">
-      <div>
-        <form
-          onSubmit={handleSubmit}
-          className={`${
-            farmers.length && "flex justify-center items-center mx-auto"
-          } bg-white shadow-md rounded px-8 pt-36 pb-8 mb-4 w-full max-w-lg`}
-        >
-          {/* Form inputs */}
-          {/* Select Country */}
-          <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="country"
-            >
-              Select Country
-            </label>
-            <select
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="country"
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-            >
-              <option value="">--Please choose an option--</option>
-              <option value="Uganda">Uganda</option>
-              <option value="Kenya">Kenya</option>
-              <option value="Tanzania">Tanzania</option>
-            </select>
-          </div>
-          {/* Select Region */}
-          <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="region"
-            >
-              Select Region
-            </label>
-            <select
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="region"
-              value={region}
-              onChange={(e) => setRegion(e.target.value)}
-            >
-              <option value="">--Please choose an option--</option>
-              <option value="Northern">Northern</option>
-              <option value="Central">Central</option>
-              <option value="Eastern">Eastern</option>
-              <option value="Western">Western</option>
-            </select>
-          </div>
-          {/* Select Crop Type */}
-          <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="cropType"
-            >
-              Select Crop Type
-            </label>
-            <select
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="cropType"
-              value={cropType}
-              onChange={(e) => setCropType(e.target.value)}
-            >
-              <option value="">--Please choose an option--</option>
-              <option value="cotton">Cotton</option>
-              <option value="Wheat">Wheat</option>
-              <option value="Maize">Maize</option>
-            </select>
-          </div>
-          {/* Quantity input */}
-          <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="quantity"
-            >
-              Quantity(tons)
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="quantity"
-              type="number"
-              placeholder="Enter quantity"
-              value={quantity}
-              onChange={(e) => setQuantity(parseFloat(e.target.value))}
-            />
-          </div>
-          {/* Submit button */}
-          <div className="flex items-center justify-between">
-            <Button
-              type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-              Find Farmers
-            </Button>
-          </div>
-        </form>
-        {/* Display fetched farmers */}
+    <Container>
+      <section className={`${submitted ? "hidden" : "block h-[700px]"}`}>
+        <div className="flex w-full justify-center h-full items-center">
+          {" "}
+          <form
+            onSubmit={handleSubmit}
+            className="bg-blue-500/10 border hover:shadow-lg rounded px-8 pt-6 pb-8 mb-4 w-full max-w-lg h-[450px]"
+          >
+            {/* Form inputs */}
+            {/* Select Country */}
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="country"
+              >
+                Select Country
+              </label>
+              <select
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="country"
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+              >
+                <option value="">--Please choose an option--</option>
+                <option value="Uganda">Uganda</option>
+                <option value="Kenya">Kenya</option>
+                <option value="Tanzania">Tanzania</option>
+              </select>
+            </div>
+            {/* Select Region */}
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="region"
+              >
+                Select Region
+              </label>
+              <select
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="region"
+                value={region}
+                onChange={(e) => setRegion(e.target.value)}
+              >
+                <option value="">--Please choose an option--</option>
+                <option value="Northern">Northern</option>
+                <option value="Central">Central</option>
+                <option value="Eastern">Eastern</option>
+                <option value="Western">Western</option>
+              </select>
+            </div>
+            {/* Select Crop Type */}
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="cropType"
+              >
+                Select Crop Type
+              </label>
+              <select
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="cropType"
+                value={cropType}
+                onChange={(e) => setCropType(e.target.value)}
+              >
+                <option value="">--Please choose an option--</option>
+                <option value="cotton">Cotton</option>
+                <option value="Wheat">Wheat</option>
+                <option value="Maize">Maize</option>
+              </select>
+            </div>
+            {/* Quantity input */}
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="quantity"
+              >
+                Quantity(tons)
+              </label>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="quantity"
+                type="number"
+                placeholder="Enter quantity"
+                value={quantity}
+                onChange={(e) => setQuantity(parseFloat(e.target.value))}
+              />
+            </div>
+            {/* Submit button */}
+            <div className="flex items-center justify-end pt-6">
+              <Button type="submit" onClick={handlePage}>
+                Find Farmers
+              </Button>
+            </div>
+          </form>
+        </div>
+      </section>
 
+      {/* Display fetched farmers */}
+
+      <section id="farmers" className="">
         {farmers.length > 0 && (
           <div className="mt-8">
-            <h2 className="text-2xl font-bold mb-4">
+            <h2 className="text-2xl font-bold mb-4 pt-20">
               Farmers Matching Criteria:
             </h2>
-            <table className="min-w-full divide-y divide-gray-200">
+            <table className="min-w-full h-screen divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
                   <th
@@ -249,12 +247,6 @@ export default function CropInterestForm() {
                   >
                     Yield Estimation Result
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Actions
-                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -295,15 +287,6 @@ export default function CropInterestForm() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         {farmer["Yield Estimation "].result}
                       </td>
-
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <Button onClick={()=>{}}
-                        >
-                          <Link href={`/SourceProduce/${farmer.Village}`}>
-                          Request Quot
-                          </Link>
-                          </Button>
-                      </td>
                     </tr>
                   ))}
               </tbody>
@@ -320,7 +303,7 @@ export default function CropInterestForm() {
             </div>
           </div>
         )}
-      </div>
-    </div>
+      </section>
+    </Container>
   );
 }
