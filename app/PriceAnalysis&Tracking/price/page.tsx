@@ -46,14 +46,16 @@ export default function ProductTable() {
   };
 
   const handleNextClick = () => {
-    (page * rowsPerPage + rowsPerPage) === products.length ? setPage(page) : setPage(page + 1);
+    page * rowsPerPage + rowsPerPage === products.length
+      ? setPage(page)
+      : setPage(page + 1);
   };
 
   const handlePrevClick = () => {
-    page===0 ? setPage(0) : setPage(page - 1);
+    page === 0 ? setPage(0) : setPage(page - 1);
   };
   return (
-    <div className="p-4 bg-white rounded shadow">
+    <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl min-w-36 font-bold">Product Table</h2>
         <div className="flex items-center">
@@ -66,8 +68,8 @@ export default function ProductTable() {
           />
         </div>
       </div>
-      <div className="overflow-auto max-h-96">
-        <table className="w-full text-left table-auto">
+      <div>
+        <table className="w-full text-left table-auto ">
           <thead>
             <tr>
               <th className="px-4 py-2">Name</th>
@@ -117,14 +119,14 @@ export default function ProductTable() {
         </table>
 
         <div className="w-full flex justify-between my-4">
-        <Button onClick={handlePrevClick}>Previous</Button>
-        <p>
-          Showing {page * rowsPerPage} to {page * rowsPerPage + rowsPerPage} of {products.length}
-        </p>
-        <Button onClick={handleNextClick}>Next</Button>
+          <Button onClick={handlePrevClick}>Previous</Button>
+          <p className="flex items-center">
+            Showing {page * rowsPerPage} to {page * rowsPerPage + rowsPerPage}{" "}
+            of {products.length}
+          </p>
+          <Button onClick={handleNextClick}>Next</Button>
+        </div>
       </div>
-      </div>
-     
     </div>
   );
 }

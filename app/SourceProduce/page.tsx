@@ -54,10 +54,11 @@ const LoadingIndicator = () => (
   <div
     className={`${
       !hasLoaded
-        ? "min-h-screen bg-gray-100 flex justify-center items-center "
+        ? "min-h-screen bg-blue-500/5 rounded-md flex flex-col gap-4 justify-center border items-center "
         : "hidden"
     }`}
   >
+    <p className={`${isLoading ? "block pb-20": "hidden"}`}>Finding farmers...</p>
     <Image
       src="/images/logo.png"
       alt=""
@@ -65,6 +66,7 @@ const LoadingIndicator = () => (
       height={1000}
       className={`${isLoading?" animate-bounce w-40 pb-40":"w-40 pb-40"}`}
     />
+    
   </div>
 );
 //Function to show phone numbers of farmers
@@ -235,7 +237,7 @@ const LoadingIndicator = () => (
   );
   return (
     <Container>
-    <section className={`${isLoading?"hidden":"block"}`}> {/*className={`${submitted ? "hidden" : "block h-[700px]"}`}*/}
+    <section className={`${isLoading?"hidden":"block"}`}>
         <div className="flex w-full justify-center mt-20">
           {" "}
           <form
@@ -334,7 +336,7 @@ const LoadingIndicator = () => (
         </div>
         <LoadingIndicator/>
         {farmers.length > 0 && (
-          <div className="">
+          <div className=" bg-blue-500/5 px-4 border rounded-md mb-10">
             <h2 className="text-2xl font-bold mb-4 pt-20">
               Farmers Matching Criteria:
             </h2>
@@ -447,7 +449,7 @@ const LoadingIndicator = () => (
 
             <div className="flex justify-between my-4">
               <Button onClick={handlePrevClick}>Previous</Button>
-              <p className="border">
+              <p className="flex items-center">
                 Showing {page * rowsPerPage + 1} to{" "}
                 {Math.min((page + 1) * rowsPerPage, farmers.length)} of{" "}
                 {farmers.length}

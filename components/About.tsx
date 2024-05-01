@@ -32,7 +32,7 @@ export default function About() {
               alt=""
               width={1000}
               height={1000}
-              className="w-96"
+              className="w-96 me-10"
             />
           </div>
         </div>

@@ -4,13 +4,15 @@ import React, { ReactNode } from "react";
 
 export default function layout({ children }: { children: React.ReactNode }) {
   return (
-    <Container>
-      <div className="flex">
-        <SideNav />
-        <div className="w-full h-screen mt-20 rounded-t-lg ms-64 border">
-          {children}
+    <section className="bg-white">
+      <Container>
+        <div className="flex">
+          <SideNav />
+          <div className="w-full mt-20 rounded-lg ms-64 border mb-10 bg-blue-500/5">
+            {children}
+          </div>
         </div>
-      </div>
-    </Container>
+      </Container>
+    </section>
   );
 }
