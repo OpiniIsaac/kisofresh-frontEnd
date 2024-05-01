@@ -2,11 +2,10 @@ import React from "react";
 import Container from "./Container";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import Link from "next/link";
 
 export default function NewsLetter() {
   return (
-    <section className="h-[600px] bg-blue-500/5" id="news">
+    <section className=" bg-blue-500/5">
       <Container>
         <div className="w-full h-screen flex items-center justify-between">
           <div className="w-[700px] flex flex-col gap-4">
@@ -33,11 +32,9 @@ export default function NewsLetter() {
               className=""
             ></Input>
             <div className="w-full flex justify-end">
-              <Link href='#hero'>
-                <Button className="bg-green-500 hover:bg-blue-500">
-                  Subscribe
-                </Button>
-              </Link>
+              <Button className="bg-green-500 hover:bg-blue-500">
+                Subscribe
+              </Button>
             </div>
           </div>
         </div>
