@@ -9,6 +9,7 @@ import React from "react";
 import Container from "@/components/Container";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 
 export default function CropInterestForm() {
@@ -43,14 +44,29 @@ export default function CropInterestForm() {
   const pathname = useRouter
 
 
-const LoadingIndicator = () => (
-  <div className={`${isLoading ?"min-h-screen bg-gray-100 flex justify-center items-center":"hidden"}`}>
-    <p>Loading...</p>
-  </div>
-);
+
   const [showPhone, setShowPhone] = useState(false);
   const [isLoading, SetIsLoading] = useState(false);
+  const [hasLoaded, SetHasLoaded] = useState(false);
 
+
+const LoadingIndicator = () => (
+  <div
+    className={`${
+      !hasLoaded
+        ? "min-h-screen bg-gray-100 flex justify-center items-center "
+        : "hidden"
+    }`}
+  >
+    <Image
+      src="/images/logo.png"
+      alt=""
+      width={1000}
+      height={1000}
+      className={`${isLoading?" animate-bounce w-40 pb-40":"w-40 pb-40"}`}
+    />
+  </div>
+);
 //Function to show phone numbers of farmers
   const handleTogglePhone = () => setShowPhone(!showPhone);
 
@@ -78,6 +94,7 @@ const LoadingIndicator = () => (
     e.preventDefault();
 
     try {
+      SetHasLoaded(false);
       SetIsLoading(true);
       const response = await fetchFarmersByCriteria({
         country,
@@ -89,6 +106,7 @@ const LoadingIndicator = () => (
       console.log(country, region, cropType, quantity);
       setFarmers(response);
       SetIsLoading(false);
+      SetHasLoaded(true);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -114,11 +132,110 @@ const LoadingIndicator = () => (
   };
 
   
-  // if (isLoading) return <LoadingIndicator />;
+  if (isLoading) return (
+    <Container>
+      <div className="flex w-full justify-center mt-20">
+        {" "}
+        <form
+          onSubmit={handleSubmit}
+          className="bg-blue-500/10 flex justify-between border hover:shadow-lg rounded px-8 pt-6 pb-8 mb-4 w-full"
+        >
+          {/* Form inputs */}
+          <div className="flex gap-4">
+            {/* Select Country */}
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="country"
+              >
+                Select Country
+              </label>
+              <select
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="country"
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+              >
+                <option value="">--Please choose an option--</option>
+                <option value="Uganda">Uganda</option>
+                <option value="Kenya">Kenya</option>
+                <option value="Tanzania">Tanzania</option>
+              </select>
+            </div>
+            {/* Select Region */}
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="region"
+              >
+                Select Region
+              </label>
+              <select
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="region"
+                value={region}
+                onChange={(e) => setRegion(e.target.value)}
+              >
+                <option value="">--Please choose an option--</option>
+                <option value="Northern">Northern</option>
+                <option value="Central">Central</option>
+                <option value="Eastern">Eastern</option>
+                <option value="Western">Western</option>
+              </select>
+            </div>
+            {/* Select Crop Type */}
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="cropType"
+              >
+                Select Crop Type
+              </label>
+              <select
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="cropType"
+                value={cropType}
+                onChange={(e) => setCropType(e.target.value)}
+              >
+                <option value="">--Please choose an option--</option>
+                <option value="cotton">Cotton</option>
+                <option value="Wheat">Wheat</option>
+                <option value="Maize">Maize</option>
+              </select>
+            </div>
+            {/* Quantity input */}
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="quantity"
+              >
+                Quantity(tons)
+              </label>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="quantity"
+                type="number"
+                placeholder="Enter quantity"
+                value={quantity}
+                onChange={(e) => setQuantity(parseFloat(e.target.value))}
+              />
+            </div>
+          </div>
+
+          {/* Submit button */}
+          <div className="flex items-center justify-end">
+            <Button type="submit" onClick={handlePage}>
+              Find Farmers
+            </Button>
+          </div>
+        </form>
+      </div>
+      <LoadingIndicator />
+    </Container>
+  );
   return (
     <Container>
-      handleSubmit
-    <section className="min-h-screen"> {/*className={`${submitted ? "hidden" : "block h-[700px]"}`}*/}
+    <section className={`${isLoading?"hidden":"block"}`}> {/*className={`${submitted ? "hidden" : "block h-[700px]"}`}*/}
         <div className="flex w-full justify-center mt-20">
           {" "}
           <form

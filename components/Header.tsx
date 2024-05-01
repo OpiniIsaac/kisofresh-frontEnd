@@ -94,7 +94,7 @@ export default function Header() {
                   Log in
                 </Button>
               </Link>
-              <IoIosMenu className="block md:hidden"/>
+              <IoIosMenu className="block md:hidden mr-4 text-2xl"/>
             </div>
           </div>
           {/* <p className="text-lg text-gray-500">
