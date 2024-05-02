@@ -6,9 +6,19 @@ export default function About() {
   return (
     <section className="bg-blue-500/10">
       <Container>
-        <div className="flex justify-between">
+        <div className="flex justify-between w-full">
           <div className="w-[700px] flex flex-col justify-center h-[600px]">
             <h1 className="font-extrabold text-4xl">What is KisoIndex?</h1>
+            <br />
+            <div className="">
+              <Image
+                src="/images/Logo.png"
+                alt=""
+                width={1000}
+                height={1000}
+                className="w-48 md:w-96 mx-auto md:me-10 block md:hidden border"
+              />
+            </div>
             <br />
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius
@@ -32,7 +42,7 @@ export default function About() {
               alt=""
               width={1000}
               height={1000}
-              className="w-96 me-10"
+              className="w-96 me-10 hidden md:block"
             />
           </div>
         </div>

@@ -50,11 +50,11 @@ export default function CropInterestForm() {
   const [hasLoaded, SetHasLoaded] = useState(false);
 
 
-const LoadingIndicator = () => (
+  const LoadingIndicator = () => (
   <div
     className={`${
       !hasLoaded
-        ? "min-h-screen bg-blue-500/5 rounded-md flex flex-col gap-4 justify-center border items-center "
+        ? "h-96 md:min-h-screen bg-blue-500/5 rounded-md flex flex-col gap-4 justify-center border items-center "
         : "hidden"
     }`}
   >
@@ -64,7 +64,7 @@ const LoadingIndicator = () => (
       alt=""
       width={1000}
       height={1000}
-      className={`${isLoading?" animate-bounce w-40 pb-40":"w-40 pb-40"}`}
+      className={`${isLoading?" animate-bounce w-40 md:pb-40":"w-40 md:pb-40"}`}
     />
     
   </div>
@@ -92,6 +92,7 @@ const LoadingIndicator = () => (
   const handlePrevClick = () => {
     setPage((prevPage) => (prevPage > 0 ? prevPage - 1 : 0));
   };
+  
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
@@ -140,10 +141,10 @@ const LoadingIndicator = () => (
         {" "}
         <form
           onSubmit={handleSubmit}
-          className="bg-blue-500/10 flex justify-between border hover:shadow-lg rounded px-8 pt-6 pb-8 mb-4 w-full"
+          className="bg-blue-500/10 flex flex-col md:flex-row justify-between border hover:shadow-lg rounded px-8 pt-6 pb-8 mb-4 w-full"
         >
           {/* Form inputs */}
-          <div className="flex gap-4">
+          <div className="flex flex-col md:flex-row gap-4">
             {/* Select Country */}
             <div className="mb-4">
               <label
@@ -237,15 +238,15 @@ const LoadingIndicator = () => (
   );
   return (
     <Container>
-    <section className={`${isLoading?"hidden":"block"}`}>
-        <div className="flex w-full justify-center mt-20">
+      <section className={`${isLoading ? "hidden" : "block"}`}>
+        <div className="flex  w-full justify-center mt-20 ">
           {" "}
           <form
             onSubmit={handleSubmit}
-            className="bg-blue-500/10 flex justify-between border hover:shadow-lg rounded px-8 pt-6 pb-8 mb-4 w-full"
+            className="bg-blue-500/10 flex flex-col md:flex-row  justify-between border hover:shadow-lg rounded px-8 pt-6 pb-8 mb-4 w-full"
           >
             {/* Form inputs */}
-            <div className="flex gap-4">
+            <div className="flex flex-col md:flex-row gap md:gap-4">
               {/* Select Country */}
               <div className="mb-4">
                 <label
@@ -334,9 +335,9 @@ const LoadingIndicator = () => (
             </div>
           </form>
         </div>
-        <LoadingIndicator/>
+        <LoadingIndicator />
         {farmers.length > 0 && (
-          <div className=" bg-blue-500/5 px-4 border rounded-md mb-10">
+          <div className=" bg-blue-500/5 overflow-auto px-4 border rounded-md mb-10">
             <h2 className="text-2xl font-bold mb-4 pt-20">
               Farmers Matching Criteria:
             </h2>
@@ -446,18 +447,17 @@ const LoadingIndicator = () => (
                   ))}
               </tbody>
             </table>
-
-            <div className="flex justify-between my-4">
-              <Button onClick={handlePrevClick}>Previous</Button>
-              <p className="flex items-center">
-                Showing {page * rowsPerPage + 1} to{" "}
-                {Math.min((page + 1) * rowsPerPage, farmers.length)} of{" "}
-                {farmers.length}
-              </p>
-              <Button onClick={handleNextClick}>Next</Button>
-            </div>
           </div>
         )}
+        <div className={`${hasLoaded ? "flex justify-between my-4 px-4" : "hidden"}`}>
+          <Button onClick={handlePrevClick}>Previous</Button>
+          <p className="flex items-center">
+            Showing {page * rowsPerPage + 1} to{" "}
+            {Math.min((page + 1) * rowsPerPage, farmers.length)} of{" "}
+            {farmers.length}
+          </p>
+          <Button onClick={handleNextClick}>Next</Button>
+        </div>
       </section>
     </Container>
   );

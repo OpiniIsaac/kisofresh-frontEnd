@@ -7,8 +7,8 @@ export default function NewsLetter() {
   return (
     <section className=" bg-blue-500/5">
       <Container>
-        <div className="w-full h-screen flex items-center justify-between">
-          <div className="w-[700px] flex flex-col gap-4">
+        <div className="w-full h-screen flex flex-col md:flex-row md:items-center justify-center md:justify-between gap-10">
+          <div className="md:w-[700px] px-4 md: flex flex-col gap-4">
             <h1 className="text-[40px] font-extrabold">
               Subscribe to our news letter
             </h1>

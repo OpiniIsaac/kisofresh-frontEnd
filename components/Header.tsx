@@ -62,8 +62,7 @@ export default function Header() {
               <nav className="flex gap-10 text-sm">
                 {NavLinks.map((item) => (
                   <Link
-                  key={item.title}
-                
+                    key={item.title}
                     href={item.route}
                     className={clsx(
                       `${
@@ -94,7 +93,13 @@ export default function Header() {
                   Log in
                 </Button>
               </Link>
-              <IoIosMenu className="block md:hidden mr-4 text-2xl"/>
+              <IoIosMenu
+                className={`${
+                  isScrolled
+                    ? "md:hidden mr-4 text-4xl text-white"
+                    : "block md:hidden mr-4 text-4xl"
+                }`}
+              />
             </div>
           </div>
           {/* <p className="text-lg text-gray-500">

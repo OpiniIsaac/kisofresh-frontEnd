@@ -38,7 +38,7 @@ export default function Hero() {
   const plugin = React.useRef(Autoplay({ delay: 4000 }));
 
   return (
-    <section className="pt-10 h-[650px] bg-blue-500/5" id="hero">
+    <section className="pt-10 h-[650px] w-screen bg-blue-500/5" id="hero">
       <Container>
         <div className="flex justify-between items-center h-[600px]">
           <div>
