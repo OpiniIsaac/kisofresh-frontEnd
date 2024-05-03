@@ -6,6 +6,21 @@ import Link from "next/link";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import { IoIosMenu } from "react-icons/io";
+import { RxCross1 } from "react-icons/rx";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface NavLink {
   title: string;
@@ -13,18 +28,24 @@ interface NavLink {
 }
 
 const NavLinkCollection: { title: string; route: string }[] = [
-  { title: "Price analysis & tracking", route: "/PriceAnalysis&Tracking/price" },
+  {
+    title: "Price analysis & tracking",
+    route: "/PriceAnalysis&Tracking/price",
+  },
   { title: "Source produce", route: "/SourceProduce" },
 ];
 
-const NavLinks: NavLink[] = NavLinkCollection.map((item) =>{
+const NavLinks: NavLink[] = NavLinkCollection.map((item) => {
   return item as NavLink;
 });
 
-
-
 export default function Header() {
   const [isScrolled, setisScrolled] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleOpen = () =>{
+    setIsOpen(true);
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,8 +72,10 @@ export default function Header() {
           <div className="flex justify-between">
             <Link
               href="/"
-              className={`"border h-10mb-0 text-blue-500 font-extrabold text-[70px]" ${
-                isScrolled ? "text-white text-4xl " : "text-blue-500 text-4xl"
+              className={`"border h-10mb-0 text-blue-500 font-extrabold ps-4" ${
+                isScrolled
+                  ? "text-white text-4xl ps-4"
+                  : "text-blue-500 text-4xl ps-4"
               }`}
             >
               KisoIndex
@@ -93,13 +116,52 @@ export default function Header() {
                   Log in
                 </Button>
               </Link>
-              <IoIosMenu
-                className={`${
-                  isScrolled
-                    ? "md:hidden mr-4 text-4xl text-white"
-                    : "block md:hidden mr-4 text-4xl"
-                }`}
-              />
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="outline-none">
+                     <IoIosMenu
+                      className={`${
+                        isScrolled
+                          ? "md:hidden mr-4 text-4xl text-white"
+                          : "block md:hidden mr-4 text-4xl"
+                      }`}
+                      
+                    />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="flex flex-col justify-between gap-2 px-4 h-96 w-72 py-4">
+                  <div>
+                    <Link href="/">
+                      <Button
+                        className={clsx(
+                          "bg-blue-500/5 w-full mt-2 text-black justify-start hover:bg-blue-500 font-semibold text-sm hover:text-white",
+                          { "bg-blue-500 text-white": pathname === "/" }
+                        )}
+                      >
+                        Home
+                      </Button>
+                    </Link>
+                    {NavLinks.map((item) => (
+                      <Link key={item.title} href={item.route}>
+                        <Button
+                          className={clsx(
+                            "bg-blue-500/5 w-full mt-2 text-black justify-start hover:bg-blue-500 font-semibold text-sm hover:text-white",
+                            {
+                              "bg-blue-500 text-white": pathname === item.route,
+                            }
+                          )}
+                        >
+                          {item.title}
+                        </Button>
+                      </Link>
+                    ))}
+                  </div>
+                  <Link href="/login" className="flex justify-end my-4">
+                    <Button>Log in</Button>
+                  </Link>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
           {/* <p className="text-lg text-gray-500">
