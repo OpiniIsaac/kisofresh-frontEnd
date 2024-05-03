@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 export default function ProductTable() {
   const [page, setPage] = useState(0);
@@ -60,7 +60,7 @@ export default function ProductTable() {
         <h2 className="text-xl min-w-36 font-bold">Product Table</h2>
         <div className="flex items-center">
           <input
-            className="border border-gray-300 rounded p-2 w-96"
+            className="border border-gray-300 rounded p-2 w-52 md:w-96"
             type="text"
             placeholder="Search products"
             value={searchTerm}
@@ -68,8 +68,8 @@ export default function ProductTable() {
           />
         </div>
       </div>
-      <div>
-        <table className="w-full text-left table-auto ">
+      <div className="overflow-auto">
+        <table className="w-screen-2 md:w-full text-left table-auto  ">
           <thead>
             <tr>
               <th className="px-4 py-2">Name</th>
@@ -117,15 +117,14 @@ export default function ProductTable() {
               ))}
           </tbody>
         </table>
-
-        <div className="w-full flex justify-between my-4">
-          <Button onClick={handlePrevClick}>Previous</Button>
-          <p className="flex items-center">
-            Showing {page * rowsPerPage} to {page * rowsPerPage + rowsPerPage}{" "}
-            of {products.length}
-          </p>
-          <Button onClick={handleNextClick}>Next</Button>
-        </div>
+      </div>
+      <div className="w-full flex justify-between my-10">
+        <Button onClick={handlePrevClick}>Previous</Button>
+        <p className="flex items-center">
+          Showing {page * rowsPerPage} to {page * rowsPerPage + rowsPerPage} of{" "}
+          {products.length}
+        </p>
+        <Button onClick={handleNextClick}>Next</Button>
       </div>
     </div>
   );

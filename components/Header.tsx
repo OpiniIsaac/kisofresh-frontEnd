@@ -6,19 +6,9 @@ import Link from "next/link";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import { IoIosMenu } from "react-icons/io";
-import { RxCross1 } from "react-icons/rx";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -94,7 +84,7 @@ export default function Header() {
                           : "relative hover:text-black transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-400 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-400 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] hidden md:block"
                       }`,
                       {
-                        "underline underline-offset-[5px] u ":
+                        "underline underline-offset-[5px] hover:no-underline":
                           pathname === item.route,
                       }
                     )}
@@ -120,22 +110,21 @@ export default function Header() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="outline-none">
-                     <IoIosMenu
+                    <IoIosMenu
                       className={`${
                         isScrolled
                           ? "md:hidden mr-4 text-4xl text-white"
                           : "block md:hidden mr-4 text-4xl"
                       }`}
-                      
                     />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="flex flex-col justify-between gap-2 px-4 h-96 w-72 py-4">
+                <DropdownMenuContent className="flex flex-col justify-between px-4 h-96 w-72 py-4">
                   <div>
                     <Link href="/">
                       <Button
                         className={clsx(
-                          "bg-blue-500/5 w-full mt-2 text-black justify-start hover:bg-blue-500 font-semibold text-sm hover:text-white",
+                          "bg-blue-500/5 w-full mt-4 mb-3 text-black justify-start hover:bg-blue-500 font-semibold text-lg hover:text-white",
                           { "bg-blue-500 text-white": pathname === "/" }
                         )}
                       >
@@ -146,7 +135,7 @@ export default function Header() {
                       <Link key={item.title} href={item.route}>
                         <Button
                           className={clsx(
-                            "bg-blue-500/5 w-full mt-2 text-black justify-start hover:bg-blue-500 font-semibold text-sm hover:text-white",
+                            "bg-blue-500/5 w-full my-3 text-black justify-start hover:bg-blue-500 font-semibold text-lg hover:text-white",
                             {
                               "bg-blue-500 text-white": pathname === item.route,
                             }
@@ -157,16 +146,13 @@ export default function Header() {
                       </Link>
                     ))}
                   </div>
-                  <Link href="/login" className="flex justify-end my-4">
-                    <Button>Log in</Button>
+                  <Link href="/login" className="flex justify-end my-4 ">
+                    <Button className="text-lg">Log in</Button>
                   </Link>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
           </div>
-          {/* <p className="text-lg text-gray-500">
-          Data for informed agricultural decisions.
-        </p> */}
         </Container>
       </header>
     </div>

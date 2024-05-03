@@ -341,7 +341,7 @@ export default function CropInterestForm() {
             <h2 className="text-2xl font-bold mb-4 pt-20">
               Farmers Matching Criteria:
             </h2>
-            <table className="min-w-full h-screen divide-y divide-gray-200">
+            <div className="w-screen md:w-full overflow-auto"><table className="min-w-full h-screen divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
                   <th
@@ -446,7 +446,8 @@ export default function CropInterestForm() {
                     </tr>
                   ))}
               </tbody>
-            </table>
+            </table></div>
+            
           </div>
         )}
         <div className={`${hasLoaded ? "flex justify-between my-4 px-4" : "hidden"}`}>
