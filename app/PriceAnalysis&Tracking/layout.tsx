@@ -8,7 +8,7 @@ export default function layout({ children }: { children: React.ReactNode }) {
       <Container>
         <div className="flex">
           <SideNav />
-          <div className="w-full mt-32 md:mt-20 mb-10 rounded-lg mx-0 md:ms-64 border bg-blue-500/5">
+          <div className="w-full mt-32 md:mt-20 mb-10 md:mb-20 rounded-lg mx-0 md:ms-64 border bg-blue-500/5">
             {children}
           </div>
         </div>

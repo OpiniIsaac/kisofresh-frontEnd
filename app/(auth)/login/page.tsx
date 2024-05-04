@@ -1,7 +1,12 @@
+"use client";
+
+import { Login } from "@/lib/features/accountHandle/loginSlice";
 import Link from "next/link";
 import React from "react";
+import { useDispatch } from "react-redux";
 
 export default function page() {
+  const dispatch = useDispatch();
   return (
     <div className="w-screen h-screen flex justify-center items-center">
       <div className="w-full max-w-xs ">
@@ -38,6 +43,7 @@ export default function page() {
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="button"
+              onClick={() => dispatch(Login())}
             >
               Sign In
             </button>
@@ -47,6 +53,13 @@ export default function page() {
             >
               Forgot Password?
             </Link>
+          </div>
+          <div className="flex justify-center pt-6 text-sm">
+            Don't have an account? 
+            <span className="hover:underline hover:cursor-pointer">
+              {" "}
+              SignUp
+            </span>
           </div>
         </form>
       </div>

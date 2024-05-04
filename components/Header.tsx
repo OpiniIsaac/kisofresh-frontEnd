@@ -6,11 +6,16 @@ import Link from "next/link";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import { IoIosMenu } from "react-icons/io";
+import { SlUser } from "react-icons/sl";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { RootState } from "@/lib/store";
+import { useDispatch, useSelector } from "react-redux";
+import { Login, Logout } from "@/lib/features/accountHandle/loginSlice";
+import { Divide } from "lucide-react";
 
 interface NavLink {
   title: string;
@@ -33,9 +38,12 @@ export default function Header() {
   const [isScrolled, setisScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleOpen = () =>{
+  const islogged = useSelector((state: RootState) => state.LoginState.value);
+  const dispatch = useDispatch();
+
+  const handleOpen = () => {
     setIsOpen(true);
-  }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -94,18 +102,46 @@ export default function Header() {
                 ))}
               </nav>
               {/*The button below will navigate to the auth route on which the user will find login page, no need for signup button as there will be option to sign up on login page, two buttons looked ugly  */}
-              <Link href="/login" className="hidden md:block">
-                <div className="bg-white"></div>
-                <Button
-                  className={`"" ${
-                    isScrolled
-                      ? "bg-white text-black hover:bg-blue-700 hover:text-white"
-                      : ""
-                  }`}
-                >
-                  Log in
-                </Button>
-              </Link>
+
+              {islogged ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button>
+                      <div
+                        className={`${"text-xl flex-col ps-5 items-center hidden md:flex "}`}
+                      >
+                        <SlUser />
+                        <div className="text-sm">Account</div>
+                      </div>
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="max-w-60">
+                    <div>
+                      <br />
+                      <h1>Profile</h1><br />
+                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, unde vitae! Ipsa aspernatur amet laborum omnis, veniam deserunt commodi enim?</p>
+                    </div>
+                    <br />
+                    <div className="flex justify-end"><Button onClick={() => dispatch(Logout())}>Logout</Button></div>
+                    
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <div>
+                  <Link href="/login" className="hidden md:block">
+                    <div className="bg-white"></div>
+                    <Button
+                      className={`${
+                        isScrolled
+                          ? "bg-white text-black hover:bg-blue-700 hover:text-white"
+                          : ""
+                      }`}
+                    >
+                      Log in
+                    </Button>
+                  </Link>
+                </div>
+              )}
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -147,7 +183,15 @@ export default function Header() {
                     ))}
                   </div>
                   <Link href="/login" className="flex justify-end my-4 ">
-                    <Button className="text-lg">Log in</Button>
+                    <Button
+                      onClick={
+                        islogged
+                          ? () => dispatch(Logout())
+                          : () => dispatch(Login())
+                      }
+                    >
+                      {islogged ? <div>Logout</div> : <div>Login</div>}
+                    </Button>
                   </Link>
                 </DropdownMenuContent>
               </DropdownMenu>
