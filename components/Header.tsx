@@ -16,6 +16,9 @@ import { RootState } from "@/lib/store";
 import { useDispatch, useSelector } from "react-redux";
 import { Login, Logout } from "@/lib/features/accountHandle/loginSlice";
 import { Divide } from "lucide-react";
+import { auth } from "@/app/firebase/config";
+import { signOut } from "firebase/auth";
+import { useRouter } from "next/navigation";
 
 interface NavLink {
   title: string;
@@ -59,6 +62,17 @@ export default function Header() {
   }, []);
 
   const pathname = usePathname();
+  const router = useRouter();
+  const handleLogout = async () => {
+    try {
+      router.push("/");
+      dispatch(Logout());
+      // signOut(auth);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
     <div>
       <header
@@ -118,17 +132,23 @@ export default function Header() {
                   <DropdownMenuContent className="max-w-60">
                     <div>
                       <br />
-                      <h1>Profile</h1><br />
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, unde vitae! Ipsa aspernatur amet laborum omnis, veniam deserunt commodi enim?</p>
+                      <h1>Profile</h1>
+                      <br />
+                      <p>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing
+                        elit. Quidem, unde vitae! Ipsa aspernatur amet laborum
+                        omnis, veniam deserunt commodi enim?
+                      </p>
                     </div>
                     <br />
-                    <div className="flex justify-end"><Button onClick={() => dispatch(Logout())}>Logout</Button></div>
-                    
+                    <div className="flex justify-end">
+                      <Button onClick={handleLogout}>Logout</Button>
+                    </div>
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
                 <div>
-                  <Link href="/login" className="hidden md:block">
+                  <Link href="/sign-up" className="hidden md:block">
                     <div className="bg-white"></div>
                     <Button
                       className={`${
@@ -137,7 +157,7 @@ export default function Header() {
                           : ""
                       }`}
                     >
-                      Log in
+                      SignUp
                     </Button>
                   </Link>
                 </div>
@@ -182,7 +202,7 @@ export default function Header() {
                       </Link>
                     ))}
                   </div>
-                  <Link href="/login" className="flex justify-end my-4 ">
+                  <Link href="/sign-up" className="flex justify-end my-4 ">
                     <Button
                       onClick={
                         islogged
@@ -190,7 +210,7 @@ export default function Header() {
                           : () => dispatch(Login())
                       }
                     >
-                      {islogged ? <div>Logout</div> : <div>Login</div>}
+                      {islogged ? <div>Logout</div> : <div>SignUp</div>}
                     </Button>
                   </Link>
                 </DropdownMenuContent>

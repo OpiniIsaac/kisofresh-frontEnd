@@ -8,6 +8,8 @@ const initialState: LoginState = {
   value: false,
 };
 
+
+
 export const loginSlice = createSlice({
   name: "login",
   initialState,
@@ -16,6 +18,7 @@ export const loginSlice = createSlice({
       state.value = true;
     },
     Logout: (state) => {
+
       state.value = false;
     },
     
