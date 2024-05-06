@@ -35,7 +35,7 @@ export default function page() {
               className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="email"
             >
-              Username
+              Email
             </label>
             <input
               autoComplete="true"
