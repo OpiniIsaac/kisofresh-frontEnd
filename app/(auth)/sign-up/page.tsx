@@ -1,83 +1,144 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import React, { useState } from "react";
-import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { auth } from "@/app/firebase/config";
-import { useRouter } from "next/navigation";
+"use client"
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { Login } from "@/lib/features/accountHandle/loginSlice";
+import { useRouter } from 'next/navigation';
 
-export default function page() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const router = useRouter()
+const OnboardingScreen = () => {
+ // Define interfaces for the structure of the fields and steps
+ interface Field {
+    label: string;
+    type: string;
+    placeholder: string;
+ }
+  
+ interface Step {
+    title: string;
+    description: string;
+    options?: { label: string; value: string }[];
+    fields?: Field[];
+ }
 
-  const [createUserWithEmailAndPassword] =
-    useCreateUserWithEmailAndPassword(auth);
+ // State hooks for managing the current step and user type
+ const [step, setStep] = React.useState(0);
+ const [userType, setUserType] = React.useState<string | null>(null);
 
-  const handleSignup = async () => {
-    try {
-      const res = await createUserWithEmailAndPassword(email, password);
-      console.log("User signed up: ", { res });
-      setEmail("");
-      setPassword("");
-      router.push('login');
-    } catch (e) {
-      console.error(e);
+ // Hooks for dispatching actions and routing
+ const dispatch = useDispatch();
+ const router = useRouter();
+
+ // Function to handle the sign up process
+ const handleSignUp = () => {
+    dispatch(Login());
+ };
+
+ // Function to navigate to the next step
+ const nextStep = () => {
+    if (step === 0) {
+      setUserType(userType);
+      setStep(step + 1);
+    } else {
+      setStep(step + 1);
     }
-  };
+ };
 
-  return (
-    <div className="w-screen h-screen flex justify-center items-center">
-      <div className="w-full max-w-xs ">
-        <div className="bg-blue-500/10 hover:shadow-md rounded px-8 pt-6 pb-8 mb-4">
-          <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="email"
+ // Function to navigate to the previous step
+ const prevStep = () => {
+    setStep(step - 1);
+ };
+
+ // Define the steps for the onboarding process
+ const steps: Step[] = [
+    {
+      title: 'Welcome',
+      description: 'Choose your role:',
+      options: [
+        { label: 'Farmer', value: 'farmer' },
+        { label: 'Transporter', value: 'transporter' },
+        { label: 'Trader', value: 'trader' }, // Added Trader option
+      ],
+    },
+    {
+      title: 'Sign Up',
+      description: 'Create your account to get started.',
+      fields: userType === 'farmer' ? [
+        { label: 'Name', type: 'text', placeholder: 'Enter your name' },
+        { label: 'Crop Type', type: 'text', placeholder: 'Enter your crop type' },
+        { label: 'Address', type: 'text', placeholder: 'Enter your address' },
+      ] : userType === 'transporter' ? [
+        { label: 'Name', type: 'text', placeholder: 'Enter your name' },
+        { label: 'Driving Permit', type: 'text', placeholder: 'Enter your driving permit number' },
+        { label: 'Quality', type: 'text', placeholder: 'Enter your quality' },
+        { label: 'Taken Location', type: 'text', placeholder: 'Enter the location' },
+      ] : [
+        { label: 'Name', type: 'text', placeholder: 'Enter your name' },
+        { label: 'Contact Information', type: 'text', placeholder: 'Enter your contact information' },
+        { label: 'Business Type', type: 'text', placeholder: 'Enter your business type' },
+        { label: 'Location', type: 'text', placeholder: 'Enter your location' },
+      ], // Added Trader fields
+    },
+ ];
+
+ // Function to render the fields for the current step
+ const renderFields = (fields: { label: string; type: string; placeholder: string }[]) => {
+    return fields.map((field, index: number) => (
+      <div key={index} className="mb-4">
+        <label htmlFor={field.type} className="block text-sm font-medium text-gray-700">{field.label}</label>
+        <input type={field.type} name={field.type} id={field.type} className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder={field.placeholder} />
+      </div>
+    ));
+ };
+
+ // Render the onboarding screen
+ return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold text-center mb-4">{steps[step].title}</h2>
+        <p className="text-center mb-6">{steps[step].description}</p>
+        {step === 0 && (
+          <div className="flex justify-center space-x-4">
+            {steps[0].options?.map((option) => (
+              <button
+                key={option.value}
+                onClick={() => setUserType(option.value)}
+                className={`px-4 py-2 text-white ${userType === option.value? 'bg-blue-500' : 'bg-gray-200'} rounded hover:bg-blue-600`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        )}
+        {step === 1 && steps[1].fields && renderFields(steps[1].fields)}
+
+        <div className="flex justify-between w-full mt-6">
+          {step > 0 && (
+            <button
+              onClick={prevStep}
+              className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
             >
-              Username
-            </label>
-            <input
-              autoComplete="true"
-              id="email"
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
-            />
-          </div>
-          <div className="mb-6">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="password"
+              Back
+            </button>
+          )}
+          {step < steps.length - 1 && (
+            <button
+              onClick={nextStep}
+              className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
             >
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
-            />
-          </div>
-          <div className="flex items-center justify-end">
-            <Button onClick={handleSignup}>Sign Up</Button>
-          </div>
-          <div className="flex justify-center pt-6 text-sm">
-            Already have an account?
-            <Link href="/login">
-              <span className="hover:underline hover:cursor-pointer ps-2">
-                Login
-              </span>
-            </Link>
-          </div>
+              Next
+            </button>
+          )}
+          {step === steps.length - 1 && userType && (
+            <button
+              className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+              onClick={handleSignUp}
+            >
+              Sign up
+            </button>
+          )}
         </div>
       </div>
     </div>
-  );
-}
+ );
+};
+
+export default OnboardingScreen;
