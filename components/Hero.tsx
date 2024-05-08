@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/carousel";
 import Container from "./Container";
 import Autoplay from "embla-carousel-autoplay";
+import { Key } from "lucide-react";
 
 export default function Hero() {
   const content = [
@@ -15,21 +16,25 @@ export default function Hero() {
       image: "/images/crops.jpg",
       title: "Track & Analyze Prices",
       desc: "Gain insights into crop prices. Make informed decisions..",
+      key: 1,
     },
     {
       image: "/images/grain.jpeg",
       title: "Source Produce",
       desc: "Traceability simplified. Tap into our vast database of farmers.",
+      key: 2,
     },
     {
       image: "/images/Data.jpeg",
       title: "Smart Farming",
       desc: "Beat the elements using IoT data.",
+      key: 3,
     },
     {
       image: "/images/cow.jpg",
       title: "Agriculture tips",
       desc: "Learn best practices for your farm.",
+      key: 4,
     },
   ];
 
@@ -47,7 +52,7 @@ export default function Hero() {
             >
               <CarouselContent>
                 {content.map((item) => (
-                  <CarouselItem>
+                  <CarouselItem key={item.key}>
                     <HeroCard details={item} />
                   </CarouselItem>
                 ))}

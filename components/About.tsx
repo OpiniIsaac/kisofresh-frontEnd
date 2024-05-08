@@ -1,6 +1,7 @@
 import React from "react";
 import Container from "./Container";
 import Image from "next/image";
+import { hedvig, outfit } from "./Fonts";
 
 export default function About() {
   return (
@@ -8,7 +9,7 @@ export default function About() {
       <Container>
         <div className="flex justify-between w-full px-4 md:">
           <div className="w-[700px] flex flex-col justify-center h-[600px]">
-            <h1 className="font-extrabold text-4xl">What is KisoIndex?</h1>
+            <h1 className={`font-extrabold text-4xl ${hedvig.className}`}>What is KisoIndex?</h1>
             <br />
             <div className="">
               <Image
@@ -20,7 +21,7 @@ export default function About() {
               />
             </div>
             <br />
-            <p>
+            <p className={outfit.className}>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius
               accusantium ut ipsum est minus eum facere soluta. Iure quam
               placeat, perspiciatis nihil, culpa ipsam, deserunt illum dicta

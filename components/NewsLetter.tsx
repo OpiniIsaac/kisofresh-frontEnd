@@ -2,6 +2,7 @@ import React from "react";
 import Container from "./Container";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { anonymous, hedvig, outfit } from "./Fonts";
 
 export default function NewsLetter() {
   return (
@@ -9,14 +10,14 @@ export default function NewsLetter() {
       <Container>
         <div className="w-full py-14 md:py-40 flex flex-col md:flex-row md:items-center justify-center md:justify-between gap-10">
           <div className="md:w-[700px] px-4 md: flex flex-col gap-4">
-            <h1 className="text-[40px] font-extrabold">
+            <h1 className={`text-[40px] font-extrabold ${hedvig.className}`}>
               Subscribe to our news letter
             </h1>
             <div className="flex flex-col gap-2">
-              <span className="font-bold text-lg">
+              <span className={`"font-bold text-lg" ${anonymous.className}`}>
                 Dive deeper into the world of agriculture.
               </span>
-              <p>
+              <p className={outfit.className}>
                 Go beyond the headlines with our exclusive newsletter. We'll
                 unveil hidden trends, groundbreaking research, and practical
                 tips to keep you informed and at the forefront of agricultural
