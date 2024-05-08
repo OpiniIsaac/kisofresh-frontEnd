@@ -55,7 +55,7 @@ const OnboardingScreen = () => {
       options: [
         { label: 'Farmer', value: 'farmer' },
         { label: 'Transporter', value: 'transporter' },
-        { label: 'Trader', value: 'trader' }, // Added Trader option
+        { label: 'Trader', value: 'trader' }, 
       ],
     },
     {
@@ -75,7 +75,7 @@ const OnboardingScreen = () => {
         { label: 'Contact Information', type: 'text', placeholder: 'Enter your contact information' },
         { label: 'Business Type', type: 'text', placeholder: 'Enter your business type' },
         { label: 'Location', type: 'text', placeholder: 'Enter your location' },
-      ], // Added Trader fields
+      ], 
     },
  ];
 
