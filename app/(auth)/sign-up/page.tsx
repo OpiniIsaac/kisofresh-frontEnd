@@ -34,6 +34,7 @@ const OnboardingScreen = () => {
 
  // Function to navigate to the next step
  const nextStep = () => {
+  
     if (step === 0) {
       setUserType(userType);
       setStep(step + 1);
