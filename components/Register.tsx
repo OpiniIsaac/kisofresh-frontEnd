@@ -3,6 +3,7 @@ import Container from "./Container";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { anonymous, hedvig, outfit } from "./Fonts";
+import Link from "next/link";
 
 export default function SignUpPrompt() {
   return (
@@ -25,7 +26,10 @@ export default function SignUpPrompt() {
           <div className="w-96 px-10 flex flex-col gap-4 mx-auto border bg-blue-500/10 rounded-sm py-20 hover:shadow-xl">
             <div className="w-full flex justify-center">
               <Button className="bg-green-500 hover:bg-blue-500">
+                <Link href='onboarding'>
                 Sign Up
+                </Link>
+              
               </Button>
             </div>
           </div>
