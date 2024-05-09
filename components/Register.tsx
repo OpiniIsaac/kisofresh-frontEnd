@@ -25,12 +25,14 @@ export default function SignUpPrompt() {
           </div>
           <div className="w-96 px-10 flex flex-col gap-4 mx-auto border bg-blue-500/10 rounded-sm py-20 hover:shadow-xl">
             <div className="w-full flex justify-center">
+            <Link href='onboarding'>
               <Button className="bg-green-500 hover:bg-blue-500">
-                <Link href='onboarding'>
+                
                 Sign Up
-                </Link>
+              
               
               </Button>
+              </Link>
             </div>
           </div>
         </div>
