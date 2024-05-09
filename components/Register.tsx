@@ -11,14 +11,14 @@ export default function SignUpPrompt() {
         <div className="w-full py-14 md:py-40 flex flex-col md:flex-row md:items-center justify-center md:justify-between gap-10">
           <div className="md:w-[700px] px-4 md:flex flex-col gap-4">
             <h1 className={`text-[40px] font-extrabold ${hedvig.className}`}>
-              Join Our Community
+              Empower Your Farming Journey
             </h1>
             <div className="flex flex-col gap-2">
               <span className={`font-bold text-lg ${anonymous.className}`}>
-                Start your journey with us today.
+                Unlock New Opportunities.
               </span>
               <p className={outfit.className}>
-                Sign up to access exclusive content, participate in discussions, and stay updated with the latest in agriculture.
+                As a farmer or cooperative, signing up gives you exclusive access to track prices, connect with a wider market, and discover new opportunities to grow your business. Stay informed, stay ahead.
               </p>
             </div>
           </div>
