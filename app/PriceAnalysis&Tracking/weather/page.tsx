@@ -1,6 +1,11 @@
+
+import { fetchWeatherForecast } from '@/lib/actions/weather';
 import React from 'react'
 
-export default function page() {
+export default async function page() {
+
+  const res = await fetchWeatherForecast('kampala')
+  console.log(res)
   return (
     <div className="h-screen flex justify-center items-center">
       <h1>Weather</h1>
