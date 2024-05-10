@@ -1,4 +1,5 @@
 // Function to fetch weather forecast data for a specific city for the next 4 days
+//this happens on the server
 async function fetchWeatherForecast(cityName: string) {
   const apiKey = 'ac6be0e62d8605a0e90e06d1f44ae0af'; 
  
@@ -15,5 +16,9 @@ async function fetchWeatherForecast(cityName: string) {
     return null;
   }
 }
+
+const data = fetchWeatherForecast("london");
+
+export {data};//passing the fetched data to the client
 
 export { fetchWeatherForecast };
