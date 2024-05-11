@@ -17,7 +17,7 @@ async function fetchWeatherForecast(cityName: string) {
   }
 }
 
-const data = fetchWeatherForecast("london");
+const data = fetchWeatherForecast("kampala");//change the user input from here
 
 export {data};//passing the fetched data to the client
 
