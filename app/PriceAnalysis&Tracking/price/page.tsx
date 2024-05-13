@@ -10,7 +10,7 @@ export default function ProductTable() {
   // Dummy data//👌understood
   const products = [
     { id: 1, name: "Apple", price: 1000, unit: "kg" },
-    { id: 2, name: "Banana", price: 75000, unit: "kg" },
+    { id: 2, name: "Banana", price: 7500, unit: "kg" },
     { id: 3, name: "Carrot", price: 500, unit: "kg" },
     { id: 4, name: "Potato", price: 600, unit: "kg" },
     { id: 5, name: "Tomato", price: 800, unit: "kg" },
@@ -86,7 +86,7 @@ export default function ProductTable() {
                 <tr key={product.id} className="hover:bg-gray-100">
                   <td className="border px-4 py-2">{product.name}</td>
                   <td className="border px-4 py-2">
-                    Ugx {product.price.toFixed(2)}
+                    Ugx {product.price.toLocaleString()}
                   </td>
                   <td className="border px-4 py-2">{product.unit}</td>
                   <td className="border px-4 py-2">
