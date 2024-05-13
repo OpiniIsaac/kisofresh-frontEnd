@@ -20,7 +20,7 @@ export default function page() {
       console.log("User signed up: ", { res });
       setEmail("");
       setPassword("");
-      router.push('login');
+      router.push('onboarding');
     } catch (e) {
       console.error(e);
     }
