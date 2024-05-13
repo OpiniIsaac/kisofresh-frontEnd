@@ -76,8 +76,7 @@ export default function ProductTable() {
               <th className="px-4 py-2">Price</th>
               <th className="px-4 py-2">Unit</th>
               <th className="px-4 py-2">Indicator</th>
-              <th className="px-4 py-2">Edit</th>
-              <th className="px-4 py-2">Delete</th>
+           
             </tr>
           </thead>
           <tbody>
@@ -97,22 +96,8 @@ export default function ProductTable() {
                       <span className="text-red-500">↓</span>
                     )}
                   </td>
-                  <td className="border px-4 py-2">
-                    <button
-                      className="bg-blue-500 text-white px-2 py-1 rounded"
-                      onClick={() => handleEdit(product)}
-                    >
-                      Edit
-                    </button>
-                  </td>
-                  <td className="border px-4 py-2">
-                    <button
-                      className="bg-red-500 text-white px-2 py-1 rounded"
-                      onClick={() => handleDelete(product.id)}
-                    >
-                      Delete
-                    </button>
-                  </td>
+                
+                 
                 </tr>
               ))}
           </tbody>
