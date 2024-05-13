@@ -346,7 +346,7 @@ export default function CropInterestForm() {
             </form>
           </div>
           <LoadingIndicator />
-          {farmers.length > 0 && (
+          {(
             <div className=" bg-blue-500/5 overflow-auto px-4 border rounded-md mb-10">
               <h2 className="text-2xl font-bold mb-4 pt-20">
                 Farmers Matching Criteria:
