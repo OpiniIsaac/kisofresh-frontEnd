@@ -29,6 +29,7 @@ const OnboardingScreen = () => {
 
  // Function to handle the sign up process
  const handleSignUp = () => {
+    router.push("/SourceProduce");
     dispatch(Login());
  };
 
