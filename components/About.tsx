@@ -22,14 +22,7 @@ export default function About() {
             </div>
             <br />
             <p className={outfit.className}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius
-              accusantium ut ipsum est minus eum facere soluta. Iure quam
-              placeat, perspiciatis nihil, culpa ipsam, deserunt illum dicta
-              possimus consequuntur esse recusandae reprehenderit eaque fugiat
-              labore illo non architecto! Itaque debitis deserunt excepturi
-              nulla, officia quasi consectetur, voluptatibus a, ullam libero
-              quod delectus assumenda obcaecati? In repellendus aliquid non rem,
-              inventore delectus 
+            Our innovative KisoIndex platform is transforming the agricultural landscape in Africa by empowering both farmers and traders with the tools they need to thrive
             </p>
           </div>
           <div className="flex flex-col justify-center">
