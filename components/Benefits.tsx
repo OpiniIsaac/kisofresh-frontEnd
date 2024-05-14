@@ -32,7 +32,7 @@ export default function Benefits() {
         </div>
       </div>
       <div className="w-full md:w-1/2 lg:w-1/3 p-4">
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center ">
           <h2 className="text-2xl font-bold mt-4 mb-2">Navigate the Market:</h2>
           <p>
             Price Index: Gain valuable insights into domestic and international market trends with our comprehensive price index. KisoIndex empowers farmers to make strategic planting choices and informs traders of potential market opportunities.

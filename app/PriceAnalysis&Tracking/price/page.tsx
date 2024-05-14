@@ -20,36 +20,12 @@ export default function ProductTable() {
     { id: 9, name: "Irish Potato", price: 320, unit: "kg", previousPrice: 550 },
     { id: 10, name: "Egg plant", price: 800, unit: "kg", previousPrice: 750 },
     { id: 11, name: "Cereal", price: 1500, unit: "kg", previousPrice: 1400 },
-    {
-      id: 12,
-      name: "Star fruit",
-      price: 7500,
-      unit: "kg",
-      previousPrice: 7000,
-    },
+    { id: 12, name: "Star fruit", price: 7500, unit: "kg", previousPrice: 7000 },
     { id: 13, name: "Soy", price: 5000, unit: "kg", previousPrice: 4500 },
-    { id: 14, name: "bean", price: 600, unit: "kg", previousPrice: 550 },
-    {
-      id: 15,
-      name: "Small Tomato",
-      price: 800,
-      unit: "kg",
-      previousPrice: 750,
-    },
-    {
-      id: 16,
-      name: "Big Cherry",
-      price: 1300,
-      unit: "kg",
-      previousPrice: 1400,
-    },
-    {
-      id: 17,
-      name: "Guava Tropical",
-      price: 7500,
-      unit: "kg",
-      previousPrice: 7000,
-    },
+    { id: 14, name: "Bean", price: 600, unit: "kg", previousPrice: 550 },
+    { id: 15, name: "Small Tomato", price: 800, unit: "kg", previousPrice: 750 },
+    { id: 16, name: "Big Cherry", price: 1300, unit: "kg", previousPrice: 1400 },
+    { id: 17, name: "Guava Tropical", price: 7500, unit: "kg", previousPrice: 7000 },
     { id: 18, name: "Dates", price: 500, unit: "kg", previousPrice: 450 },
     { id: 19, name: "Rice", price: 600, unit: "kg", previousPrice: 950 },
     { id: 20, name: "Peas", price: 800, unit: "kg", previousPrice: 750 },
@@ -59,30 +35,26 @@ export default function ProductTable() {
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleEdit = (product: any) => {
+  const handleEdit = (product:any) => {
     // Implement your edit logic here
     console.log("Edit product:", product);
   };
 
-  const handleDelete = (id: any) => {
+  const handleDelete = (id:any) => {
     // Implement your delete logic here
     console.log("Delete product with id:", id);
   };
 
   const handleNextClick = () => {
-    page * rowsPerPage + rowsPerPage === products.length
-      ? setPage(page)
-      : setPage(page + 1);
+    const maxPage = Math.ceil(filteredProducts.length / rowsPerPage) - 1;
+    setPage((prevPage) => (prevPage < maxPage ? prevPage + 1 : prevPage));
   };
 
   const handlePrevClick = () => {
-    page === 0 ? setPage(0) : setPage(page - 1);
+    setPage((prevPage) => (prevPage > 0 ? prevPage - 1 : prevPage));
   };
 
-  const calculatePercentageChange = (
-    currentPrice: number,
-    previousPrice: number
-  ) => {
+  const calculatePercentageChange = (currentPrice:any, previousPrice:any) => {
     const change = currentPrice - previousPrice;
     const percentage = (change / previousPrice) * 100;
     return percentage;
@@ -103,7 +75,7 @@ export default function ProductTable() {
         </div>
       </div>
       <div className="overflow-auto">
-        <table className="w-screen-2 md:w-full text-left table-auto  ">
+        <table className="w-full text-left table-auto">
           <thead>
             <tr>
               <th className="px-4 py-2">Name</th>
@@ -116,35 +88,52 @@ export default function ProductTable() {
           <tbody>
             {filteredProducts
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((product) => (
-                <tr key={product.id} className="hover:bg-gray-100">
-                  <td className="border px-4 py-2">{product.name}</td>
-                  <td className="border px-4 py-2">
-                    Ugx {product.price.toLocaleString()}
-                  </td>
-                  <td className="border px-4 py-2">{product.unit}</td>
-                  <td className="border px-4 py-2">
-  {calculatePercentageChange(product.price, product.previousPrice) > 0? (
-    <span className="text-green-500">↑</span>
-  ) : calculatePercentageChange(product.price, product.previousPrice) < 0? (
-    <span className="text-red-500">↓</span>
-  ) : (
-    <span className="text-gray-500">%</span>
-  )}
-</td>
-<td className="border px-4 py-2">
-  {calculatePercentageChange(product.price, product.previousPrice).toFixed(2)}%
-</td>
-                </tr>
-              ))}
+              .map((product) => {
+                const percentageChange = calculatePercentageChange(
+                  product.price,
+                  product.previousPrice
+                );
+                const isPriceIncreased = percentageChange > 0;
+                const isPriceDecreased = percentageChange < 0;
+                return (
+                  <tr key={product.id} className="hover:bg-gray-100">
+                    <td className="border px-4 py-2">{product.name}</td>
+                    <td className="border px-4 py-2">
+                      Ugx {product.price.toLocaleString()}
+                    </td>
+                    <td className="border px-4 py-2">{product.unit}</td>
+                    <td className="border px-4 py-2">
+                      {isPriceIncreased ? (
+                        <span className="text-green-500">↑</span>
+                      ) : isPriceDecreased ? (
+                        <span className="text-red-500">↓</span>
+                      ) : (
+                        <span className="text-gray-500">↔</span>
+                      )}
+                    </td>
+                    <td
+                      className={`border px-4 py-2 ${
+                        isPriceIncreased
+                          ? "text-green-500"
+                          : isPriceDecreased
+                          ? "text-red-500"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      {percentageChange.toFixed(2)}%
+                    </td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </div>
       <div className="w-full flex justify-between my-10">
         <Button onClick={handlePrevClick}>Previous</Button>
         <p className="flex items-center">
-          Showing {page * rowsPerPage} to {page * rowsPerPage + rowsPerPage} of{" "}
-          {products.length}
+          Showing {page * rowsPerPage + 1} to{" "}
+          {Math.min((page + 1) * rowsPerPage, filteredProducts.length)} of{" "}
+          {filteredProducts.length}
         </p>
         <Button onClick={handleNextClick}>Next</Button>
       </div>
