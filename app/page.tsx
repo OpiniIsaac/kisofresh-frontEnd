@@ -22,7 +22,6 @@ export default function page() {
       <Hero />
       <About />
       <Benefits/>
-      <SignUpPrompt/>
       <NewsLetter />
     </>
   );

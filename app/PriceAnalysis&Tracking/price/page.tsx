@@ -7,28 +7,52 @@ export default function ProductTable() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Dummy data//👌understood
+  // Dummy data
   const products = [
-    { id: 1, name: "Apple", price: 1000, unit: "kg" },
-    { id: 2, name: "Banana", price: 7500, unit: "kg" },
-    { id: 3, name: "Carrot", price: 500, unit: "kg" },
-    { id: 4, name: "Potato", price: 600, unit: "kg" },
-    { id: 5, name: "Tomato", price: 800, unit: "kg" },
-    { id: 6, name: "Cherry", price: 1500, unit: "kg" },
-    { id: 7, name: "Guava", price: 950, unit: "kg" },
-    { id: 8, name: "Sweet potato", price: 500, unit: "kg" },
-    { id: 9, name: "Irish Potato", price: 600, unit: "kg" },
-    { id: 10, name: "Egg plant", price: 800, unit: "kg" },
-    { id: 11, name: "Cereal", price: 1500, unit: "kg" },
-    { id: 12, name: "Star fruit", price: 7500, unit: "kg" },
-    { id: 13, name: "Soy", price: 5000, unit: "kg" },
-    { id: 14, name: "bean", price: 600, unit: "kg" },
-    { id: 15, name: "Small Tomato", price: 800, unit: "kg" },
-    { id: 16, name: "Big Cherry", price: 1500, unit: "kg" },
-    { id: 17, name: "Guava Tropical", price: 7500, unit: "kg" },
-    { id: 18, name: "Dates", price: 500, unit: "kg" },
-    { id: 19, name: "Rice", price: 600, unit: "kg" },
-    { id: 20, name: "Peas", price: 800, unit: "kg" },
+    { id: 1, name: "Apple", price: 1000, unit: "kg", previousPrice: 900 },
+    { id: 2, name: "Banana", price: 8000, unit: "kg", previousPrice: 7000 },
+    { id: 3, name: "Carrot", price: 300, unit: "kg", previousPrice: 450 },
+    { id: 4, name: "Potato", price: 500, unit: "kg", previousPrice: 550 },
+    { id: 5, name: "Tomato", price: 800, unit: "kg", previousPrice: 750 },
+    { id: 6, name: "Cherry", price: 1350, unit: "kg", previousPrice: 1400 },
+    { id: 7, name: "Guava", price: 950, unit: "kg", previousPrice: 900 },
+    { id: 8, name: "Sweet potato", price: 500, unit: "kg", previousPrice: 450 },
+    { id: 9, name: "Irish Potato", price: 320, unit: "kg", previousPrice: 550 },
+    { id: 10, name: "Egg plant", price: 800, unit: "kg", previousPrice: 750 },
+    { id: 11, name: "Cereal", price: 1500, unit: "kg", previousPrice: 1400 },
+    {
+      id: 12,
+      name: "Star fruit",
+      price: 7500,
+      unit: "kg",
+      previousPrice: 7000,
+    },
+    { id: 13, name: "Soy", price: 5000, unit: "kg", previousPrice: 4500 },
+    { id: 14, name: "bean", price: 600, unit: "kg", previousPrice: 550 },
+    {
+      id: 15,
+      name: "Small Tomato",
+      price: 800,
+      unit: "kg",
+      previousPrice: 750,
+    },
+    {
+      id: 16,
+      name: "Big Cherry",
+      price: 1300,
+      unit: "kg",
+      previousPrice: 1400,
+    },
+    {
+      id: 17,
+      name: "Guava Tropical",
+      price: 7500,
+      unit: "kg",
+      previousPrice: 7000,
+    },
+    { id: 18, name: "Dates", price: 500, unit: "kg", previousPrice: 450 },
+    { id: 19, name: "Rice", price: 600, unit: "kg", previousPrice: 950 },
+    { id: 20, name: "Peas", price: 800, unit: "kg", previousPrice: 750 },
   ];
 
   const filteredProducts = products.filter((product) =>
@@ -54,6 +78,16 @@ export default function ProductTable() {
   const handlePrevClick = () => {
     page === 0 ? setPage(0) : setPage(page - 1);
   };
+
+  const calculatePercentageChange = (
+    currentPrice: number,
+    previousPrice: number
+  ) => {
+    const change = currentPrice - previousPrice;
+    const percentage = (change / previousPrice) * 100;
+    return percentage;
+  };
+
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
@@ -76,7 +110,7 @@ export default function ProductTable() {
               <th className="px-4 py-2">Price</th>
               <th className="px-4 py-2">Unit</th>
               <th className="px-4 py-2">Indicator</th>
-           
+              <th className="px-4 py-2">Change</th>
             </tr>
           </thead>
           <tbody>
@@ -90,14 +124,17 @@ export default function ProductTable() {
                   </td>
                   <td className="border px-4 py-2">{product.unit}</td>
                   <td className="border px-4 py-2">
-                    {Math.random() > 0.5 ? (
-                      <span className="text-green-500">↑</span>
-                    ) : (
-                      <span className="text-red-500">↓</span>
-                    )}
-                  </td>
-                
-                 
+  {calculatePercentageChange(product.price, product.previousPrice) > 0? (
+    <span className="text-green-500">↑</span>
+  ) : calculatePercentageChange(product.price, product.previousPrice) < 0? (
+    <span className="text-red-500">↓</span>
+  ) : (
+    <span className="text-gray-500">%</span>
+  )}
+</td>
+<td className="border px-4 py-2">
+  {calculatePercentageChange(product.price, product.previousPrice).toFixed(2)}%
+</td>
                 </tr>
               ))}
           </tbody>
