@@ -7,14 +7,14 @@ export default function About() {
   return (
     <section className="bg-blue-500/10">
       <Container>
-        <div className="flex justify-between w-full px-4 md:">
-          <div className="w-[700px] flex flex-col justify-center h-[600px]">
+        <div className="flex flex-col md:flex-row justify-between w-full px-4 md:px-10">
+          <div className="w-full md:w-1/2 flex flex-col justify-center h-[600px]">
             <h1 className={`font-extrabold text-4xl ${hedvig.className}`}>What is KisoIndex?</h1>
             <br />
             <div className="">
               <Image
                 src="/images/Logo.png"
-                alt=""
+                alt="KisoIndex Logo"
                 width={1000}
                 height={1000}
                 className="w-48 md:w-96 mx-auto md:me-10 block md:hidden"
@@ -22,13 +22,14 @@ export default function About() {
             </div>
             <br />
             <p className={outfit.className}>
-            Our innovative KisoIndex platform is transforming the agricultural landscape in Africa by empowering both farmers and traders with the tools they need to thrive
+              Our innovative KisoIndex platform is transforming the agricultural landscape in Africa by empowering both farmers and traders with the tools they need to thrive.
             </p>
+           
           </div>
-          <div className="flex flex-col justify-center">
+          <div className="w-full md:w-1/2 flex flex-col justify-center">
             <Image
               src="/images/Logo.png"
-              alt=""
+              alt="KisoIndex Logo"
               width={1000}
               height={1000}
               className="w-96 me-10 hidden md:block"

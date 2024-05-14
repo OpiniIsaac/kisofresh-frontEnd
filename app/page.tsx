@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { signOut } from "firebase/auth";
 import { auth } from "./firebase/config";
 import SignUpPrompt from "@/components/Register";
+import Benefits from "@/components/Benefits";
 
 export default function page() {
   const islogged = useSelector((state: RootState) => state.LoginState.value);
@@ -20,6 +21,7 @@ export default function page() {
     <>
       <Hero />
       <About />
+      <Benefits/>
       <SignUpPrompt/>
       <NewsLetter />
     </>
