@@ -18,26 +18,25 @@ import { Login } from "@/lib/features/accountHandle/loginSlice";
 export default function CropInterestForm() {
   const [user] = useAuthState(auth);
   const router = useRouter();
-  const dispatch =  useDispatch();
+  const dispatch = useDispatch();
   if (!user) {
     router.push("/login");
   } else {
-    console.log(user)
-    dispatch(Login())
+    console.log(user);
+    dispatch(Login());
     interface Farmer {
       _id: string;
-      "Farm Code": string;
-      "Family Name": string;
-      "Christian Name": string;
-      "Phone Number": number;
+      familyName: string;
+      otherName: string;
+      PhoneNumber: number;
       Districk: string;
       Subcounty: string;
       Village: string;
-      "Acres for Cotton": number;
+      AcresCultivation: number;
       "Yield Estimation ": {
         result: number;
       };
-      "Crop Type": string;
+      CropType: string;
       Country: string;
       Region: string;
     }
@@ -314,27 +313,29 @@ export default function CropInterestForm() {
                   >
                     <option value="">--Please choose an option--</option>
                     <option value="cotton">Cotton</option>
-                    <option value="Wheat">Wheat</option>
+                    <option value="Cocoa">Cocoa</option>
                     <option value="Maize">Maize</option>
                   </select>
                 </div>
                 {/* Quantity input */}
-                <div className="mb-4">
-                  <label
-                    className="block text-gray-700 text-sm font-bold mb-2"
-                    htmlFor="quantity"
-                  >
-                    Quantity(tons)
-                  </label>
-                  <input
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="quantity"
-                    type="number"
-                    placeholder="Enter quantity"
-                    value={quantity}
-                    onChange={(e) => setQuantity(parseFloat(e.target.value))}
-                  />
-                </div>
+                {cropType === "cotton" && (
+                  <div className="mb-4">
+                    <label
+                      className="block text-gray-700 text-sm font-bold mb-2"
+                      htmlFor="quantity"
+                    >
+                      Quantity(tons)
+                    </label>
+                    <input
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      id="quantity"
+                      type="number"
+                      placeholder="Enter quantity"
+                      value={quantity}
+                      onChange={(e) => setQuantity(parseFloat(e.target.value))}
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Submit button */}
@@ -346,7 +347,7 @@ export default function CropInterestForm() {
             </form>
           </div>
           <LoadingIndicator />
-          {(
+          {
             <div className=" bg-blue-500/5 overflow-auto px-4 border rounded-md mb-10">
               <h2 className="text-2xl font-bold mb-4 pt-20">
                 Farmers Matching Criteria:
@@ -361,8 +362,7 @@ export default function CropInterestForm() {
                       >
                         Name
                       </th>
-                     
-                     
+
                       <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -410,10 +410,10 @@ export default function CropInterestForm() {
                       .map((farmer, index) => (
                         <tr key={index}>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {farmer["Family Name"] + "" + farmer["Family Name"] }
+                            {farmer["familyName"] + "" + farmer["familyName"]}
                           </td>
-                        
-                             <td className="px-6 py-4 whitespace-nowrap">
+
+                          <td className="px-6 py-4 whitespace-nowrap">
                             {farmer.Districk}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
@@ -423,14 +423,16 @@ export default function CropInterestForm() {
                             {farmer.Village}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {farmer["Acres for Cotton"]}
+                            {farmer["AcresCultivation"]}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             {farmer["Yield Estimation "].result}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <Button>
-                              <Link href="/SourceProduce/Form">Request Quote</Link>
+                              <Link href="/SourceProduce/Form">
+                                Request Quote
+                              </Link>
                             </Button>
                           </td>
                         </tr>
@@ -439,7 +441,7 @@ export default function CropInterestForm() {
                 </table>
               </div>
             </div>
-          )}
+          }
           <div
             className={`${
               hasLoaded ? "flex justify-between my-4 px-4" : "hidden"
