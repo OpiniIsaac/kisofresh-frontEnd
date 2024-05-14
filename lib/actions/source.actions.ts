@@ -53,18 +53,10 @@ export async function fetchFarmersByCriteria({
     await client.connect();
     console.log("Connected to MongoDB");
 
-    const db = client.db("kisofreshTest");
-    const collection = db.collection("farmersTest");
+    const db = client.db("datasetTwo");
+    const collection = db.collection("famers");
 
-    // Construct the query based on the provided criteria
-    const query = {
-      //   Country: "Uganda",
-      // region: region,
-      // Assuming the crop type is stored in a field named 'Crop Type'
-      // 'Crop Type': cropType,
-      // // Adjusted to filter based on 'Yield Estimation' object's 'result'
-      // 'Yield Estimation.result': { $gte: quantity }
-    };
+ 
 
     // Fetch documents matching the criteria
     const cursor = collection
