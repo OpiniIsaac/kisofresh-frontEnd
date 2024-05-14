@@ -359,20 +359,10 @@ export default function CropInterestForm() {
                         scope="col"
                         className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
-                        Surname
+                        Name
                       </th>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        First Name
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Phone Number
-                      </th>
+                     
+                     
                       <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -420,24 +410,10 @@ export default function CropInterestForm() {
                       .map((farmer, index) => (
                         <tr key={index}>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {farmer["Family Name"]}
+                            {farmer["Family Name"] + "" + farmer["Family Name"] }
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {farmer["Christian Name"]}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {showPhone ? (
-                              <a href={`tel:${farmer["Phone Number"]}`}>
-                                {farmer["Phone Number"]}
-                                <i className="fas fa-phone-alt"></i>
-                              </a>
-                            ) : (
-                              <button onClick={handleTogglePhone}>
-                                <i className="fas fa-eye"></i> View Phone Number
-                              </button>
-                            )}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                        
+                             <td className="px-6 py-4 whitespace-nowrap">
                             {farmer.Districk}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
