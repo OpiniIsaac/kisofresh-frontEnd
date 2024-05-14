@@ -26,7 +26,9 @@ export default function Benefits() {
           <p>
             Weather Analysis: Make informed planting decisions with KisoIndex's advanced weather forecasting. Predict weather patterns and optimize planting seasons for maximum yield.
           </p>
+          <Link href='PriceAnalysis&Tracking/weather'>
           <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Learn More</button>
+          </Link>
         </div>
       </div>
       <div className="w-full md:w-1/2 lg:w-1/3 p-4">
@@ -35,7 +37,9 @@ export default function Benefits() {
           <p>
             Price Index: Gain valuable insights into domestic and international market trends with our comprehensive price index. KisoIndex empowers farmers to make strategic planting choices and informs traders of potential market opportunities.
           </p>
+          <Link href='PriceAnalysis&Tracking/price'>
           <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Learn More</button>
+          </Link>
         </div>
       </div>
     </div>
