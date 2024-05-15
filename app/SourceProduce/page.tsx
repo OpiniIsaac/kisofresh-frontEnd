@@ -316,7 +316,8 @@ console.log(response)
                     <option value="">--Please choose an option--</option>
                     <option value="cotton">Cotton</option>
                     <option value="Cocoa">Cocoa</option>
-                    <option value="Maize">Maize</option>
+                    <option value="Robusta">Robusta</option>
+                    <option value="Arabic">Arabic</option>
                   </select>
                 </div>
                 {/* Quantity input */}
@@ -403,7 +404,7 @@ console.log(response)
                       </th>
                     </tr>
                   </thead>
-                  {/* <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-white divide-y divide-gray-200">
                     {farmers
                       .slice(
                         page * rowsPerPage,
@@ -428,8 +429,8 @@ console.log(response)
                             {farmer["AcresCultivation"]}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {farmer["YieldEstimation "].result}
-                          </td>
+  {cropType === "cotton" ? farmer["YieldEstimation "].result : "-"}
+</td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <Button>
                               <Link href="/SourceProduce/Form">
@@ -439,7 +440,7 @@ console.log(response)
                           </td>
                         </tr>
                       ))}
-                  </tbody> */}
+                  </tbody>
                 </table>
               </div>
             </div>
@@ -449,13 +450,13 @@ console.log(response)
               hasLoaded ? "flex justify-between my-4 px-4" : "hidden"
             }`}
           >
-            {/* <Button onClick={handlePrevClick}>Previous</Button>
+            <Button onClick={handlePrevClick}>Previous</Button>
             <p className="flex items-center">
               Showing {page * rowsPerPage + 1} to{" "}
               {Math.min((page + 1) * rowsPerPage, farmers.length)} of{" "}
               {farmers.length}
             </p>
-            <Button onClick={handleNextClick}>Next</Button> */}
+            <Button onClick={handleNextClick}>Next</Button>
           </div>
         </section>
       </Container>
