@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   fetchFarmersByCriteria,
-  fetchUploadedData,
+  // fetchUploadedData,
 } from "@/lib/actions/source.actions";
 import React from "react";
 import Container from "@/components/Container";
@@ -17,6 +17,7 @@ import { Login } from "@/lib/features/accountHandle/loginSlice";
 
 export default function CropInterestForm() {
   const [user] = useAuthState(auth);
+  
   const router = useRouter();
   const dispatch = useDispatch();
   if (!user) {
@@ -33,7 +34,7 @@ export default function CropInterestForm() {
       Subcounty: string;
       Village: string;
       AcresCultivation: number;
-      "Yield Estimation ": {
+      "YieldEstimation ": {
         result: number;
       };
       CropType: string;
@@ -114,7 +115,8 @@ export default function CropInterestForm() {
           cropType,
           quantity,
         });
-
+      //  const response = await fetchUploadedData()
+console.log(response)
         console.log(country, region, cropType, quantity);
         setFarmers(response);
         SetIsLoading(false);
@@ -401,7 +403,7 @@ export default function CropInterestForm() {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  {/* <tbody className="bg-white divide-y divide-gray-200">
                     {farmers
                       .slice(
                         page * rowsPerPage,
@@ -426,7 +428,7 @@ export default function CropInterestForm() {
                             {farmer["AcresCultivation"]}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {farmer["Yield Estimation "].result}
+                            {farmer["YieldEstimation "].result}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <Button>
@@ -437,7 +439,7 @@ export default function CropInterestForm() {
                           </td>
                         </tr>
                       ))}
-                  </tbody>
+                  </tbody> */}
                 </table>
               </div>
             </div>
@@ -447,13 +449,13 @@ export default function CropInterestForm() {
               hasLoaded ? "flex justify-between my-4 px-4" : "hidden"
             }`}
           >
-            <Button onClick={handlePrevClick}>Previous</Button>
+            {/* <Button onClick={handlePrevClick}>Previous</Button>
             <p className="flex items-center">
               Showing {page * rowsPerPage + 1} to{" "}
               {Math.min((page + 1) * rowsPerPage, farmers.length)} of{" "}
               {farmers.length}
             </p>
-            <Button onClick={handleNextClick}>Next</Button>
+            <Button onClick={handleNextClick}>Next</Button> */}
           </div>
         </section>
       </Container>

@@ -1,35 +1,35 @@
 "use server";
 const { MongoClient } = require("mongodb");
 
-export async function fetchUploadedData() {
-  const uri =
-    "mongodb+srv://isaacopini8:cool@data.17kkyxj.mongodb.net/Cotton?retryWrites=true&w=majority";
-  const client = new MongoClient(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+// export async function fetchUploadedData() {
+//   const uri =
+//     "mongodb+srv://isaacopini8:cool@data.17kkyxj.mongodb.net/Cotton?retryWrites=true&w=majority";
+//   const client = new MongoClient(uri, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   });
 
-  try {
-    await client.connect();
-    console.log("Connected to MongoDB");
+//   try {
+//     await client.connect();
+//     console.log("Connected to MongoDB");
 
-    const db = client.db("Cotton");
-    const collection = db.collection("cotton-farmers");
+//     const db = client.db('DatasetTwo');
+//     const collection = db.collection('farmers');
 
-    // Fetch all documents
-    const cursor = collection.find({});
+//     // Fetch all documents
+//     const cursor = collection.find({}).limit(10);
 
-    // Convert cursor to array of documents
-    const documents = await cursor.toArray();
+//     // Convert cursor to array of documents
+//     const documents = await cursor.toArray();
 
-    console.log("Uploaded Data:", documents);
-    return documents;
-  } catch (error) {
-    console.error("Error fetching uploaded data:", error);
-  } finally {
-    await client.close();
-  }
-}
+//     console.log("Uploaded Data:", documents);
+//     return documents;
+//   } catch (error) {
+//     console.error("Error fetching uploaded data:", error);
+//   } finally {
+//     await client.close();
+//   }
+// }
 
 export async function fetchFarmersByCriteria({
   country,
@@ -53,23 +53,22 @@ export async function fetchFarmersByCriteria({
     await client.connect();
     console.log("Connected to MongoDB");
 
-    const db = client.db("datasetTwo");
-    const collection = db.collection("famers");
+    const db = client.db('DatasetTwo');
+    const collection = db.collection('farmers');
 
- 
-
+  
     // Fetch documents matching the criteria
     const cursor = collection
     .find({
       'Country ': country,
       $or: [
-        { 'Yield Estimation .result': { $exists: false } }, 
-        { 'Yield Estimation .result': { $gte: quantity } } 
+        { 'YieldEstimation .result': { $exists: false } }, 
+        { 'YieldEstimation .result': { $gte: quantity } }  
       ],
       Region: region,
-      "Crop Type": cropType
-    }).sort({ 'Yield Estimation .result': 1 });
-  
+      CropType: cropType
+    });
+      
 
     // Convert cursor to array of documents
     const documents = await cursor.toArray();
