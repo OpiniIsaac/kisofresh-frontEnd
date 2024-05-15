@@ -413,7 +413,7 @@ console.log(response)
                       .map((farmer, index) => (
                         <tr key={index}>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {farmer["familyName"] + "" + farmer["familyName"]}
+                            {farmer["familyName"] + "  " +" " + farmer["otherName"]}
                           </td>
 
                           <td className="px-6 py-4 whitespace-nowrap">
