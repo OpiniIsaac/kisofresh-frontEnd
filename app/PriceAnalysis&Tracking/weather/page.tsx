@@ -30,7 +30,7 @@ interface WeatherData {
 
 export default function Page() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
-  const [city, setCity] = useState("Kampala");
+  const [city, setCity] = useState("");
 
   async function fetchData(cityName: string) {
     try {
@@ -138,13 +138,16 @@ export default function Page() {
               className="flex w-full"
             >
               <input
-                className="border border-gray-300 rounded-l p-2 w-full"
+                className="border border-gray-300 rounded-md p-2 me-4 w-full"
                 type="text"
-                placeholder="Enter city name"
+                placeholder="Search city?"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
               />
-              <Button type="submit" className="rounded-r bg-blue-500 text-white px-4 py-2">
+              <Button
+                type="submit"
+                className="rounded-r bg-blue-500 text-white px-4 py-2"
+              >
                 Search
               </Button>
             </form>
@@ -152,23 +155,34 @@ export default function Page() {
           {weatherData && (
             <>
               <div className="bg-white shadow-lg rounded-lg p-6 mb-4 text-center">
-                <div className="text-3xl font-bold mb-4">{weatherData.city.name}</div>
+                <div className="text-3xl font-bold mb-4">
+                  {weatherData.city.name}
+                </div>
                 {WeatherSelector(0)}
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {groupedForecasts.map((dayForecast, index) => (
-                  <div key={index} className="bg-white shadow-lg rounded-lg p-4">
+                  <div
+                    key={index}
+                    className="bg-white shadow-lg rounded-lg p-4"
+                  >
                     <h3 className="text-xl font-bold mb-2">
-                      {format(parseISO(dayForecast[0].dt_txt.split(" ")[0]), "PPP")}
+                      {format(
+                        parseISO(dayForecast[0].dt_txt.split(" ")[0]),
+                        "PPP"
+                      )}
                     </h3>
                     {dayForecast.map((forecast, idx) => {
                       const time = format(parseISO(forecast.dt_txt), "p");
                       const description = forecast.weather[0].description;
                       const temp = forecast.main.temp.toFixed(1);
                       const icon = getWeatherIcon(forecast.weather[0].main);
-  
+
                       return (
-                        <div key={idx} className="flex justify-between items-center mb-2">
+                        <div
+                          key={idx}
+                          className="flex justify-between items-center mb-2"
+                        >
                           <span className="text-sm">{time}</span>
                           <span className="text-2xl mr-2">{icon}</span>
                           <span className="text-sm">{description}</span>

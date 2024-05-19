@@ -7,8 +7,8 @@ export default function About() {
   return (
     <section className="bg-blue-500/10">
       <Container>
-        <div className="flex flex-col md:flex-row justify-between w-full px-4 md:px-10">
-          <div className="w-full md:w-1/2 flex flex-col justify-center h-[600px]">
+        <div className="flex flex-col md:flex-row justify-between w-full px-4 md:px-0">
+          <div className="w-full md:w-1/2 flex flex-col justify-center h-[550px]">
             <h1 className={`font-extrabold text-4xl ${hedvig.className}`}>What is KisoIndex?</h1>
             <br />
             <div className="">
@@ -22,11 +22,11 @@ export default function About() {
             </div>
             <br />
             <p className={outfit.className}>
-              Our innovative KisoIndex platform is transforming the agricultural landscape in Africa by empowering both farmers and traders with the tools they need to thrive.
+               KisoIndex is a modern data-driven platform for transforming the agricultural landscape in Africa by empowering both farmers and traders with knowledge and opportunity to thrive in a world driven by technology.
             </p>
            
           </div>
-          <div className="w-full md:w-1/2 flex flex-col justify-center">
+          <div className="flex flex-col justify-center">
             <Image
               src="/images/Logo.png"
               alt="KisoIndex Logo"

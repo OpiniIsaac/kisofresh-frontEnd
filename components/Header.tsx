@@ -19,7 +19,7 @@ import { Divide } from "lucide-react";
 import { auth } from "@/app/firebase/config";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { outfit } from "./Fonts";
+import { hedvig, outfit } from "./Fonts";
 
 interface NavLink {
   title: string;
@@ -76,7 +76,7 @@ export default function Header() {
   return (
     <div>
       <header
-        className={`"absolute z-10 w-full fixed py-4 top-0 left-0 text-black border border-black" ${
+        className={`"absolute z-10 w-full fixed  top-0 left-0 text-black border border-black" ${
           isScrolled ? "bg-blue-500 border border-blue-500" : "bg-white"
         }`}
       >
@@ -84,16 +84,16 @@ export default function Header() {
           <div className="flex justify-between">
             <Link
               href="/"
-              className={`"border h-10mb-0 text-blue-500 font-extrabold ps-4" ${
+              className={`text-blue-500 font-extrabold ps-4 transition-all ease-in-out ${
                 isScrolled
-                  ? "text-white text-4xl ps-4"
-                  : "text-blue-500 text-4xl ps-4"
-              }`}
+                  ? "text-white text-4xl py-1"
+                  : "text-blue-500 text-4xl py-4 "
+              } ${hedvig.className}`}
             >
               KisoIndex
             </Link>
 
-            <div className="flex gap-20 items-center">
+            <div className="flex gap-20 items-center ">
               <nav className="flex gap-10 text-sm">
                 {NavLinks.map((item) => (
                   <Link
@@ -162,59 +162,61 @@ export default function Header() {
                   </Link>
                 </div>
               )}
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="outline-none">
-                    <IoIosMenu
-                      className={`${
-                        isScrolled
-                          ? "md:hidden mr-4 text-4xl text-white"
-                          : "block md:hidden mr-4 text-4xl"
-                      }`}
-                    />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="flex flex-col justify-between px-4 h-96 w-72 py-4">
-                  <div>
-                    <Link href="/">
-                      <Button
-                        className={clsx(
-                          "bg-blue-500/5 w-full mt-4 mb-3 text-black justify-start hover:bg-blue-500 font-semibold text-lg hover:text-white",
-                          { "bg-blue-500 text-white": pathname === "/" }
-                        )}
-                      >
-                        Home
-                      </Button>
-                    </Link>
-                    {NavLinks.map((item) => (
-                      <Link key={item.title} href={item.route}>
+              <div className="md:absolute">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="outline-none">
+                      <IoIosMenu
+                        className={`${
+                          isScrolled
+                            ? "md:hidden mr-4 text-4xl text-white"
+                            : "block md:hidden mr-4 text-4xl"
+                        }`}
+                      />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="flex flex-col justify-between px-4 h-96 w-72 py-4">
+                    <div>
+                      <Link href="/">
                         <Button
                           className={clsx(
-                            "bg-blue-500/5 w-full my-3 text-black justify-start hover:bg-blue-500 font-semibold text-lg hover:text-white",
-                            {
-                              "bg-blue-500 text-white": pathname === item.route,
-                            }
+                            "bg-blue-500/5 w-full mt-4 mb-3 text-black justify-start hover:bg-blue-500 font-semibold text-lg hover:text-white",
+                            { "bg-blue-500 text-white": pathname === "/" }
                           )}
                         >
-                          {item.title}
+                          Home
                         </Button>
                       </Link>
-                    ))}
-                  </div>
-                  <Link href="/sign-up" className="flex justify-end my-4 ">
-                    <Button
-                      onClick={
-                        islogged
-                          ? () => dispatch(Logout())
-                          : () => dispatch(Login())
-                      }
-                    >
-                      {islogged ? <div>Logout</div> : <div>SignUp</div>}
-                    </Button>
-                  </Link>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                      {NavLinks.map((item) => (
+                        <Link key={item.title} href={item.route}>
+                          <Button
+                            className={clsx(
+                              "bg-blue-500/5 w-full my-3 text-black justify-start hover:bg-blue-500 font-semibold text-lg hover:text-white",
+                              {
+                                "bg-blue-500 text-white":
+                                  pathname === item.route,
+                              }
+                            )}
+                          >
+                            {item.title}
+                          </Button>
+                        </Link>
+                      ))}
+                    </div>
+                    <Link href="/sign-up" className="flex justify-end my-4 ">
+                      <Button
+                        onClick={
+                          islogged
+                            ? () => dispatch(Logout())
+                            : () => dispatch(Login())
+                        }
+                      >
+                        {islogged ? <div>Logout</div> : <div>SignUp</div>}
+                      </Button>
+                    </Link>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
           </div>
         </Container>
