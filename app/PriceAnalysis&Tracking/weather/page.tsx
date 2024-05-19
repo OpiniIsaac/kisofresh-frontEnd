@@ -24,6 +24,7 @@ export default function Page() {
   async function fetchData(cityName: string) {
     try {
       const response = await fetch(`http://localhost:3000/api/weather?address=${cityName}`);
+       
       const jsonData: WeatherData = await response.json();
       setWeatherData(jsonData);
     } catch (error) {
@@ -34,7 +35,9 @@ export default function Page() {
   async function fetchDataByCoordinates(latitude: number, longitude: number) {
     try {
       const response = await fetch(`http://localhost:3000/api/weather?lat=${latitude}&lon=${longitude}`);
+      console.log(`the waeather data being is ${response}`);
       const jsonData: WeatherData = await response.json();
+      console.log(`the waeather data being is ${jsonData}`);
       setWeatherData(jsonData);
     } catch (error) {
       console.error(error);
@@ -73,10 +76,10 @@ export default function Page() {
     }
 
     return (
-      <div>
-        <div>{time}</div>
-        <div>{weather}</div>
-        <div>{selection}</div>
+      <div className="flex items-center justify-between">
+        <div className="text-sm text-gray-600">{time}</div>
+        <div className="text-lg">{selection}</div>
+        <div className="text-sm text-gray-600">{weather}</div>
       </div>
     );
   }
@@ -100,38 +103,39 @@ export default function Page() {
   const groupedForecasts = groupForecastsByDay(weatherData);
 
   return (
-    <section className="h-[500px]">
-      <div className="h-full flex flex-col justify-between">
-        <div className="pt-4 flex justify-end me-4">
+    <section className="min-h-screen bg-gray-100 flex flex-col items-center">
+      <div className="max-w-4xl w-full mx-auto p-4">
+        <div className="w-full flex justify-between items-center mb-4">
           <form onSubmit={(e) => {
             e.preventDefault();
             fetchData(city);
-          }}>
+          }} className="flex">
             <input
-              className="border border-gray-300 rounded p-2 w-52 md:w-96 me-4"
+              className="border border-gray-300 rounded-l p-2 w-52 md:w-96"
               type="text"
               placeholder="Search city"
               value={city}
               onChange={(e) => setCity(e.target.value)}
             />
-            <Button type="submit">Search</Button>
+            <Button type="submit" className="rounded-r">Search</Button>
           </form>
         </div>
-        <div className="text-4xl ps-4">{weatherData?.city?.name}</div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-          <div className="col-span-1 border border-t-0 border-b-0 border-e-0 w-full p-2 m-2 bg-white shadow-sm rounded-lg">
-            {WeatherSelector(0)}
-          </div>
-          {groupedForecasts.map((dayForecast, index) =>
-            <div key={index} className="border border-t-0 border-b-0 border-e-0 w-full p-2 m-2 bg-white shadow-sm rounded-lg">
-              <h3 className="text-xl mb-2">{dayForecast[0].dt_txt.split(' ')[0]}</h3>
+        <div className="bg-white shadow-lg rounded-lg p-6 mb-4">
+          <div className="text-2xl font-bold text-center mb-2">{weatherData?.city?.name}</div>
+          <div className="text-center text-xl mb-4">{WeatherSelector(0)}</div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {groupedForecasts.map((dayForecast, index) => (
+            <div key={index} className="bg-white shadow-lg rounded-lg p-4">
+              <h3 className="text-lg font-bold mb-2">{dayForecast[0].dt_txt.split(' ')[0]}</h3>
               {dayForecast.map((forecast, idx) => (
-                <div key={idx}>
-                  <p>{forecast.dt_txt}: {forecast.weather[0].description}</p>
+                <div key={idx} className="flex justify-between items-center mb-2">
+                  <span className="text-sm">{forecast.dt_txt}</span>
+                  <span className="text-sm">{forecast.weather[0].description}</span>
                 </div>
               ))}
             </div>
-          )}
+          ))}
         </div>
       </div>
     </section>
