@@ -1,58 +1,62 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import React, { useEffect, useState } from "react";
+"use client"
+import React, { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
 
-export default function page() {
-  const [weatherData, setWeatherData] = useState<any>(null);
-  const [city, setCity] = useState("Kampala");
+interface Weather {
+  description: string;
+  main: string;
+}
+
+interface WeatherData {
+  city: {
+    name: string;
+  };
+  list: {
+    dt_txt: string;
+    weather: Weather[];
+  }[];
+}
+
+export default function Page() {
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+  const [city, setCity] = useState('Kampala');
 
   async function fetchData(cityName: string) {
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/weather?address=" + cityName
-      );
-      const jsonData = await response.json();
+      const response = await fetch(`http://localhost:3000/api/weather?address=${cityName}`);
+      const jsonData: WeatherData = await response.json();
       setWeatherData(jsonData);
-      console.log(response);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
   async function fetchDataByCoordinates(latitude: number, longitude: number) {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/weather?lat=${latitude}&lon=${longitude}`
-      );
-      const jsonData = await response.json();
+      const response = await fetch(`http://localhost:3000/api/weather?lat=${latitude}&lon=${longitude}`);
+      const jsonData: WeatherData = await response.json();
       setWeatherData(jsonData);
-      console.log(response);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
   useEffect(() => {
-    if("geolocation" in navigator){
-      navigator.geolocation.getCurrentPosition((position) =>{
-        const {latitude, longitude} = position.coords;
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
         fetchDataByCoordinates(latitude, longitude);
-      }, (error) =>{
-        console.log(error);
-      })
+      }, (error) => {
+        console.error(error);
+      });
     }
   }, []);
 
   function WeatherSelector(index: number) {
-    var time: string = weatherData?.list?.[index]?.dt_txt;
-    var weather: string = weatherData?.list?.[index]?.weather?.[0]?.description;
-    var icon: string = weatherData?.list?.[index]?.weather?.[0]?.main;
-    var selection: string = "❌";
-
-    {
-      /*Weather conditions that are returned by open weather
-      Clear,Clouds,Rain,Snow,Mist,Smoke,Haze,Dust,Sand/Dust Whirls,Fog,Volcanic,Squalls,Tornado,Showers,Thunderstorm,Extreme Cold,Hot,Windy,Windy with Clear Sky,Additional   Mist, Squalls, etc. */
-    }
+    const time = weatherData?.list[index]?.dt_txt;
+    const weather = weatherData?.list[index]?.weather[0]?.description;
+    const icon = weatherData?.list[index]?.weather[0]?.main;
+    let selection = "❌";
 
     if (icon === "Rain") {
       selection = "🌧️";
@@ -77,62 +81,59 @@ export default function page() {
     );
   }
 
-  const weatherSections: any[] = [
-    { index: 0 },
-    { index: 2 },
-    { index: 3 },
-    { index: 4 },
-    { index: 5 },
-    { index: 6 },
-    { index: 7 },
-    { index: 8 },
-    { index: 9 },
-    { index: 10 },
-    { index: 11 },
-    { index: 12 },
-    { index: 13 },
-    { index: 14 },
-    { index: 15 },
-    { index: 16 },
-    { index: 17 },
-    { index: 18 },
-    { index: 19 },
-    { index: 20 },
-    { index: 21 },
-    { index: 22 },
-    { index: 23 },
-    { index: 24 },
-    { index: 25 },
-    { index: 26 },
-    { index: 27 },
-    { index: 28 },
-    { index: 29 },
-    { index: 30 },
-    { index: 31 },
-    { index: 32 },
-    { index: 33 },
-    { index: 34 },
-    { index: 35 },
-    { index: 36 },
-    { index: 37 },
-    { index: 38 },
-    { index: 39 },
-  ];
+  function groupForecastsByDay(data: WeatherData | null) {
+    if (!data) return [];
+    const grouped: { [key: string]: { dt_txt: string; weather: Weather[] }[] } = {};
+    data.list.forEach((item) => {
+      const date = item.dt_txt.split(' ')[0];
+      if (!grouped[date]) {
+        grouped[date] = [];
+      }
+      grouped[date].push({
+        ...item,
+        dt_txt: item.dt_txt.split(' ')[1],
+      });
+    });
+    return Object.values(grouped);
+  }
+
+  const groupedForecasts = groupForecastsByDay(weatherData);
 
   return (
     <section className="h-[500px]">
-      <div className="h-full flex flex-col justify-end">
-        <div className="text-4xl ps-4">{res?.city?.name}</div>
-        <div className="p-4 pb-40 flex overflow-auto">
-          <div className="flex ">
-            {weatherSections.map(({ index }) => (
-              <div className="border border-t-0 border-b-0 border-e-0 w-36 ps-2">
-                {WeatherSelector(index)}
-              </div>
-            ))}
-          </div>
+      <div className="h-full flex flex-col justify-between">
+        <div className="pt-4 flex justify-end me-4">
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            fetchData(city);
+          }}>
+            <input
+              className="border border-gray-300 rounded p-2 w-52 md:w-96 me-4"
+              type="text"
+              placeholder="Search city"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+            />
+            <Button type="submit">Search</Button>
+          </form>
         </div>
-      )}
-    </>
+        <div className="text-4xl ps-4">{weatherData?.city?.name}</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+          <div className="col-span-1 border border-t-0 border-b-0 border-e-0 w-full p-2 m-2 bg-white shadow-sm rounded-lg">
+            {WeatherSelector(0)}
+          </div>
+          {groupedForecasts.map((dayForecast, index) =>
+            <div key={index} className="border border-t-0 border-b-0 border-e-0 w-full p-2 m-2 bg-white shadow-sm rounded-lg">
+              <h3 className="text-xl mb-2">{dayForecast[0].dt_txt.split(' ')[0]}</h3>
+              {dayForecast.map((forecast, idx) => (
+                <div key={idx}>
+                  <p>{forecast.dt_txt}: {forecast.weather[0].description}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
   );
 }
