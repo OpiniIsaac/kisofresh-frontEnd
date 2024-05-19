@@ -1,15 +1,52 @@
-//this happens on the coient
 "use client";
-import React from "react";
-import { data } from "@/lib/actions/weather";
+import { Button } from "@/components/ui/button";
+import React, { useEffect, useState } from "react";
 
-export default async function page() {
-  const res = await data;
+export default function page() {
+  const [weatherData, setWeatherData] = useState<any>(null);
+  const [city, setCity] = useState("Kampala");
+
+  async function fetchData(cityName: string) {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/weather?address=" + cityName
+      );
+      const jsonData = await response.json();
+      setWeatherData(jsonData);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function fetchDataByCoordinates(latitude: number, longitude: number) {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/weather?lat=${latitude}&lon=${longitude}`
+      );
+      const jsonData = await response.json();
+      setWeatherData(jsonData);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    if("geolocation" in navigator){
+      navigator.geolocation.getCurrentPosition((position) =>{
+        const {latitude, longitude} = position.coords;
+        fetchDataByCoordinates(latitude, longitude);
+      }, (error) =>{
+        console.log(error);
+      })
+    }
+  }, []);
 
   function WeatherSelector(index: number) {
-    var time: string = res?.list?.[index]?.dt_txt;
-    var weather: string = res?.list?.[index]?.weather?.[0]?.description;
-    var icon: string = res?.list?.[index]?.weather?.[0]?.main;
+    var time: string = weatherData?.list?.[index]?.dt_txt;
+    var weather: string = weatherData?.list?.[index]?.weather?.[0]?.description;
+    var icon: string = weatherData?.list?.[index]?.weather?.[0]?.main;
     var selection: string = "❌";
 
     {
@@ -84,8 +121,23 @@ export default async function page() {
 
   return (
     <section className="h-[500px]">
-      <div className="h-full flex flex-col justify-end">
-        <div className="text-4xl ps-4">{res?.city?.name}</div>
+      <div className="h-full flex flex-col justify-between">
+        {" "}
+        <div className="pt-4 flex justify-end me-4">
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            fetchData(city);
+          }}><input
+            className="border border-gray-300 rounded p-2 w-52 md:w-96 me-4"
+            type="text"
+            placeholder="Search products"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+          />
+          <Button type="submit">Search</Button></form>
+          
+        </div>
+        <div className="text-4xl ps-4">{weatherData?.city?.name}</div>
         <div className="p-4 pb-40 flex overflow-auto">
           <div className="flex ">
             {weatherSections.map(({ index }) => (
