@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function ProductTable() {
   const [page, setPage] = useState(0);
@@ -60,8 +60,12 @@ export default function ProductTable() {
     return percentage;
   };
 
+  
+
+  
+
   return (
-    <div className="p-4">
+    <div className="p-4 w-screen overflow-auto">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl min-w-36 font-bold">Product Table</h2>
         <div className="flex items-center">

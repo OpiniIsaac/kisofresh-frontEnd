@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import clsx from "clsx";
@@ -25,9 +25,26 @@ const buttonCollection: {key:number; title: string; route: string }[] = [
 ];
 
 export default function SideNav() {
+  const [isScrolled, setisScrolled] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrolled = window.scrollY >= 100;
+      setisScrolled(scrolled);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      if (window) {
+        window.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, []);
   const pathname = usePathname();
   return (
-    <div className="absolute md:fixed rounded-lg h-screen md:h-full w-52 my-16 flex flex-col">
+    <div
+      className={`absolute md:fixed rounded-lg h-screen md:h-full w-52 flex flex-col ${
+        isScrolled ? "my-10 transition-all ease-in-out" : "my-16"
+      }`}
+    >
       <div>
         <div className="fixed flex border w-screen justify-around bg-white py-2 md:hidden">
           {buttonCollection.map(({ title, route, key }) => (
@@ -37,7 +54,6 @@ export default function SideNav() {
                   "bg-blue-500/5 mt-2 text-black justify-start hover:bg-blue-500 font-semibold text-lg hover:text-white outline-none",
                   { "bg-blue-500 text-white": pathname === route }
                 )}
-                
               >
                 {title}
               </Button>
