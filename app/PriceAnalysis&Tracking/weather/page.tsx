@@ -72,26 +72,22 @@ export default function Page() {
   }, []);
 
   function WeatherSelector(index: number) {
-    const time = weatherData?.list[index]?.dt_txt;
-    const formattedTime = time ? format(parseISO(time), "PPP pp") : "";
-    const weather = weatherData?.list[index]?.weather[0]?.description;
-    const icon = weatherData?.list[index]?.weather[0]?.main;
-    const temp = weatherData?.list[index]?.main.temp;
+    const forecast = weatherData?.list[index];
+    const time = forecast?.dt_txt;
+    const formattedTime = time ? format(parseISO(time), "PPP p") : "";
+    const weather = forecast?.weather[0]?.description;
+    const icon = forecast?.weather[0]?.icon;
+    const temp = forecast?.main.temp.toFixed(1);
 
-    let selection = "❌";
-    if (icon === "Rain") {
-      selection = "🌧️";
-    } else if (icon === "Clouds") {
-      selection = "☁️";
-    } else if (icon === "Clear") {
-      selection = "☀️";
-    }
+    const iconUrl = `http://openweathermap.org/img/wn/${icon}.png`;
 
     return (
       <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg shadow-md">
         <div className="text-lg font-semibold text-gray-800">{formattedTime}</div>
-        <div className="text-2xl">{selection}</div>
-        <div className="text-lg font-semibold text-gray-800">{weather}</div>
+        <div className="flex items-center">
+          <img src={iconUrl} alt={weather} className="w-10 h-10 mr-2" />
+          <div className="text-lg font-semibold text-gray-800">{weather}</div>
+        </div>
         <div className="text-lg font-semibold text-gray-800">{temp}°C</div>
       </div>
     );
@@ -102,13 +98,8 @@ export default function Page() {
     const grouped: { [key: string]: { dt_txt: string; weather: Weather[]; main: Main }[] } = {};
     data.list.forEach((item) => {
       const date = item.dt_txt.split(" ")[0];
-      if (!grouped[date]) {
-        grouped[date] = [];
-      }
-      grouped[date].push({
-        ...item,
-        dt_txt: item.dt_txt,
-      });
+      if (!grouped[date]) grouped[date] = [];
+      grouped[date].push(item);
     });
     return Object.values(grouped);
   }
@@ -129,39 +120,47 @@ export default function Page() {
             <input
               className="border border-gray-300 rounded-l p-2 w-full"
               type="text"
-              placeholder="Search city"
+              placeholder="Enter city name"
               value={city}
               onChange={(e) => setCity(e.target.value)}
             />
-            <Button type="submit" className="rounded-r">
+            <Button type="submit" className="rounded-r bg-blue-500 text-white px-4 py-2">
               Search
             </Button>
           </form>
         </div>
-        <div className="bg-white shadow-lg rounded-lg p-6 mb-4">
-          <div className="text-3xl font-bold text-center mb-4">
-            {weatherData?.city?.name}
-          </div>
-          <div className="text-center text-2xl mb-4">{WeatherSelector(0)}</div>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {groupedForecasts.map((dayForecast, index) => (
-            <div key={index} className="bg-white shadow-lg rounded-lg p-4">
-              <h3 className="text-xl font-bold mb-2">
-                {format(parseISO(dayForecast[0].dt_txt.split(" ")[0]), "PPP")}
-              </h3>
-              {dayForecast.map((forecast, idx) => (
-                <div key={idx} className="flex justify-between items-center mb-2">
-                  <span className="text-sm">
-                    {format(parseISO(forecast.dt_txt), "p")}
-                  </span>
-                  <span className="text-sm">{forecast.weather[0].description}</span>
-                  <span className="text-sm">{forecast.main.temp}°C</span>
+        {weatherData && (
+          <>
+            <div className="bg-white shadow-lg rounded-lg p-6 mb-4 text-center">
+              <div className="text-3xl font-bold mb-4">{weatherData.city.name}</div>
+              {WeatherSelector(0)}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {groupedForecasts.map((dayForecast, index) => (
+                <div key={index} className="bg-white shadow-lg rounded-lg p-4">
+                  <h3 className="text-xl font-bold mb-2">
+                    {format(parseISO(dayForecast[0].dt_txt.split(" ")[0]), "PPP")}
+                  </h3>
+                  {dayForecast.map((forecast, idx) => {
+                    const time = format(parseISO(forecast.dt_txt), "p");
+                    const description = forecast.weather[0].description;
+                    const temp = forecast.main.temp.toFixed(1);
+                    const iconUrl = `http://openweathermap.org/img/wn/${forecast.weather[0].icon}.png`;
+
+                    return (
+                      <div key={idx} className="flex justify-between items-center mb-2">
+                        <span className="text-sm">{time}</span>
+                        <img src={iconUrl} alt={description} className="w-8 h-8 mr-2" />
+                        <span className="text-sm">{description}</span>
+                        <span className="text-sm">{temp}°C</span>
+                      </div>
+                    );
+                  })}
                 </div>
               ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
       </div>
     </section>
   );
