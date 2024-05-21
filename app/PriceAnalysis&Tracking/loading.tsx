@@ -3,7 +3,7 @@ import React from 'react'
 
 export default function loading() {
   return (
-    <div className='h-screen'>
+    <div className='h-screen flex justify-center items-center'>
 
 <Image src="/images/logo.png"
           alt=""

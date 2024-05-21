@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { format, parseISO } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { fetchWeatherForecast } from "@/lib/actions/weather";
+import Image from "next/image";
 
 interface Weather {
   description: string;
@@ -131,13 +132,22 @@ export default function Page() {
           </form>
         </div>
         {loading ? (
-          <div className="text-center text-2xl">Loading...</div>
+           <div className='h-screen flex justify-center items-center'>
+
+          <Image src="/images/logo.png"
+          alt=""
+          width={1000}
+          height={1000}
+          className="animate-bounce w-40 md:pb-40w-40 md:pb-40"
+         
+        />
+         </div>
         ) : (
           weatherData && (
             <>
               <div className="bg-white shadow-lg rounded-lg p-6 mb-4 text-center">
                 <div className="text-3xl font-bold mb-4">
-                  {weatherData.city.name}
+                  {weatherData?.city.name}
                 </div>
                 {WeatherSelector(0)}
               </div>
