@@ -10,11 +10,13 @@ export default function page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter()
+  const [loading, setLoading] = useState(false);
 
   const [createUserWithEmailAndPassword] =
     useCreateUserWithEmailAndPassword(auth);
 
   const handleSignup = async () => {
+    setLoading(true);
     try {
       const res = await createUserWithEmailAndPassword(email, password);
       console.log("User signed up: ", { res });
