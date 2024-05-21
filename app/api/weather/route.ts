@@ -7,11 +7,16 @@ export async function GET(request: any) {
   const longitude = searchParams.get("lon");
 
   let url = "";
-  if (address) {
+
+  try {
+    if (address) {
     url = `http://api.openweathermap.org/data/2.5/forecast?q=${address}&appid=ac6be0e62d8605a0e90e06d1f44ae0af`;
-  } else {
-    url = `http://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=ac6be0e62d8605a0e90e06d1f44ae0af`;
   }
+  } catch (e){
+    console.log(e);
+    
+  }
+  
 
   const res = await fetch(url);
   const data = await res.json();

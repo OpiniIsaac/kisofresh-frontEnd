@@ -77,7 +77,7 @@ export default function Header() {
     <div>
       <header
         className={` z-10 w-full fixed  top-0 left-0 text-black border ${
-          isScrolled ? "bg-blue-500 border border-t-0 border-b-0 " : "bg-white"
+          isScrolled ? "bg-blue-500 border-none " : "bg-white"
         }`}
       >
         <Container>

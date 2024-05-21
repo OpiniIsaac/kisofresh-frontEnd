@@ -35,7 +35,7 @@ export default function Page() {
   async function fetchData(cityName: string) {
     try {
       const response = await fetch(
-        `http://kisofresh-index.vercel.app/api/weather?address=${cityName}`
+        `http://localhost:3000/api/weather?address=${cityName}`
       );
       console.log(response)
       const jsonData: WeatherData = await response.json();
@@ -45,31 +45,32 @@ export default function Page() {
     }
   }
 
-  async function fetchDataByCoordinates(latitude: number, longitude: number) {
-    try {
-      const response = await fetch(
-        `http://kisofresh-index.vercel.app/api/weather?lat=${latitude}&lon=${longitude}`
-      );
-      const jsonData: WeatherData = await response.json();
-      setWeatherData(jsonData);
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  //api call to fetch data by coordinates
+  // async function fetchDataByCoordinates(latitude: number, longitude: number) {
+  //   try {
+  //     const response = await fetch(
+  //       `http://kisofresh-index.vercel.app/api/weather?lat=${latitude}&lon=${longitude}`
+  //     );
+  //     const jsonData: WeatherData = await response.json();
+  //     setWeatherData(jsonData);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
 
-  useEffect(() => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          fetchDataByCoordinates(latitude, longitude);
-        },
-        (error) => {
-          console.error(error);
-        }
-      );
-    }
-  }, []);
+  // useEffect(() => {
+  //   if ("geolocation" in navigator) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (position) => {
+  //         const { latitude, longitude } = position.coords;
+  //         fetchDataByCoordinates(latitude, longitude);
+  //       },
+  //       (error) => {
+  //         console.error(error);
+  //       }
+  //     );
+  //   }
+  // }, []);
 
   const getWeatherIcon = (main: string) => {
     switch (main) {
