@@ -4,7 +4,6 @@ import { format, parseISO } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { fetchWeatherForecast } from "@/lib/actions/weather";
 
-
 interface Weather {
   description: string;
   main: string;
@@ -33,18 +32,23 @@ interface WeatherData {
 export default function Page() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [city, setCity] = useState("Kampala"); // Default city
+  const [loading, setLoading] = useState(false); // Loading state
 
   useEffect(() => {
     const getDefaultWeather = async () => {
+      setLoading(true);
       const data = await fetchWeatherForecast(city);
       setWeatherData(data);
+      setLoading(false);
     };
     getDefaultWeather();
   }, []);
 
   const fetchData = async (city: string) => {
+    setLoading(true);
     const data = await fetchWeatherForecast(city);
     setWeatherData(data);
+    setLoading(false);
   };
 
   const getWeatherIcon = (main: string) => {
@@ -126,48 +130,52 @@ export default function Page() {
             </Button>
           </form>
         </div>
-        {weatherData && (
-          <>
-            <div className="bg-white shadow-lg rounded-lg p-6 mb-4 text-center">
-              <div className="text-3xl font-bold mb-4">
-                {weatherData.city.name}
-              </div>
-              {WeatherSelector(0)}
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {groupedForecasts.map((dayForecast, index) => (
-                <div
-                  key={index}
-                  className="bg-white shadow-lg rounded-lg p-4"
-                >
-                  <h3 className="text-xl font-bold mb-2">
-                    {format(
-                      parseISO(dayForecast[0].dt_txt.split(" ")[0]),
-                      "PPP"
-                    )}
-                  </h3>
-                  {dayForecast.map((forecast, idx) => {
-                    const time = format(parseISO(forecast.dt_txt), "p");
-                    const description = forecast.weather[0].description;
-                    const temp = forecast.main.temp.toFixed(1);
-                    const icon = getWeatherIcon(forecast.weather[0].main);
-
-                    return (
-                      <div
-                        key={idx}
-                        className="flex justify-between items-center mb-2"
-                      >
-                        <span className="text-sm">{time}</span>
-                        <span className="text-2xl mr-2">{icon}</span>
-                        <span className="text-sm">{description}</span>
-                        <span className="text-sm">{temp}°C</span>
-                      </div>
-                    );
-                  })}
+        {loading ? (
+          <div className="text-center text-2xl">Loading...</div>
+        ) : (
+          weatherData && (
+            <>
+              <div className="bg-white shadow-lg rounded-lg p-6 mb-4 text-center">
+                <div className="text-3xl font-bold mb-4">
+                  {weatherData.city.name}
                 </div>
-              ))}
-            </div>
-          </>
+                {WeatherSelector(0)}
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {groupedForecasts.map((dayForecast, index) => (
+                  <div
+                    key={index}
+                    className="bg-white shadow-lg rounded-lg p-4"
+                  >
+                    <h3 className="text-xl font-bold mb-2">
+                      {format(
+                        parseISO(dayForecast[0].dt_txt.split(" ")[0]),
+                        "PPP"
+                      )}
+                    </h3>
+                    {dayForecast.map((forecast, idx) => {
+                      const time = format(parseISO(forecast.dt_txt), "p");
+                      const description = forecast.weather[0].description;
+                      const temp = forecast.main.temp.toFixed(1);
+                      const icon = getWeatherIcon(forecast.weather[0].main);
+
+                      return (
+                        <div
+                          key={idx}
+                          className="flex justify-between items-center mb-2"
+                        >
+                          <span className="text-sm">{time}</span>
+                          <span className="text-2xl mr-2">{icon}</span>
+                          <span className="text-sm">{description}</span>
+                          <span className="text-sm">{temp}°C</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            </>
+          )
         )}
       </div>
     </section>
