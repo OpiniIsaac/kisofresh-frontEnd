@@ -1,18 +1,18 @@
-// Function to fetch weather forecast data for a specific city for the next 4 days
-//this happens on the server
- export async function fetchWeatherForecast(lat:any, lon:any) {
-  const apiKey = 'your_api_key_here'; // Replace with your actual API key
-  const apiUrl = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
-  
+async function fetchWeatherForecast(cityName: string) {
+  const apiKey = 'ac6be0e62d8605a0e90e06d1f44ae0af';
+  const api = `http://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${apiKey}&units=metric`;
+
   try {
-    const response = await fetch(apiUrl);
+    const response = await fetch(api);
     if (!response.ok) {
       throw new Error('Failed to fetch weather forecast data');
     }
-    console.log(response);
-   return response
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error('Error fetching weather forecast data:', error);
+    return null;
   }
 }
 
+export { fetchWeatherForecast };

@@ -1,24 +1,32 @@
-import { NextRequest, NextResponse } from "next/server";
+// pages/api/fetch-weather.ts
+import axios from 'axios';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
-export async function GET(request: any) {
-  const { searchParams } = new URL(request.url);
-  const address = searchParams.get("address");
-  const latitude = searchParams.get("lat");
-  const longitude = searchParams.get("lon");
+const apiKey = process.env.OPENWEATHER_API_KEY;
 
-  let url = "";
+const fetchWeather = async (req: NextApiRequest, res: NextApiResponse) => {
+  const { city } = req.query;
+
+  if (!city) {
+    return res.status(400).json({ error: 'City is required' });
+  }
 
   try {
-    if (address) {
-    url = `http://api.openweathermap.org/data/2.5/forecast?q=${address}&appid=ac6be0e62d8605a0e90e06d1f44ae0af`;
-  }
-  } catch (e){
-    console.log(e);
-    
-  }
-  
+    const response = await axios.get(
+      `https://api.openweathermap.org/data/2.5/forecast`,
+      {
+        params: {
+          q: city,
+          appid: apiKey,
+          units: 'metric',
+        },
+      }
+    );
 
-  const res = await fetch(url);
-  const data = await res.json();
-  return NextResponse.json(data);
-}
+    res.status(200).json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch weather data' });
+  }
+};
+
+export default fetchWeather;
