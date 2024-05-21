@@ -25,6 +25,8 @@ export default function page() {
       router.push('onboarding');
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -68,7 +70,9 @@ export default function page() {
             />
           </div>
           <div className="flex items-center justify-end">
-            <Button onClick={handleSignup}>Sign Up</Button>
+          <Button onClick={handleSignup} disabled={loading}>
+              {loading ? "Logging In..." : "Log In"}
+            </Button>
           </div>
           <div className="flex justify-center pt-6 text-sm">
             Already have an account?
