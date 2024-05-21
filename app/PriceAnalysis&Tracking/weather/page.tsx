@@ -32,8 +32,8 @@ interface WeatherData {
 
 export default function Page() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
-  const [city, setCity] = useState("Kampala"); // Default city
-  const [loading, setLoading] = useState(false); // Loading state
+  const [city, setCity] = useState("Kampala"); 
+  const [loading, setLoading] = useState(false); 
 
   useEffect(() => {
     const getDefaultWeather = async () => {

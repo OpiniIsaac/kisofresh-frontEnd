@@ -316,8 +316,8 @@ console.log(response)
                     <option value="">--Please choose an option--</option>
                     <option value="cotton">Cotton</option>
                     <option value="Cocoa">Cocoa</option>
-                    <option value="Robusta">Robusta</option>
-                    <option value="Arabic">Arabic</option>
+                    <option value="Coffee">Coffee</option>
+                    
                   </select>
                 </div>
                 {/* Quantity input */}

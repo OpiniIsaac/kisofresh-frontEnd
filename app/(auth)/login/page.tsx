@@ -1,36 +1,38 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
-import { Login, Logout } from "@/lib/features/accountHandle/loginSlice";
 import Link from "next/link";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { useRouter } from "next/navigation";
 
-export default function page() {
-  const dispatch = useDispatch();
+export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleSignIn = async () => {
+  const [createUserWithEmailAndPassword] =
+    useCreateUserWithEmailAndPassword(auth);
+
+  const handleSignup = async () => {
+    setLoading(true);
     try {
-      const res = await signInWithEmailAndPassword(email, password);
-      console.log("Signed in User ", { res });
+      const res = await createUserWithEmailAndPassword(email, password);
+      console.log("User signed up: ", { res });
       setEmail("");
       setPassword("");
-      router.push("/SourceProduce");
+      router.push("onboarding");
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="w-screen h-screen flex justify-center items-center">
-      <div className="w-full max-w-xs ">
+      <div className="w-full max-w-xs">
         <div className="bg-blue-500/10 hover:shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <div className="mb-4">
             <label
@@ -40,13 +42,14 @@ export default function page() {
               Email
             </label>
             <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              autoComplete="true"
               id="email"
               type="email"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              autoComplete="true"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              required
             />
           </div>
           <div className="mb-6">
@@ -57,28 +60,25 @@ export default function page() {
               Password
             </label>
             <input
-              className="shadow appearance-none border  rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
               id="password"
               type="password"
-              placeholder="********"
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              required
             />
           </div>
-          <div className="flex items-center justify-between">
-            <Button onClick={handleSignIn}> Sign In</Button>
-            <Link
-              className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-              href="/forgotpassword"
-            >
-              Forgot Password?
-            </Link>
+          <div className="flex items-center justify-end">
+            <Button onClick={handleSignup} disabled={loading}>
+              {loading ? "Signing Up..." : "Sign Up"}
+            </Button>
           </div>
           <div className="flex justify-center pt-6 text-sm">
-            Don't have an account?
-            <Link href="/sign-up">
+            Already have an account?
+            <Link href="/login">
               <span className="hover:underline hover:cursor-pointer ps-2">
-                SignUp
+                Login
               </span>
             </Link>
           </div>
