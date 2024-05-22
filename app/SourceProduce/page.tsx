@@ -14,6 +14,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase/config";
 import { useDispatch } from "react-redux";
 import { Login } from "@/lib/features/accountHandle/loginSlice";
+import Loading from "@/components/loading";
 
 export default function CropInterestForm() {
   const [user] = useAuthState(auth);
@@ -58,28 +59,8 @@ export default function CropInterestForm() {
     const [isLoading, SetIsLoading] = useState(false);
     const [hasLoaded, SetHasLoaded] = useState(false);
 
-    const LoadingIndicator = () => (
-      <div
-        className={`${
-          !hasLoaded
-            ? "h-96 md:min-h-screen bg-blue-500/5 rounded-md flex flex-col gap-4 justify-center border items-center "
-            : "hidden"
-        }`}
-      >
-        <p className={`${isLoading ? "block pb-20" : "hidden"}`}>
-          Finding farmers...
-        </p>
-        <Image
-          src="/images/logo.png"
-          alt=""
-          width={1000}
-          height={1000}
-          className={`${
-            isLoading ? " animate-bounce w-40 md:pb-40" : "w-40 md:pb-40"
-          }`}
-        />
-      </div>
-    );
+    
+    
     //Function to show phone numbers of farmers
     const handleTogglePhone = () => setShowPhone(!showPhone);
 
@@ -244,7 +225,7 @@ console.log(response)
               </div>
             </form>
           </div>
-          <LoadingIndicator />
+          <Loading/>
         </Container>
       );
     return (
@@ -349,7 +330,7 @@ console.log(response)
               </div>
             </form>
           </div>
-          <LoadingIndicator />
+          <Loading />
           {
             <div className=" bg-blue-500/5 overflow-auto px-4 border rounded-md mb-10">
               <h2 className="text-2xl font-bold mb-4 pt-20">
