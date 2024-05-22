@@ -14,7 +14,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase/config";
 import { useDispatch } from "react-redux";
 import { Login } from "@/lib/features/accountHandle/loginSlice";
-import Loading from "@/components/loading";
+import Loading from "@/components/Loading";
 
 export default function CropInterestForm() {
   const [user] = useAuthState(auth);
