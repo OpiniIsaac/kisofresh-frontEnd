@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { format, parseISO } from "date-fns";
 import { Button } from "@/components/ui/button";
-import { fetchWeatherForecast } from "@/lib/actions/weather";
 import Image from "next/image";
 
 interface Weather {
@@ -31,26 +30,32 @@ interface WeatherData {
 }
 
 export default function Page() {
-  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
-  const [city, setCity] = useState("Kampala"); 
-  const [loading, setLoading] = useState(false); 
+  const [weatherData, setWeatherData] = useState<any>(null);
+  const [city, setCity] = useState("Kampala");
+  const [loading, setLoading] = useState(false);
+
+  const fetchData = async (cityName: string) => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        "http://localhost:3000/api/weather?address=" + cityName
+      );
+      const jsonData = (await response.json()).data;
+      setWeatherData(jsonData);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     const getDefaultWeather = async () => {
       setLoading(true);
-      const data = await fetchWeatherForecast(city);
-      setWeatherData(data);
+      fetchData("kampala");
       setLoading(false);
     };
     getDefaultWeather();
   }, []);
-
-  const fetchData = async (city: string) => {
-    setLoading(true);
-    const data = await fetchWeatherForecast(city);
-    setWeatherData(data);
-    setLoading(false);
-  };
 
   const getWeatherIcon = (main: string) => {
     switch (main) {
@@ -82,7 +87,9 @@ export default function Page() {
 
     return (
       <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg shadow-md">
-        <div className="text-lg font-semibold text-gray-800">{formattedTime}</div>
+        <div className="text-lg font-semibold text-gray-800">
+          {formattedTime}
+        </div>
         <div className="flex items-center">
           <span className="text-2xl mr-2">{icon}</span>
           <div className="text-lg font-semibold text-gray-800">{weather}</div>
@@ -94,7 +101,9 @@ export default function Page() {
 
   function groupForecastsByDay(data: WeatherData | null) {
     if (!data) return [];
-    const grouped: { [key: string]: { dt_txt: string; weather: Weather[]; main: Main }[] } = {};
+    const grouped: {
+      [key: string]: { dt_txt: string; weather: Weather[]; main: Main }[];
+    } = {};
     data.list.forEach((item) => {
       const date = item.dt_txt.split(" ")[0];
       if (!grouped[date]) grouped[date] = [];
@@ -132,16 +141,15 @@ export default function Page() {
           </form>
         </div>
         {loading ? (
-           <div className='h-screen flex justify-center items-center'>
-
-          <Image src="/images/logo.png"
-          alt=""
-          width={1000}
-          height={1000}
-          className="animate-bounce w-40 md:pb-40w-40 md:pb-40"
-         
-        />
-         </div>
+          <div className="h-screen flex justify-center items-center">
+            <Image
+              src="/images/logo.png"
+              alt=""
+              width={1000}
+              height={1000}
+              className="animate-bounce w-40 md:pb-40w-40 md:pb-40"
+            />
+          </div>
         ) : (
           weatherData && (
             <>
