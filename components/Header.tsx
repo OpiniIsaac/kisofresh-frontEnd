@@ -211,7 +211,7 @@ export default function Header() {
                             : () => dispatch(Login())
                         }
                       >
-                        {islogged ? <div>Logout</div> : <div>SignUp</div>}
+                        {islogged ? <div>Logout</div> : <div>Login</div>}
                       </Button>
                     </Link>
                   </DropdownMenuContent>

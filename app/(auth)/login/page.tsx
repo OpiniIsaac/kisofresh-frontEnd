@@ -22,7 +22,7 @@ export default function Page() {
       console.log("User signed up: ", { res });
       setEmail("");
       setPassword("");
-      router.push("onboarding");
+      router.push("/SourceProduce");
     } catch (e) {
       console.error(e);
     } finally {
@@ -75,8 +75,8 @@ export default function Page() {
             </Button>
           </div>
           <div className="flex justify-center pt-6 text-sm">
-            Already have an account?
-            <Link href="/login">
+            Don't have an account?
+            <Link href="/sign-up">
               <span className="hover:underline hover:cursor-pointer ps-2">
                 Login
               </span>
