@@ -38,7 +38,7 @@ export default function Page() {
     try {
       setLoading(true);
       const response = await fetch(
-        "http://localhost:3000/api/weather?address=" + cityName
+        "http://kisofresh-index.vercel.app/api/weather?address=" + cityName
       );
       const jsonData = (await response.json()).data;
       setWeatherData(jsonData);
