@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { format, parseISO } from "date-fns";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Loading from "@/components/Loading";
 
 interface Weather {
   description: string;
@@ -40,20 +41,19 @@ export default function Page() {
       const response = await fetch(
         "http://kisofresh-index.vercel.app/api/weather?address=" + cityName
       );
-      const jsonData = (await response.json()).data;
+      const jsonData = await response.json();
       setWeatherData(jsonData);
       setLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
-
+  const getDefaultWeather = async () => {
+    setLoading(true);
+    fetchData("kampala");
+    setLoading(false);
+  };
   useEffect(() => {
-    const getDefaultWeather = async () => {
-      setLoading(true);
-      fetchData("kampala");
-      setLoading(false);
-    };
     getDefaultWeather();
   }, []);
 
@@ -142,13 +142,7 @@ export default function Page() {
         </div>
         {loading ? (
           <div className="h-screen flex justify-center items-center">
-            <Image
-              src="/images/logo.png"
-              alt=""
-              width={1000}
-              height={1000}
-              className="animate-bounce w-40 md:pb-40w-40 md:pb-40"
-            />
+            <Loading />
           </div>
         ) : (
           weatherData && (
