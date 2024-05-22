@@ -5,30 +5,33 @@ import React, { useState } from "react";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { useRouter } from "next/navigation";
+import { Login } from "@/lib/features/accountHandle/loginSlice";
+import { useDispatch } from "react-redux";
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch();
 
-  const [createUserWithEmailAndPassword] =
-    useCreateUserWithEmailAndPassword(auth);
 
-  const handleSignup = async () => {
-    setLoading(true);
-    try {
-      const res = await createUserWithEmailAndPassword(email, password);
-      console.log("User signed up: ", { res });
-      setEmail("");
-      setPassword("");
-      router.push("/SourceProduce");
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
+ const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
+    const handleSignIn = async () => {
+      setLoading(true);
+      try {
+        const res = await signInWithEmailAndPassword(email, password);
+        console.log("Signed in User ", { res });
+        setEmail("");
+        setPassword("");
+        router.push("/SourceProduce");
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
 
   return (
     <div className="w-screen h-screen flex justify-center items-center">
@@ -70,15 +73,15 @@ export default function Page() {
             />
           </div>
           <div className="flex items-center justify-end">
-            <Button onClick={handleSignup} disabled={loading}>
-              {loading ? "Signing Up..." : "Sign Up"}
+            <Button onClick={handleSignIn} disabled={loading}>
+              {loading ? "logging In..." : "Log in"}
             </Button>
           </div>
           <div className="flex justify-center pt-6 text-sm">
             Don't have an account?
             <Link href="/sign-up">
               <span className="hover:underline hover:cursor-pointer ps-2">
-                Login
+                Sign Up
               </span>
             </Link>
           </div>

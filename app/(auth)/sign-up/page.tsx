@@ -71,7 +71,7 @@ export default function page() {
           </div>
           <div className="flex items-center justify-end">
           <Button onClick={handleSignup} disabled={loading}>
-              {loading ? "Logging In..." : "Log In"}
+              {loading ? "Signing Up..." : "Sign Up"}
             </Button>
           </div>
           <div className="flex justify-center pt-6 text-sm">

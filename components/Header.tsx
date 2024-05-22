@@ -148,7 +148,7 @@ export default function Header() {
                 </DropdownMenu>
               ) : (
                 <div>
-                  <Link href="/sign-up" className="hidden md:block">
+                  <Link href="/login" className="hidden md:block">
                     <div className="bg-white"></div>
                     <Button
                       className={`${
@@ -157,7 +157,7 @@ export default function Header() {
                           : ""
                       }`}
                     >
-                      SignUp
+                      Login
                     </Button>
                   </Link>
                 </div>
