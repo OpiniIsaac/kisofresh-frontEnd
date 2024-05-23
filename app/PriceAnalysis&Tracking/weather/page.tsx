@@ -39,9 +39,10 @@ export default function Page() {
     try {
       setLoading(true);
       const response = await fetch(
-        "https://kisofresh-eosin.vercel.app/api/weather?address=" + cityName
+        "http://kisofresh-eosin.vercel.app//api/weather?address=" +
+          cityName
       );
-      const jsonData = await response.json();
+      const jsonData = (await response.json()).data;
       setWeatherData(jsonData);
       setLoading(false);
     } catch (error) {
