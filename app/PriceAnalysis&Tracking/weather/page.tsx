@@ -31,7 +31,7 @@ interface WeatherData {
 }
 
 export default function Page() {
-  const [weatherData, setWeatherData] = useState<any>(null);
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [city, setCity] = useState("Kampala");
   const [loading, setLoading] = useState(false);
 
@@ -39,10 +39,9 @@ export default function Page() {
     try {
       setLoading(true);
       const response = await fetch(
-        "http://kisofresh-eosin.vercel.app//api/weather?address=" +
-          cityName
+        `http://kisofresh-eosin.vercel.app//api/weather?address=${cityName}`
       );
-      const jsonData = (await response.json()).data;
+      const jsonData = await response.json();
       setWeatherData(jsonData);
       setLoading(false);
     } catch (error) {
