@@ -35,7 +35,7 @@ export default function Page() {
   async function fetchData(cityName: string) {
     try {
       const response = await fetch(
-        `http://kisofresh-eosin.vercel.app/api/weather?address=${cityName}`
+        `http://kisofresh-index.vercel.app/api/weather?address=${cityName}`
       );
       console.log(response);
       const jsonData: WeatherData = (await response.json()).data;
@@ -124,7 +124,7 @@ export default function Page() {
             className="flex w-full"
           >
             <input
-              className="border border-gray-300 rounded-l p-2 w-full"
+              className="border border-gray-300 rounded-md p-2 me-4 w-full"
               type="text"
               placeholder="Enter city name"
               value={city}
