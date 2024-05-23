@@ -30,25 +30,49 @@ interface WeatherData {
 
 export default function Page() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
-  const [city, setCity] = useState("Kampala");
+  const [city, setCity] = useState("");
 
   async function fetchData(cityName: string) {
     try {
       const response = await fetch(
         `http://kisofresh-index.vercel.app/api/weather?address=${cityName}`
       );
-      console.log(response);
+      // console.log(response);
       const jsonData: WeatherData = (await response.json()).data;
       setWeatherData(jsonData);
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
+
+  async function fetchDataByCoordinates(latitude: number, longitude: number){
+    try {
+      const response = await fetch(
+        `http://kisofresh-index.vercel.app/api/weather?lat=${latitude}&lon=${longitude}`
+      ); 
+      
+      const jsonData: WeatherData = (await response.json()).data;console.log(response);
+      setWeatherData(jsonData);
+    } catch (error) {
+      console.log(error);
+      
+    }
+  };
 
 
   useEffect(() => {
-    fetchData("kampala")
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          fetchDataByCoordinates(latitude, longitude);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    }
   }, []);
 
   const getWeatherIcon = (main: string) => {
@@ -111,7 +135,7 @@ export default function Page() {
   return (
     <section className="min-h-screen bg-gray-100 flex flex-col items-center">
       <meta
-        http-equiv="Content-Security-Policy"
+        httpEquiv="Content-Security-Policy"
         content="upgrade-insecure-requests"
       />
       <div className="max-w-4xl w-full mx-auto p-4">
