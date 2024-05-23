@@ -2,8 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { format, parseISO } from "date-fns";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import Loading from "@/components/Loading";
 
 interface Weather {
   description: string;
@@ -33,28 +31,24 @@ interface WeatherData {
 export default function Page() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [city, setCity] = useState("Kampala");
-  const [loading, setLoading] = useState(false);
 
-  const fetchData = async (cityName: string) => {
+  async function fetchData(cityName: string) {
     try {
-      setLoading(true);
       const response = await fetch(
         `http://kisofresh-eosin.vercel.app/api/weather?address=${cityName}`
       );
-      const jsonData = await response.json();
+      console.log(response);
+      const jsonData: WeatherData = (await response.json()).data;
       setWeatherData(jsonData);
-      setLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
-  };
-  const getDefaultWeather = async () => {
-    setLoading(true);
-    fetchData("kampala");
-    setLoading(false);
-  };
+  }
+
+
+
   useEffect(() => {
-    getDefaultWeather();
+    fetchData("kampala")
   }, []);
 
   const getWeatherIcon = (main: string) => {
@@ -116,12 +110,6 @@ export default function Page() {
 
   return (
     <section className="min-h-screen bg-gray-100 flex flex-col items-center">
-      <head>
-        <meta
-          http-equiv="Content-Security-Policy"
-          content="upgrade-insecure-requests"
-        />
-      </head>
       <div className="max-w-4xl w-full mx-auto p-4">
         <div className="w-full flex justify-between items-center mb-4">
           <form
@@ -132,9 +120,9 @@ export default function Page() {
             className="flex w-full"
           >
             <input
-              className="border border-gray-300 rounded-md p-2 me-4 w-full"
+              className="border border-gray-300 rounded-l p-2 w-full"
               type="text"
-              placeholder="Search city?"
+              placeholder="Enter city name"
               value={city}
               onChange={(e) => setCity(e.target.value)}
             />
@@ -146,54 +134,45 @@ export default function Page() {
             </Button>
           </form>
         </div>
-        {loading ? (
-          <div className="h-screen flex justify-center items-center">
-            <Loading />
-          </div>
-        ) : (
-          weatherData && (
-            <>
-              <div className="bg-white shadow-lg rounded-lg p-6 mb-4 text-center">
-                <div className="text-3xl font-bold mb-4">
-                  {weatherData?.city.name}
-                </div>
-                {WeatherSelector(0)}
+        {weatherData && (
+          <>
+            <div className="bg-white shadow-lg rounded-lg p-6 mb-4 text-center">
+              <div className="text-3xl font-bold mb-4">
+                {weatherData.city.name}
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {groupedForecasts.map((dayForecast, index) => (
-                  <div
-                    key={index}
-                    className="bg-white shadow-lg rounded-lg p-4"
-                  >
-                    <h3 className="text-xl font-bold mb-2">
-                      {format(
-                        parseISO(dayForecast[0].dt_txt.split(" ")[0]),
-                        "PPP"
-                      )}
-                    </h3>
-                    {dayForecast.map((forecast, idx) => {
-                      const time = format(parseISO(forecast.dt_txt), "p");
-                      const description = forecast.weather[0].description;
-                      const temp = forecast.main.temp.toFixed(1);
-                      const icon = getWeatherIcon(forecast.weather[0].main);
+              {WeatherSelector(0)}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {groupedForecasts.map((dayForecast, index) => (
+                <div key={index} className="bg-white shadow-lg rounded-lg p-4">
+                  <h3 className="text-xl font-bold mb-2">
+                    {format(
+                      parseISO(dayForecast[0].dt_txt.split(" ")[0]),
+                      "PPP"
+                    )}
+                  </h3>
+                  {dayForecast.map((forecast, idx) => {
+                    const time = format(parseISO(forecast.dt_txt), "p");
+                    const description = forecast.weather[0].description;
+                    const temp = forecast.main.temp.toFixed(1);
+                    const icon = getWeatherIcon(forecast.weather[0].main);
 
-                      return (
-                        <div
-                          key={idx}
-                          className="flex justify-between items-center mb-2"
-                        >
-                          <span className="text-sm">{time}</span>
-                          <span className="text-2xl mr-2">{icon}</span>
-                          <span className="text-sm">{description}</span>
-                          <span className="text-sm">{temp}°C</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                ))}
-              </div>
-            </>
-          )
+                    return (
+                      <div
+                        key={idx}
+                        className="flex justify-between items-center mb-2"
+                      >
+                        <span className="text-sm">{time}</span>
+                        <span className="text-2xl mr-2">{icon}</span>
+                        <span className="text-sm">{description}</span>
+                        <span className="text-sm">{temp}°C</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </section>
