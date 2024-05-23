@@ -15,10 +15,12 @@ import { auth } from "../firebase/config";
 import { useDispatch } from "react-redux";
 import { Login } from "@/lib/features/accountHandle/loginSlice";
 import Loading from "@/components/Loading";
+import Icon from "@/components/Icon";
+import FindingFarmers from "@/components/FindingFarmers";
 
 export default function CropInterestForm() {
   const [user] = useAuthState(auth);
-  
+
   const router = useRouter();
   const dispatch = useDispatch();
   if (!user) {
@@ -59,8 +61,6 @@ export default function CropInterestForm() {
     const [isLoading, SetIsLoading] = useState(false);
     const [hasLoaded, SetHasLoaded] = useState(false);
 
-    
-    
     //Function to show phone numbers of farmers
     const handleTogglePhone = () => setShowPhone(!showPhone);
 
@@ -96,8 +96,8 @@ export default function CropInterestForm() {
           cropType,
           quantity,
         });
-      //  const response = await fetchUploadedData()
-console.log(response)
+        //  const response = await fetchUploadedData()
+        console.log(response);
         console.log(country, region, cropType, quantity);
         setFarmers(response);
         SetIsLoading(false);
@@ -225,7 +225,9 @@ console.log(response)
               </div>
             </form>
           </div>
-          <Loading/>
+          <div>
+            <FindingFarmers/>
+          </div>
         </Container>
       );
     return (
@@ -298,7 +300,6 @@ console.log(response)
                     <option value="cotton">Cotton</option>
                     <option value="Cocoa">Cocoa</option>
                     <option value="Coffee">Coffee</option>
-                    
                   </select>
                 </div>
                 {/* Quantity input */}
@@ -330,9 +331,15 @@ console.log(response)
               </div>
             </form>
           </div>
-          <Loading />
+          <div className={`${hasLoaded ? "hidden" : ""}`}>
+            <Icon />
+          </div>
           {
-            <div className=" bg-blue-500/5 overflow-auto px-4 border rounded-md mb-10">
+            <div
+              className={`${
+                !hasLoaded ? "hidden" : ""
+              } bg-blue-500/5 overflow-auto px-4 border rounded-md mb-10`}
+            >
               <h2 className="text-2xl font-bold mb-4 pt-20">
                 Farmers Matching Criteria:
               </h2>
@@ -394,7 +401,10 @@ console.log(response)
                       .map((farmer, index) => (
                         <tr key={index}>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {farmer["familyName"] + "  " +" " + farmer["otherName"]}
+                            {farmer["familyName"] +
+                              "  " +
+                              " " +
+                              farmer["otherName"]}
                           </td>
 
                           <td className="px-6 py-4 whitespace-nowrap">
@@ -410,8 +420,10 @@ console.log(response)
                             {farmer["AcresCultivation"]}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-  {cropType === "cotton" ? farmer["YieldEstimation "].result : "-"}
-</td>
+                            {cropType === "cotton"
+                              ? farmer["YieldEstimation "].result
+                              : "-"}
+                          </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <Button>
                               <Link href="/SourceProduce/Form">
