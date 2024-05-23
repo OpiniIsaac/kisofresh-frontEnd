@@ -110,6 +110,10 @@ export default function Page() {
 
   return (
     <section className="min-h-screen bg-gray-100 flex flex-col items-center">
+      <meta
+        http-equiv="Content-Security-Policy"
+        content="upgrade-insecure-requests"
+      />
       <div className="max-w-4xl w-full mx-auto p-4">
         <div className="w-full flex justify-between items-center mb-4">
           <form
