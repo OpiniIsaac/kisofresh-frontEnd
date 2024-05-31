@@ -21,9 +21,15 @@ import FindingFarmers from "@/components/FindingFarmers";
 export default function CropInterestForm() {
   const [user] = useAuthState(auth);
 
+  if (user) {
+    localStorage.setItem("isAuthenticated", "true");
+  }
+
+  const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+
   const router = useRouter();
   const dispatch = useDispatch();
-  if (!user) {
+  if (!isAuthenticated) {
     router.push("/login");
   } else {
     console.log(user);
@@ -43,6 +49,7 @@ export default function CropInterestForm() {
       CropType: string;
       Country: string;
       Region: string;
+      name: string;
     }
     const [country, setCountry] = useState("Uganda");
     const [region, setRegion] = useState("Northern");
@@ -226,7 +233,7 @@ export default function CropInterestForm() {
             </form>
           </div>
           <div>
-            <FindingFarmers/>
+            <FindingFarmers />
           </div>
         </Container>
       );
@@ -360,30 +367,40 @@ export default function CropInterestForm() {
                       >
                         District
                       </th>
+                      {
+                        cropType === "cotton" &&
                       <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
                         Subcounty
-                      </th>
+                      </th>}
+                      {
+                        cropType === "cotton" &&
                       <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
                         Village
-                      </th>
+                      </th>}
+                      {
+                        cropType === "cotton" &&
                       <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
                         Acres for Cotton
                       </th>
+  }
+  {
+    cropType === "cotton" &&
                       <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
                         Yield Estimation Result
                       </th>
+  }
                       <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -401,29 +418,36 @@ export default function CropInterestForm() {
                       .map((farmer, index) => (
                         <tr key={index}>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {farmer["familyName"] +
+                            { cropType === "cotton" ? farmer["familyName"] +
                               "  " +
                               " " +
-                              farmer["otherName"]}
+                              farmer["otherName"] : farmer.name}
                           </td>
 
                           <td className="px-6 py-4 whitespace-nowrap">
                             {farmer.Districk}
                           </td>
+                          {cropType === "cotton" &&
                           <td className="px-6 py-4 whitespace-nowrap">
                             {farmer.Subcounty}
-                          </td>
+                          </td>}
+                        
+                          {cropType === "cotton" &&
                           <td className="px-6 py-4 whitespace-nowrap">
                             {farmer.Village}
-                          </td>
+                          </td>}
+                          
+                          {cropType === "cotton" &&
                           <td className="px-6 py-4 whitespace-nowrap">
                             {farmer["AcresCultivation"]}
                           </td>
+  }
+                          {cropType === "cotton" &&
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {cropType === "cotton"
-                              ? farmer["YieldEstimation "].result
-                              : "-"}
-                          </td>
+                           
+                             farmer["YieldEstimation "].result
+                              
+                          </td>}
                           <td className="px-6 py-4 whitespace-nowrap">
                             <Button>
                               <Link href="/SourceProduce/Form">

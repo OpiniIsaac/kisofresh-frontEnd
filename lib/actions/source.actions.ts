@@ -43,7 +43,7 @@ export async function fetchFarmersByCriteria({
   quantity: number;
 }) {
   const uri =
-    "mongodb+srv://isaacopini8:cool@data.17kkyxj.mongodb.net/Cotton?retryWrites=true&w=majority";
+  "mongodb+srv://qwertyisaac9:fABvsWbvzyUu6er0@cluster0.xrpcdl9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
   const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -53,7 +53,7 @@ export async function fetchFarmersByCriteria({
     await client.connect();
     console.log("Connected to MongoDB");
 
-    const db = client.db('DatasetTwo');
+    const db = client.db('one');
     const collection = db.collection('farmers');
 
   
