@@ -21,17 +21,11 @@ import FindingFarmers from "@/components/FindingFarmers";
 export default function CropInterestForm() {
   const [user] = useAuthState(auth);
 
-  if (user) {
-    localStorage.setItem("isAuthenticated", "true");
-  }
-
-  const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
-
   const router = useRouter();
   const dispatch = useDispatch();
-  if (!isAuthenticated) {
+  if (!user) {
     router.push("/login");
-  } else {
+  }else {
     console.log(user);
     dispatch(Login());
     interface Farmer {
