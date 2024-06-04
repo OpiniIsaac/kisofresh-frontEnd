@@ -53,7 +53,7 @@ export async function fetchFarmersByCriteria({
     await client.connect();
     console.log("Connected to MongoDB");
 
-    const db = client.db('one');
+    const db = client.db('DatasetTwo');
     const collection = db.collection('farmers');
 
   
