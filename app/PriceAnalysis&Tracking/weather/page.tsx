@@ -157,7 +157,7 @@ export default function Page() {
               <div className="text-3xl font-bold mb-4">{weatherData.city.name}</div>
               {WeatherSelector(0)}
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
               {groupedForecasts.map((dayForecast, index) => (
                 <div key={index} className="bg-white shadow-lg rounded-lg p-4">
                   <h3 className="text-xl font-bold mb-2">
