@@ -37,29 +37,25 @@ export default function Page() {
       const response = await fetch(
         `http://kisofresh.vercel.app/api/weather?address=${cityName}`
       );
-      // console.log(response);
       const jsonData: WeatherData = (await response.json()).data;
       setWeatherData(jsonData);
     } catch (error) {
       console.error(error);
     }
-  };
+  }
 
-
-  async function fetchDataByCoordinates(latitude: number, longitude: number){
+  async function fetchDataByCoordinates(latitude: number, longitude: number) {
     try {
       const response = await fetch(
         `http://kisofresh.vercel.app/api/weather?lat=${latitude}&lon=${longitude}`
-      ); 
-      
-      const jsonData: WeatherData = (await response.json()).data;console.log(response);
+      );
+      const jsonData: WeatherData = (await response.json()).data;
+      console.log(response);
       setWeatherData(jsonData);
     } catch (error) {
       console.log(error);
-      
     }
-  };
-
+  }
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -104,10 +100,8 @@ export default function Page() {
     const temp = forecast?.main.temp.toFixed(1);
 
     return (
-      <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg shadow-md">
-        <div className="text-lg font-semibold text-gray-800">
-          {formattedTime}
-        </div>
+      <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg shadow-md mb-4">
+        <div className="text-lg font-semibold text-gray-800">{formattedTime}</div>
         <div className="flex items-center">
           <span className="text-2xl mr-2">{icon}</span>
           <div className="text-lg font-semibold text-gray-800">{weather}</div>
@@ -119,9 +113,7 @@ export default function Page() {
 
   function groupForecastsByDay(data: WeatherData | null) {
     if (!data) return [];
-    const grouped: {
-      [key: string]: { dt_txt: string; weather: Weather[]; main: Main }[];
-    } = {};
+    const grouped: { [key: string]: { dt_txt: string; weather: Weather[]; main: Main }[] } = {};
     data.list.forEach((item) => {
       const date = item.dt_txt.split(" ")[0];
       if (!grouped[date]) grouped[date] = [];
@@ -134,10 +126,7 @@ export default function Page() {
 
   return (
     <section className="min-h-screen bg-gray-100 flex flex-col items-center">
-          <meta
-        http-equiv="Content-Security-Policy"
-        content="upgrade-insecure-requests"
-      />
+      <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
       <div className="max-w-4xl w-full mx-auto p-4">
         <div className="w-full flex justify-between items-center mb-4">
           <form
@@ -165,19 +154,14 @@ export default function Page() {
         {weatherData && (
           <>
             <div className="bg-white shadow-lg rounded-lg p-6 mb-4 text-center">
-              <div className="text-3xl font-bold mb-4">
-                {weatherData.city.name}
-              </div>
+              <div className="text-3xl font-bold mb-4">{weatherData.city.name}</div>
               {WeatherSelector(0)}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {groupedForecasts.map((dayForecast, index) => (
                 <div key={index} className="bg-white shadow-lg rounded-lg p-4">
                   <h3 className="text-xl font-bold mb-2">
-                    {format(
-                      parseISO(dayForecast[0].dt_txt.split(" ")[0]),
-                      "PPP"
-                    )}
+                    {format(parseISO(dayForecast[0].dt_txt.split(" ")[0]), "PPP")}
                   </h3>
                   {dayForecast.map((forecast, idx) => {
                     const time = format(parseISO(forecast.dt_txt), "p");
