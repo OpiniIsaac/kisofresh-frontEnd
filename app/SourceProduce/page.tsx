@@ -439,7 +439,7 @@ export default function CropInterestForm() {
                           {cropType === "cotton" &&
                           <td className="px-6 py-4 whitespace-nowrap">
                            
-                             farmer["YieldEstimation "].result
+                            { farmer["YieldEstimation "].result}
                               
                           </td>}
                           <td className="px-6 py-4 whitespace-nowrap">
