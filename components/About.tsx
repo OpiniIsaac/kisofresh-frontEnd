@@ -9,7 +9,7 @@ export default function About() {
       <Container>
         <div className="flex flex-col md:flex-row justify-between w-full px-4 md:px-0">
           <div className="w-full md:w-1/2 flex flex-col justify-center h-[550px]">
-            <h1 className={`font-extrabold text-4xl ${hedvig.className}`}>What is KisoIndex?</h1>
+            <h1 className={`font-extrabold text-4xl ${hedvig.className}`}>What we do</h1>
             <br />
             <div className="">
               <Image

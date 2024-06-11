@@ -1,50 +1,54 @@
-import Link from "next/link";
-import React from "react";
-import Container from "./Container";
-import { hedvig } from "./Fonts";
+import React from 'react';
+import { motion, useAnimation } from 'framer-motion';
+import CountUp from 'react-countup';
+import { useInView } from 'react-intersection-observer';
 
-export default function Benefits() {
-  const benefits: { heading: string; paragraph: string; link: string }[] = [
-    {
-      heading: "Source with Confidence:",
-      paragraph:
-        "Direct Farm Sourcing: KisoIndex connects traders directly with farmers, eliminating middlemen and ensuring complete traceability. Source high-quality produce for import or export with confidence.",
-      link: "SourceProduce",
-    },
-    {
-      heading: "Plan for Success:",
-      paragraph:
-        "Weather Analysis: Make informed planting decisions with KisoIndex's advanced weather forecasting. Predict weather patterns and optimize planting seasons for maximum yield.",
-      link: "PriceAnalysis&Tracking/weather",
-    },
-    {
-      heading: "Navigate the Market:",
-      paragraph:
-        "Price Index: Gain valuable insights into domestic and international market trends with our comprehensive price index. KisoIndex empowers farmers to make strategic planting choices and informs traders of potential market opportunities.",
-      link: "PriceAnalysis&Tracking/price",
-    },
-  ];
+interface Target {
+  id: number;
+  target: number;
+  label: string;
+}
+
+const Counter = ({ target, label }: { target: number; label: string }) => {
+  const controls = useAnimation();
+  const [ref, inView] = useInView({ triggerOnce: true });
+
   return (
-    <section className="bg-blue-500/5 md:h-96 flex flex-wrap items-center">
-      <Container>
-        <div className="">
-          <div className="w-full md:flex pb-20 md:pb-0 pt-10 md:pt-0">
-            {benefits.map(({ heading, paragraph, link }) => (
-              <div className="flex flex-col items-center pt-5 md:p-4 ">
-                <h2 className={`text-2xl font-bold mb-2 ${hedvig.className}`}>
-                  {heading}
-                </h2>
-                <p className="text-center ">{paragraph}</p>
-                <Link href={link}>
-                  <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                    Learn More
-                  </button>
-                </Link>
-              </div>
-            ))}
-          </div>
+    <div className="text-center" ref={ref}>
+      <motion.span
+        className="block text-4xl font-bold text-blue-500"
+        initial={{ opacity: 0 }}
+        animate={controls}
+        onViewportEnter={() => controls.start({ opacity: 1, transition: { duration: 0.5 } })}
+      >
+        {inView && (
+          <CountUp start={0} end={target} duration={2.75} />
+        )}
+      </motion.span>
+      <span className="block text-xl font-medium text-gray-700">{label}</span>
+    </div>
+  );
+};
+
+const Benefits = () => {
+  const targets: Target[] = [
+    { id: 1, target: 7623, label: ' Registered Farmers' },
+    { id: 2, target: 67, label: 'Registered Cooperatives' },
+    { id: 3, target: 15000, label: 'Tonnes Sourced' },
+  ];
+
+  return (
+    <section className="bg-gray-100 py-12">
+      <div className="container mx-auto px-4">
+        <h2 className="text-3xl font-bold text-center mb-10">Our Impact</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {targets.map((target) => (
+            <Counter key={target.id} target={target.target} label={target.label} />
+          ))}
         </div>
-      </Container>
+      </div>
     </section>
   );
-}
+};
+
+export default Benefits;

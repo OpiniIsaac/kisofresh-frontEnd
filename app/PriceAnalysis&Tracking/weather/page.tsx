@@ -35,7 +35,7 @@ export default function Page() {
   async function fetchData(cityName: string) {
     try {
       const response = await fetch(
-        `http://kisofresh-index.vercel.app/api/weather?address=${cityName}`
+        `http://kisofresh.vercel.app/api/weather?address=${cityName}`
       );
       // console.log(response);
       const jsonData: WeatherData = (await response.json()).data;
@@ -49,7 +49,7 @@ export default function Page() {
   async function fetchDataByCoordinates(latitude: number, longitude: number){
     try {
       const response = await fetch(
-        `http://kisofresh-index.vercel.app/api/weather?lat=${latitude}&lon=${longitude}`
+        `http://kisofresh.vercel.app/api/weather?lat=${latitude}&lon=${longitude}`
       ); 
       
       const jsonData: WeatherData = (await response.json()).data;console.log(response);
@@ -134,8 +134,8 @@ export default function Page() {
 
   return (
     <section className="min-h-screen bg-gray-100 flex flex-col items-center">
-      <meta
-        httpEquiv="Content-Security-Policy"
+          <meta
+        http-equiv="Content-Security-Policy"
         content="upgrade-insecure-requests"
       />
       <div className="max-w-4xl w-full mx-auto p-4">

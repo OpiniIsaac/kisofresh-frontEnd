@@ -8,34 +8,36 @@ import {
 } from "@/components/ui/carousel";
 import Container from "./Container";
 import Autoplay from "embla-carousel-autoplay";
-import { Key } from "lucide-react";
 
 export default function Hero() {
   const content = [
     {
-      
       image: "/images/grain.jpeg",
       title: "Track & Analyze Prices",
-      desc: "Gain insights into crop prices. Make informed decisions..",
+      desc: "Gain insights into crop prices. Make informed decisions.",
       key: 1,
+      link: "/PriceAnalysis&Tracking/price", // Add the link here
     },
     {
       image: "/images/crops.jpg",
       title: "Source Produce",
       desc: "Traceability simplified. Tap into our vast database of farmers.",
       key: 2,
+      link: "/SourceProduce", 
     },
     {
       image: "/images/Data.jpeg",
       title: "Smart Farming",
       desc: "Beat the elements using IoT data.",
       key: 3,
+      link: "/PriceAnalysis&Tracking/weather",
     },
     {
       image: "/images/cow.jpg",
       title: "Agriculture tips",
       desc: "Learn best practices for your farm.",
       key: 4,
+      link: "/PriceAnalysis&Tracking/price", 
     },
   ];
 
