@@ -63,22 +63,53 @@ const userSpecificFields: Record<string, Field[]> = {
   ],
 };
 
+const steps: Step[] = [
+  {
+    title: 'Welcome',
+    description: 'Choose your role:',
+    options: [
+      { label: 'Farmer', value: 'farmer' },
+      { label: 'Transporter', value: 'transporter' },
+      { label: 'Trader', value: 'trader' },
+    ],
+  },
+  {
+    title: 'Choose Country',
+    description: 'Select your country:',
+  },
+  {
+    title: 'Location Details',
+    description: 'Provide detailed location information.',
+    fields: [],
+  },
+  {
+    title: 'User Details',
+    description: 'Provide your details.',
+    fields: [],
+  },
+];
+
 const OnboardingScreen: React.FC = () => {
   const [step, setStep] = useState(0);
   const [userType, setUserType] = useState<string | null>(null);
   const [country, setCountry] = useState<string | null>(null);
   const [locationDetails, setLocationDetails] = useState<{ [key: string]: string }>({});
   const [userDetails, setUserDetails] = useState<{ [key: string]: string }>({});
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const dispatch = useDispatch();
   const router = useRouter();
 
   const handleSignUp = () => {
-    router.push("/SourceProduce");
-    dispatch(Login());
+    if (validateFields(getUserSpecificFields(userType))) {
+      router.push("/SourceProduce");
+      dispatch(Login());
+    }
   };
 
   const nextStep = () => {
+    if (step === 2 && !validateFields(getLocationFields(country))) return;
+    if (step === 3 && !validateFields(getUserSpecificFields(userType))) return;
     setStep(step + 1);
   };
 
@@ -94,54 +125,50 @@ const OnboardingScreen: React.FC = () => {
     return userType ? userSpecificFields[userType] || [] : [];
   };
 
-  const steps: Step[] = [
-    {
-      title: 'Welcome',
-      description: 'Choose your role:',
-      options: [
-        { label: 'Farmer', value: 'farmer' },
-        { label: 'Transporter', value: 'transporter' },
-        { label: 'Trader', value: 'trader' },
-      ],
-    },
-    {
-      title: 'Choose Country',
-      description: 'Select your country:',
-    },
-    {
-      title: 'Location Details',
-      description: 'Provide detailed location information.',
-      fields: getLocationFields(country),
-    },
-    {
-      title: 'User Details',
-      description: 'Provide your details.',
-      fields: getUserSpecificFields(userType),
-    },
-  ];
+  const validateFields = (fields: Field[]): boolean => {
+    const newErrors: { [key: string]: string } = {};
+
+    fields.forEach(field => {
+      const fieldName = field.label.toLowerCase().replace(/ /g, '-');
+      if (!locationDetails[fieldName] && step === 2) {
+        newErrors[fieldName] = `${field.label} is required`;
+      }
+      if (!userDetails[fieldName] && step === 3) {
+        newErrors[fieldName] = `${field.label} is required`;
+      }
+    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleInputChange = (setter: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>) => (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     setter((prevState) => ({ ...prevState, [e.target.name]: e.target.value }));
+    setErrors((prevErrors) => ({ ...prevErrors, [e.target.name]: '' }));
   };
 
   const renderFields = (fields: Field[], setter: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>) => {
-    return fields.map((field, index) => (
-      <div key={index} className="mb-4">
-        <label htmlFor={field.label.toLowerCase().replace(/ /g, '-')} className="block text-sm font-medium text-gray-700">
-          {field.label}
-        </label>
-        <input
-          type={field.type}
-          name={field.label.toLowerCase().replace(/ /g, '-')}
-          id={field.label.toLowerCase().replace(/ /g, '-')}
-          className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          placeholder={field.placeholder}
-          onChange={handleInputChange(setter)}
-        />
-      </div>
-    ));
+    return fields.map((field, index) => {
+      const fieldName = field.label.toLowerCase().replace(/ /g, '-');
+      return (
+        <div key={index} className="mb-4">
+          <label htmlFor={fieldName} className="block text-sm font-medium text-gray-700">
+            {field.label}
+          </label>
+          <input
+            type={field.type}
+            name={fieldName}
+            id={fieldName}
+            className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            placeholder={field.placeholder}
+            onChange={handleInputChange(setter)}
+          />
+          {errors[fieldName] && <p className="text-red-500 text-xs mt-1">{errors[fieldName]}</p>}
+        </div>
+      );
+    });
   };
 
   return (
@@ -182,12 +209,12 @@ const OnboardingScreen: React.FC = () => {
         )}
         {step === 2 && (
           <>
-            {steps[2].fields && renderFields(steps[2].fields, setLocationDetails)}
+            {steps[2].fields && renderFields(getLocationFields(country), setLocationDetails)}
           </>
         )}
         {step === 3 && (
           <>
-            {steps[3].fields && renderFields(steps[3].fields, setUserDetails)}
+            {steps[3].fields && renderFields(getUserSpecificFields(userType), setUserDetails)}
           </>
         )}
 
