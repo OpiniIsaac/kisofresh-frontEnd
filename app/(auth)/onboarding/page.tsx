@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -52,10 +51,10 @@ const userSpecificFields: Record<string, Field[]> = {
     { label: 'Crop type', type: 'text', placeholder: 'Enter your crop type' },
     { label: 'Acres grown', type: 'number', placeholder: 'Enter acres grown' },
   ],
-  transporter: [
-    { label: 'Name', type: 'text', placeholder: 'Enter your name' },
-    { label: 'Driving Permit', type: 'text', placeholder: 'Enter your driving permit number' },
-    { label: 'Vehicle Type', type: 'text', placeholder: 'Enter your vehicle type' },
+  warehouse: [
+    { label: 'Warehouse Name', type: 'text', placeholder: 'Enter your warehouse name' },
+    { label: 'Capacity (tons)', type: 'number', placeholder: 'Enter capacity in tons' },
+    { label: 'Manager Name', type: 'text', placeholder: 'Enter manager name' },
   ],
   trader: [
     { label: 'Name', type: 'text', placeholder: 'Enter your name' },
@@ -70,7 +69,7 @@ const steps: Step[] = [
     description: 'Choose your role:',
     options: [
       { label: 'Farmer', value: 'farmer' },
-      { label: 'Transporter', value: 'transporter' },
+      { label: 'Warehouse', value: 'warehouse' },
       { label: 'Trader', value: 'trader' },
     ],
   },

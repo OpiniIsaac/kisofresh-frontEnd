@@ -28,9 +28,19 @@ interface WeatherData {
   }[];
 }
 
+type CropType = 'maize' | 'beans'; // Add more crop types as needed
+
+const cropSeasons: Record<CropType, { planting: string[]; harvesting: string[] }> = {
+  maize: { planting: ["Mar", "Apr", "May"], harvesting: ["Aug", "Sep", "Oct"] },
+  beans: { planting: ["Feb", "Mar"], harvesting: ["Jun", "Jul"] },
+  // Add more crops and their seasons as needed
+};
+
 export default function Page() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [city, setCity] = useState("");
+  const [cropType, setCropType] = useState<CropType | "">("");
+  const [season, setSeason] = useState("");
 
   async function fetchData(cityName: string) {
     try {
@@ -124,6 +134,25 @@ export default function Page() {
 
   const groupedForecasts = groupForecastsByDay(weatherData);
 
+  const handleCropSelection = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setCropType(event.target.value as CropType);
+    setSeason("");
+  };
+
+  const handleSeasonSelection = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSeason(event.target.value);
+  };
+
+  const filteredForecasts = groupedForecasts.filter((dayForecast) => {
+    const month = format(parseISO(dayForecast[0].dt_txt), "MMM");
+    if (season === "planting" && cropType) {
+      return cropSeasons[cropType].planting.includes(month);
+    } else if (season === "harvesting" && cropType) {
+      return cropSeasons[cropType].harvesting.includes(month);
+    }
+    return true;
+  });
+
   return (
     <section className="min-h-screen bg-gray-100 flex flex-col items-center">
       <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
@@ -151,6 +180,28 @@ export default function Page() {
             </Button>
           </form>
         </div>
+        <div className="flex justify-between items-center mb-4">
+          <select
+            className="border border-gray-300 rounded-md p-2 mr-4 w-full"
+            value={cropType}
+            onChange={handleCropSelection}
+          >
+            <option value="">Select crop type</option>
+            <option value="maize">Maize</option>
+            <option value="beans">Beans</option>
+            {/* Add more crop options here */}
+          </select>
+          <select
+            className="border border-gray-300 rounded-md p-2 w-full"
+            value={season}
+            onChange={handleSeasonSelection}
+            disabled={!cropType}
+          >
+            <option value="">Select season</option>
+            <option value="planting">Planting</option>
+            <option value="harvesting">Harvesting</option>
+          </select>
+        </div>
         {weatherData && (
           <>
             <div className="bg-white shadow-lg rounded-lg p-6 mb-4 text-center">
@@ -158,7 +209,7 @@ export default function Page() {
               {WeatherSelector(0)}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
-              {groupedForecasts.map((dayForecast, index) => (
+              {filteredForecasts.map((dayForecast, index) => (
                 <div key={index} className="bg-white shadow-lg rounded-lg p-4">
                   <h3 className="text-xl font-bold mb-2">
                     {format(parseISO(dayForecast[0].dt_txt.split(" ")[0]), "PPP")}
