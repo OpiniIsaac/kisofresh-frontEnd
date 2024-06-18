@@ -6,23 +6,29 @@ import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { useRouter } from "next/navigation";
 
-export default function page() {
+export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter()
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  const [createUserWithEmailAndPassword] =
-    useCreateUserWithEmailAndPassword(auth);
+  const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
 
   const handleSignup = async () => {
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await createUserWithEmailAndPassword(email, password);
       console.log("User signed up: ", { res });
       setEmail("");
       setPassword("");
-      router.push('onboarding');
+      router.push("/onboarding");
     } catch (e) {
       console.error(e);
     } finally {
@@ -30,9 +36,18 @@ export default function page() {
     }
   };
 
+  const validateForm = () => {
+    const newErrors: { email?: string; password?: string } = {};
+    if (!email) newErrors.email = "Email is required";
+    if (!password) newErrors.password = "Password is required";
+    if (email && !/\S+@\S+\.\S+/.test(email)) newErrors.email = "Email is invalid";
+    if (password && password.length < 6) newErrors.password = "Password must be at least 6 characters";
+    return newErrors;
+  };
+
   return (
     <div className="w-screen h-screen flex justify-center items-center">
-      <div className="w-full max-w-xs ">
+      <div className="w-full max-w-xs">
         <div className="bg-blue-500/10 hover:shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <div className="mb-4">
             <label
@@ -47,10 +62,14 @@ export default function page() {
               type="email"
               placeholder="Email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setErrors((prev) => ({ ...prev, email: '' }));
+              }}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
+            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
           </div>
           <div className="mb-6">
             <label
@@ -64,13 +83,17 @@ export default function page() {
               type="password"
               placeholder="Password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setErrors((prev) => ({ ...prev, password: '' }));
+              }}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
+            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
           </div>
           <div className="flex items-center justify-end">
-          <Button onClick={handleSignup} disabled={loading}>
+            <Button onClick={handleSignup} disabled={loading}>
               {loading ? "Signing Up..." : "Sign Up"}
             </Button>
           </div>

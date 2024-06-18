@@ -2,36 +2,50 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React, { useState } from "react";
-import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { useRouter } from "next/navigation";
 import { Login } from "@/lib/features/accountHandle/loginSlice";
 import { useDispatch } from "react-redux";
-import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
 
+  const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
 
- const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
-    const handleSignIn = async () => {
-      setLoading(true);
-      try {
-        const res = await signInWithEmailAndPassword(email, password);
-        console.log("Signed in User ", { res });
-        setEmail("");
-        setPassword("");
-        router.push("/SourceProduce");
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const handleSignIn = async () => {
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await signInWithEmailAndPassword(email, password);
+      console.log("Signed in User ", { res });
+      setEmail("");
+      setPassword("");
+      router.push("/SourceProduce");
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors: { email?: string; password?: string } = {};
+    if (!email) newErrors.email = "Email is required";
+    if (!password) newErrors.password = "Password is required";
+    if (email && !/\S+@\S+\.\S+/.test(email)) newErrors.email = "Email is invalid";
+    return newErrors;
+  };
 
   return (
     <div className="w-screen h-screen flex justify-center items-center">
@@ -50,10 +64,14 @@ export default function Page() {
               type="email"
               placeholder="Email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setErrors((prev) => ({ ...prev, email: '' }));
+              }}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
+            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
           </div>
           <div className="mb-6">
             <label
@@ -67,14 +85,18 @@ export default function Page() {
               type="password"
               placeholder="Password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setErrors((prev) => ({ ...prev, password: '' }));
+              }}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
+            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
           </div>
           <div className="flex items-center justify-end">
             <Button onClick={handleSignIn} disabled={loading}>
-              {loading ? "logging In..." : "Log in"}
+              {loading ? "Logging In..." : "Log in"}
             </Button>
           </div>
           <div className="flex justify-center pt-6 text-sm">
