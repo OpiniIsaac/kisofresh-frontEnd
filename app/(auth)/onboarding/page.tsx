@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -218,7 +219,7 @@ const OnboardingScreen: React.FC = () => {
           </>
         )}
 
-        <div className="flex justify-between w-full mt-6">
+        <div className={`flex justify-${step === 0 ? 'center' : 'between'} w-full mt-6`}>
           {step > 0 && (
             <button onClick={prevStep} className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600">
               Back

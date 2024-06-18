@@ -19,7 +19,7 @@ const buttonCollection: {key:number; title: string; route: string }[] = [
   },
   {
     key: 3,
-    title: "Trading opportunities",
+    title: "Insights",
     route: "/PriceAnalysis&Tracking/tradingOpportunities",
   },
 ];
