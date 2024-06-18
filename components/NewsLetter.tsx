@@ -39,6 +39,7 @@ import { hedvig } from "./Fonts";
                     {/* <div className="w-full flex justify-end">
                       <Button className="bg-green-500 hover:bg-blue-500">
                         Subscribe
+                        
                       </Button>
                     </div> */}
                   </div>
