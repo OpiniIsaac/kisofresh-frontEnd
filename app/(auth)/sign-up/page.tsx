@@ -9,7 +9,8 @@ import { useRouter } from "next/navigation";
 export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState<{ email?: string; password?: string; confirmPassword?: string }>({});
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -28,6 +29,7 @@ export default function SignupPage() {
       console.log("User signed up: ", { res });
       setEmail("");
       setPassword("");
+      setConfirmPassword("");
       router.push("/onboarding");
     } catch (e) {
       console.error(e);
@@ -37,11 +39,13 @@ export default function SignupPage() {
   };
 
   const validateForm = () => {
-    const newErrors: { email?: string; password?: string } = {};
+    const newErrors: { email?: string; password?: string; confirmPassword?: string } = {};
     if (!email) newErrors.email = "Email is required";
     if (!password) newErrors.password = "Password is required";
+    if (!confirmPassword) newErrors.confirmPassword = "Confirm Password is required";
     if (email && !/\S+@\S+\.\S+/.test(email)) newErrors.email = "Email is invalid";
     if (password && password.length < 6) newErrors.password = "Password must be at least 6 characters";
+    if (password && confirmPassword && password !== confirmPassword) newErrors.confirmPassword = "Passwords do not match";
     return newErrors;
   };
 
@@ -71,7 +75,7 @@ export default function SignupPage() {
             />
             {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
           </div>
-          <div className="mb-6">
+          <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="password"
@@ -91,6 +95,27 @@ export default function SignupPage() {
               required
             />
             {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+          </div>
+          <div className="mb-6">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="confirmPassword"
+            >
+              Confirm Password
+            </label>
+            <input
+              id="confirmPassword"
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+                setErrors((prev) => ({ ...prev, confirmPassword: '' }));
+              }}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              required
+            />
+            {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>}
           </div>
           <div className="flex items-center justify-end">
             <Button onClick={handleSignup} disabled={loading}>

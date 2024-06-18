@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 export default function ProductTable() {
   const [page, setPage] = useState(0);
@@ -35,12 +35,12 @@ export default function ProductTable() {
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleEdit = (product:any) => {
+  const handleEdit = (product: any) => {
     // Implement your edit logic here
     console.log("Edit product:", product);
   };
 
-  const handleDelete = (id:any) => {
+  const handleDelete = (id: any) => {
     // Implement your delete logic here
     console.log("Delete product with id:", id);
   };
@@ -54,20 +54,16 @@ export default function ProductTable() {
     setPage((prevPage) => (prevPage > 0 ? prevPage - 1 : prevPage));
   };
 
-  const calculatePercentageChange = (currentPrice:any, previousPrice:any) => {
+  const calculatePercentageChange = (currentPrice: any, previousPrice: any) => {
     const change = currentPrice - previousPrice;
     const percentage = (change / previousPrice) * 100;
     return percentage;
   };
 
-  
-
-  
-
   return (
-    <div className="p-4 w-screen md:w-full overflow-auto">
+    <div className="p-4 w-full overflow-x-auto">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl min-w-36 font-bold">Product Table</h2>
+        <h2 className="text-xl font-bold">Product Table</h2>
         <div className="flex items-center">
           <input
             className="border border-gray-300 rounded p-2 w-52 md:w-96"
@@ -78,15 +74,15 @@ export default function ProductTable() {
           />
         </div>
       </div>
-      <div className="overflow-auto">
+      <div className="overflow-x-auto">
         <table className="w-full text-left table-auto">
           <thead>
             <tr>
-              <th className="px-4 py-2">Name</th>
-              <th className="px-4 py-2">Price</th>
-              <th className="px-4 py-2">Unit</th>
-              <th className="px-4 py-2">Indicator</th>
-              <th className="px-4 py-2">Change</th>
+              <th className="px-2 py-1 md:px-4 md:py-2">Name</th>
+              <th className="px-2 py-1 md:px-4 md:py-2">Price</th>
+              <th className="px-2 py-1 md:px-4 md:py-2">Unit</th>
+              <th className="px-2 py-1 md:px-4 md:py-2">Indicator</th>
+              <th className="px-2 py-1 md:px-4 md:py-2">Change</th>
             </tr>
           </thead>
           <tbody>
@@ -101,12 +97,12 @@ export default function ProductTable() {
                 const isPriceDecreased = percentageChange < 0;
                 return (
                   <tr key={product.id} className="hover:bg-gray-100">
-                    <td className="border px-4 py-2">{product.name}</td>
-                    <td className="border px-4 py-2">
+                    <td className="border px-2 py-1 md:px-4 md:py-2 whitespace-nowrap">{product.name}</td>
+                    <td className="border px-2 py-1 md:px-4 md:py-2 whitespace-nowrap">
                       Ugx {product.price.toLocaleString()}
                     </td>
-                    <td className="border px-4 py-2">{product.unit}</td>
-                    <td className="border px-4 py-2">
+                    <td className="border px-2 py-1 md:px-4 md:py-2 whitespace-nowrap">{product.unit}</td>
+                    <td className="border px-2 py-1 md:px-4 md:py-2 whitespace-nowrap">
                       {isPriceIncreased ? (
                         <span className="text-green-500">↑</span>
                       ) : isPriceDecreased ? (
@@ -116,7 +112,7 @@ export default function ProductTable() {
                       )}
                     </td>
                     <td
-                      className={`border px-4 py-2 ${
+                      className={`border px-2 py-1 md:px-4 md:py-2 whitespace-nowrap ${
                         isPriceIncreased
                           ? "text-green-500"
                           : isPriceDecreased
