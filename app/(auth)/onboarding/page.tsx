@@ -50,16 +50,20 @@ const userSpecificFields: Record<string, Field[]> = {
     { label: 'Name', type: 'text', placeholder: 'Enter your name' },
     { label: 'Crop type', type: 'text', placeholder: 'Enter your crop type' },
     { label: 'Acres grown', type: 'number', placeholder: 'Enter acres grown' },
+    { label: 'Phone Number', type: 'tel', placeholder: 'Enter your phone number' }
   ],
   warehouse: [
     { label: 'Warehouse Name', type: 'text', placeholder: 'Enter your warehouse name' },
     { label: 'Capacity (tons)', type: 'number', placeholder: 'Enter capacity in tons' },
+    { label: 'Crop Stocked', type: 'text', placeholder: 'Enter crops you have in stock' },
     { label: 'Manager Name', type: 'text', placeholder: 'Enter manager name' },
+    { label: 'Phone Number', type: 'tel', placeholder: 'Enter your phone number' }
   ],
   trader: [
     { label: 'Name', type: 'text', placeholder: 'Enter your name' },
     { label: 'Contact Information', type: 'text', placeholder: 'Enter your contact information' },
     { label: 'Business Type', type: 'text', placeholder: 'Enter your business type' },
+    { label: 'Phone Number', type: 'tel', placeholder: 'Enter your phone number' }
   ],
 };
 
