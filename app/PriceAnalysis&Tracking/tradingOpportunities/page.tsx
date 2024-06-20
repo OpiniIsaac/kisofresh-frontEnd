@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
+// import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
-const stripePromise = loadStripe('your-publishable-key-here'); // Replace with your actual Stripe publishable key
+// const stripePromise = loadStripe('your-publishable-key-here'); // Replace with your actual Stripe publishable key
 
 const CheckoutForm = () => {
   const stripe = useStripe();
