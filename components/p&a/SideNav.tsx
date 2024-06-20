@@ -9,19 +9,25 @@ import { usePathname } from "next/navigation";
 const buttonCollection: {key:number; title: string; route: string }[] = [
   {
     key: 1,
+    title: "Trends",
+    route: "/PriceAnalysis&Tracking/trends",
+  },
+  {
+    key: 2,
     title: "Prices",
     route: "/PriceAnalysis&Tracking/price",
   },
   {
-    key: 2,
+    key: 3,
     title: "Weather",
     route: "/PriceAnalysis&Tracking/weather",
   },
   {
-    key: 3,
+    key: 4,
     title: "Insights",
     route: "/PriceAnalysis&Tracking/tradingOpportunities",
   },
+
 ];
 
 export default function SideNav() {
