@@ -20,6 +20,10 @@ import { auth } from "@/app/firebase/config";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { hedvig, outfit } from "./Fonts";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { LoginLink } from "@kinde-oss/kinde-auth-nextjs/components";
+import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
+import Image from "next/image";
 
 interface NavLink {
   title: string;
@@ -41,13 +45,34 @@ const NavLinks: NavLink[] = NavLinkCollection.map((item) => {
 export default function Header() {
   const [isScrolled, setisScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-
-  const islogged = useSelector((state: RootState) => state.LoginState.value);
   const dispatch = useDispatch();
 
   const handleOpen = () => {
     setIsOpen(true);
   };
+
+  const {
+    permissions,
+    isLoading,
+    user,
+    accessToken,
+    organization,
+    userOrganizations,
+    getPermission,
+    getBooleanFlag,
+    getIntegerFlag,
+    getFlag,
+    getStringFlag,
+    getClaim,
+    getAccessToken,
+    getToken,
+    getIdToken,
+    getOrganization,
+    getPermissions,
+    getUserOrganizations,
+  } = useKindeBrowserClient();
+
+  const image:any = user?.picture;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -117,15 +142,21 @@ export default function Header() {
               </nav>
               {/*The button below will navigate to the auth route on which the user will find login page, no need for signup button as there will be option to sign up on login page, two buttons looked ugly  */}
 
-              {islogged ? (
+              {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button>
+                    <button className="outline-none">
                       <div
                         className={`${"text-xl flex-col ps-5 items-center hidden md:flex "}`}
                       >
-                        <SlUser />
-                        <div className="text-sm">Account</div>
+                        <Image
+                          src={image}
+                          alt={""}
+                          width={1000}
+                          className="w-10 rounded-full"
+                          height={1000}
+                        />
+                        <div className="text-sm">{user?.family_name}</div>
                       </div>
                     </button>
                   </DropdownMenuTrigger>
@@ -142,24 +173,17 @@ export default function Header() {
                     </div>
                     <br />
                     <div className="flex justify-end">
-                      <Button onClick={handleLogout}>Logout</Button>
+                      <LogoutLink>
+                        <Button onClick={handleLogout}>Logout</Button>
+                      </LogoutLink>
                     </div>
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
                 <div>
-                  <Link href="/login" className="hidden md:block">
-                    <div className="bg-white"></div>
-                    <Button
-                      className={`${
-                        isScrolled
-                          ? "bg-white text-black hover:bg-blue-700 hover:text-white"
-                          : ""
-                      }`}
-                    >
-                      Login
-                    </Button>
-                  </Link>
+                  <LoginLink>
+                    <Button>Sign in</Button>
+                  </LoginLink>
                 </div>
               )}
               <div className="md:absolute">
@@ -206,12 +230,12 @@ export default function Header() {
                     <Link href="/sign-up" className="flex justify-end my-4 ">
                       <Button
                         onClick={
-                          islogged
+                          user
                             ? () => dispatch(Logout())
                             : () => dispatch(Login())
                         }
                       >
-                        {islogged ? <div>Logout</div> : <div>Login</div>}
+                        {user ? <div>Logout</div> : <div>Login</div>}
                       </Button>
                     </Link>
                   </DropdownMenuContent>
