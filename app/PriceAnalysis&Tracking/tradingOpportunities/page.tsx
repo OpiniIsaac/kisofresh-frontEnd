@@ -1,64 +1,66 @@
 "use client";
 import React, { useState } from 'react';
-// import { loadStripe } from '@stripe/stripe-js';
-import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-
-// const stripePromise = loadStripe('your-publishable-key-here'); // Replace with your actual Stripe publishable key
 
 const CheckoutForm = () => {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [email, setEmail] = useState('');
+  const [cardNumber, setCardNumber] = useState('');
+  const [expiryDate, setExpiryDate] = useState('');
+  const [cvc, setCvc] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    if (!stripe || !elements) {
-      return;
-    }
 
     setLoading(true);
 
-    const cardElement = elements.getElement(CardElement);
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: 'card',
-      card: cardElement!,
-      billing_details: {
-        email,
-      },
-    });
+    // Simulate form submission delay
+    setTimeout(() => {
+      if (!cardNumber || !expiryDate || !cvc) {
+        setError('Please fill in all fields');
+        setLoading(false);
+        return;
+      }
 
-    if (error) {
-      setError(error.message || 'An error occurred');
+      console.log('Card Number:', cardNumber);
+      console.log('Expiry Date:', expiryDate);
+      console.log('CVC:', cvc);
+
       setLoading(false);
-      return;
-    }
-
-    // Send paymentMethod.id to your server to create a payment intent and confirm the payment
-
-    // For now, just log the payment method
-    console.log('Payment method created:', paymentMethod);
-    setLoading(false);
-    setEmail('');
-    setError(null);
-
-    // Clear the card input
-    cardElement?.clear();
+      setCardNumber('');
+      setExpiryDate('');
+      setCvc('');
+      setError(null);
+    }, 2000);
   };
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col items-center space-y-4 w-full">
       <input
-        type="email"
-        placeholder="Enter your email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        type="text"
+        placeholder="Card Number"
+        value={cardNumber}
+        onChange={(e) => setCardNumber(e.target.value)}
         className="border border-gray-300 rounded-md px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
         required
       />
-      <CardElement className="border border-gray-300 rounded-md px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <div className="flex space-x-4 w-full">
+        <input
+          type="text"
+          placeholder="MM/YY"
+          value={expiryDate}
+          onChange={(e) => setExpiryDate(e.target.value)}
+          className="border border-gray-300 rounded-md px-4 py-2 w-1/2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
+        />
+        <input
+          type="text"
+          placeholder="CVC"
+          value={cvc}
+          onChange={(e) => setCvc(e.target.value)}
+          className="border border-gray-300 rounded-md px-4 py-2 w-1/2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
+        />
+      </div>
       {error && <p className="text-red-500 text-sm">{error}</p>}
       <button
         type="submit"
@@ -82,9 +84,7 @@ export default function Page() {
           Subscribe now for exclusive updates at a fee of
           <span className="text-blue-600 font-bold text-xl"> $10 per month</span>.
         </p>
-        <Elements stripe={stripePromise}>
-          <CheckoutForm />
-        </Elements>
+        <CheckoutForm />
       </div>
     </div>
   );
