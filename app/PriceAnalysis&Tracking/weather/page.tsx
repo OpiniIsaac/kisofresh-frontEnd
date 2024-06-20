@@ -60,6 +60,7 @@ export default function Page() {
         `http://kisofresh.vercel.app/api/weather?lat=${latitude}&lon=${longitude}`
       );
       const jsonData: WeatherData = (await response.json()).data;
+      console.log(response);
       setWeatherData(jsonData);
     } catch (error) {
       console.log(error);
@@ -80,8 +81,81 @@ export default function Page() {
     }
   }, []);
 
+  const getWeatherIcon = (main: string) => {
+    switch (main) {
+      case "Rain":
+        return "🌧️";
+      case "Clouds":
+        return "☁️";
+      case "Clear":
+        return "☀️";
+      case "Hot":
+        return "🌞";
+      case "Windy":
+        return "🍃";
+      case "Thunderstorm":
+        return "⛈️";
+      default:
+        return "❓";
+    }
+  };
+
+  function WeatherSelector(index: number) {
+    const forecast = weatherData?.list[index];
+    const time = forecast?.dt_txt;
+    const formattedTime = time ? format(parseISO(time), "PPP p") : "";
+    const weather = forecast?.weather[0]?.description;
+    const mainWeather = forecast?.weather[0]?.main;
+    const icon = getWeatherIcon(mainWeather || "");
+    const temp = forecast?.main.temp.toFixed(1);
+
+    return (
+      <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg shadow-md mb-4">
+        <div className="text-lg font-semibold text-gray-800">{formattedTime}</div>
+        <div className="flex items-center">
+          <span className="text-2xl mr-2">{icon}</span>
+          <div className="text-lg font-semibold text-gray-800">{weather}</div>
+        </div>
+        <div className="text-lg font-semibold text-gray-800">{temp}°C</div>
+      </div>
+    );
+  }
+
+  function groupForecastsByDay(data: WeatherData | null) {
+    if (!data) return [];
+    const grouped: { [key: string]: { dt_txt: string; weather: Weather[]; main: Main }[] } = {};
+    data.list.forEach((item) => {
+      const date = item.dt_txt.split(" ")[0];
+      if (!grouped[date]) grouped[date] = [];
+      grouped[date].push(item);
+    });
+    return Object.values(grouped);
+  }
+
+  const groupedForecasts = groupForecastsByDay(weatherData);
+
+  const handleCropSelection = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setCropType(event.target.value as CropType);
+    setSeason("");
+  };
+
+  const handleSeasonSelection = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSeason(event.target.value);
+  };
+
+  const filteredForecasts = groupedForecasts.filter((dayForecast) => {
+    const month = format(parseISO(dayForecast[0].dt_txt), "MMM");
+    if (season === "planting" && cropType) {
+      return cropSeasons[cropType].planting.includes(month);
+    } else if (season === "harvesting" && cropType) {
+      return cropSeasons[cropType].harvesting.includes(month);
+    }
+    return true;
+  });
+
   return (
     <section className="min-h-screen bg-gray-100 flex flex-col items-center">
+      <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
       <div className="max-w-4xl w-full mx-auto p-4">
         <div className="w-full flex justify-between items-center mb-4">
           <form
@@ -110,7 +184,7 @@ export default function Page() {
           <select
             className="border border-gray-300 rounded-md p-2 mr-4 w-full"
             value={cropType}
-            onChange={(e) => setCropType(e.target.value as CropType)}
+            onChange={handleCropSelection}
           >
             <option value="">Select crop type</option>
             <option value="maize">Maize</option>
@@ -120,7 +194,7 @@ export default function Page() {
           <select
             className="border border-gray-300 rounded-md p-2 w-full"
             value={season}
-            onChange={(e) => setSeason(e.target.value)}
+            onChange={handleSeasonSelection}
             disabled={!cropType}
           >
             <option value="">Select season</option>
@@ -132,36 +206,34 @@ export default function Page() {
           <>
             <div className="bg-white shadow-lg rounded-lg p-6 mb-4 text-center">
               <div className="text-3xl font-bold mb-4">{weatherData.city.name}</div>
-              {/* Display weather data here */}
+              {WeatherSelector(0)}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
-              {/* Display weather forecast here */}
-            </div>
-            <div className="bg-white shadow-lg rounded-lg p-6 mt-4">
-              <h2 className="text-2xl font-bold mb-4">Crop Seasons</h2>
-              <div className="grid grid-cols-2 gap-4">
-                {Object.entries(cropSeasons).map(([crop, seasons]) => (
-                  <div key={crop} className="bg-gray-200 rounded-lg p-4">
-                    <h3 className="text-lg font-semibold mb-2">{crop.toUpperCase()}</h3>
-                    <div className="flex flex-col">
-                      <span className="font-semibold">Planting:</span>
-                      <ul className="list-disc pl-4">
-                        {seasons.planting.map((month) => (
-                          <li key={month}>{month}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="flex flex-col mt-2">
-                      <span className="font-semibold">Harvesting:</span>
-                      <ul className="list-disc pl-4">
-                        {seasons.harvesting.map((month) => (
-                          <li key={month}>{month}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              {filteredForecasts.map((dayForecast, index) => (
+                <div key={index} className="bg-white shadow-lg rounded-lg p-4">
+                  <h3 className="text-xl font-bold mb-2">
+                    {format(parseISO(dayForecast[0].dt_txt.split(" ")[0]), "PPP")}
+                  </h3>
+                  {dayForecast.map((forecast, idx) => {
+                    const time = format(parseISO(forecast.dt_txt), "p");
+                    const description = forecast.weather[0].description;
+                    const temp = forecast.main.temp.toFixed(1);
+                    const icon = getWeatherIcon(forecast.weather[0].main);
+
+                    return (
+                      <div
+                        key={idx}
+                        className="flex justify-between items-center mb-2"
+                      >
+                        <span className="text-sm">{time}</span>
+                        <span className="text-2xl mr-2">{icon}</span>
+                        <span className="text-sm">{description}</span>
+                        <span className="text-sm">{temp}°C</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
             </div>
           </>
         )}
