@@ -4,31 +4,19 @@ import { Button } from "./ui/button";
 import Container from "./Container";
 import Link from "next/link";
 import clsx from "clsx";
-import { usePathname } from "next/navigation";
 import { IoIosMenu } from "react-icons/io";
-import { SlUser } from "react-icons/sl";
+import { useDispatch } from "react-redux";
+import { Login, Logout } from "@/lib/features/accountHandle/loginSlice";
+import { useRouter, usePathname } from "next/navigation";
+import { hedvig, outfit } from "./Fonts";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { LoginLink, LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
+import Image from "next/image";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { RootState } from "@/lib/store";
-import { useDispatch, useSelector } from "react-redux";
-import { Login, Logout } from "@/lib/features/accountHandle/loginSlice";
-import { Divide } from "lucide-react";
-import { auth } from "@/app/firebase/config";
-import { signOut } from "firebase/auth";
-import { useRouter } from "next/navigation";
-import { hedvig, outfit } from "./Fonts";
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
-import { LoginLink } from "@kinde-oss/kinde-auth-nextjs/components";
-import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
-import Image from "next/image";
-
-interface NavLink {
-  title: string;
-  route: string;
-}
 
 const NavLinkCollection: { title: string; route: string }[] = [
   {
@@ -38,41 +26,13 @@ const NavLinkCollection: { title: string; route: string }[] = [
   { title: "Source produce", route: "/SourceProduce" },
 ];
 
-const NavLinks: NavLink[] = NavLinkCollection.map((item) => {
-  return item as NavLink;
-});
-
 export default function Header() {
   const [isScrolled, setisScrolled] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
-
-  const handleOpen = () => {
-    setIsOpen(true);
-  };
-
-  const {
-    permissions,
-    isLoading,
-    user,
-    accessToken,
-    organization,
-    userOrganizations,
-    getPermission,
-    getBooleanFlag,
-    getIntegerFlag,
-    getFlag,
-    getStringFlag,
-    getClaim,
-    getAccessToken,
-    getToken,
-    getIdToken,
-    getOrganization,
-    getPermissions,
-    getUserOrganizations,
-  } = useKindeBrowserClient();
-
-  const image:any = user?.picture;
+  const { user } = useKindeBrowserClient();
+  const image: any = user?.picture;
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -87,8 +47,6 @@ export default function Header() {
     };
   }, []);
 
-  const pathname = usePathname();
-  const router = useRouter();
   const handleLogout = async () => {
     try {
       router.push("/");
@@ -109,18 +67,22 @@ export default function Header() {
           <div className="flex justify-between">
             <Link
               href="/"
-              className={`text-blue-500 font-extrabold ps-4 transition-all ease-in-out ${
+              className={`ps-4 md:ps-0 text-blue-500 font-extrabold transition-all ease-in-out ${
                 isScrolled
                   ? "text-white text-4xl py-1"
                   : "text-blue-500 text-4xl py-4 "
               } ${hedvig.className}`}
             >
-              KisoIndex
+              <h1>KisoIndex</h1>
             </Link>
 
             <div className="flex gap-20 items-center ">
-              <nav className="flex gap-10 text-sm">
-                {NavLinks.map((item) => (
+              <nav
+                className={`flex gap-10 text-sm ${
+                  isScrolled ? "text-black" : "text-slate-500"
+                }`}
+              >
+                {NavLinkCollection.map((item) => (
                   <Link
                     key={item.title}
                     href={item.route}
@@ -131,8 +93,10 @@ export default function Header() {
                           : "relative hover:text-black transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-400 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-400 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] hidden md:block"
                       } ${outfit.className}`,
                       {
-                        "underline underline-offset-[5px] hover:no-underline":
-                          pathname === item.route,
+                        "text-black": pathname === item.route && !isScrolled,
+                      },
+                      {
+                        "text-white": pathname === item.route && isScrolled,
                       }
                     )}
                   >
@@ -156,16 +120,17 @@ export default function Header() {
                           className="w-10 rounded-full"
                           height={1000}
                         />
-                        <div className="text-sm">{user?.family_name}</div>
                       </div>
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="max-w-60">
                     <div>
                       <br />
-                      <h1>Profile</h1>
+                      <h1 className="justify-center flex">
+                        {user?.family_name}
+                      </h1>
                       <br />
-                      <p>
+                      <p className="px-2">
                         Lorem ipsum dolor sit amet, consectetur adipisicing
                         elit. Quidem, unde vitae! Ipsa aspernatur amet laborum
                         omnis, veniam deserunt commodi enim?
@@ -174,15 +139,17 @@ export default function Header() {
                     <br />
                     <div className="flex justify-end">
                       <LogoutLink>
-                        <Button onClick={handleLogout}>Logout</Button>
+                        <Button onClick={handleLogout} className="m-2">
+                          Logout
+                        </Button>
                       </LogoutLink>
                     </div>
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <div>
+                <div className="hidden md:block">
                   <LoginLink>
-                    <Button>Sign in</Button>
+                    <Button className="">Sign in</Button>
                   </LoginLink>
                 </div>
               )}
@@ -201,6 +168,21 @@ export default function Header() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="flex flex-col justify-between px-4 h-96 w-72 py-4">
                     <div>
+                      <div className="flex justify-center items-center">
+                        <div className="flex flex-col items-center">
+                          {user?<Image
+                            src={image}
+                            alt={""}
+                            width={1000}
+                            className="w-20 rounded-full"
+                            height={1000}
+                          />:""}
+                          <p>
+                            {user?.given_name} {user?.family_name}
+                          </p>
+                        </div>
+                      </div>
+
                       <Link href="/">
                         <Button
                           className={clsx(
@@ -211,7 +193,7 @@ export default function Header() {
                           Home
                         </Button>
                       </Link>
-                      {NavLinks.map((item) => (
+                      {NavLinkCollection.map((item) => (
                         <Link key={item.title} href={item.route}>
                           <Button
                             className={clsx(
@@ -227,17 +209,19 @@ export default function Header() {
                         </Link>
                       ))}
                     </div>
-                    <Link href="/sign-up" className="flex justify-end my-4 ">
-                      <Button
-                        onClick={
-                          user
-                            ? () => dispatch(Logout())
-                            : () => dispatch(Login())
-                        }
-                      >
-                        {user ? <div>Logout</div> : <div>Login</div>}
-                      </Button>
-                    </Link>
+                    <div className="flex justify-end">
+                      <LogoutLink>
+                        <Button
+                          onClick={
+                            user
+                              ? () => dispatch(Logout())
+                              : () => dispatch(Login())
+                          }
+                        >
+                          {user ? <div>Logout</div> : <div>Login</div>}
+                        </Button>
+                      </LogoutLink>
+                    </div>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>

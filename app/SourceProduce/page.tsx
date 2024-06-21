@@ -137,9 +137,6 @@ export default function CropInterestForm() {
 
 
     console.log(user);
-    
-
-
     if (isLoading)
       return (
         <Container>
