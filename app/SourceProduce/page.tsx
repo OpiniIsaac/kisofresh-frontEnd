@@ -17,16 +17,17 @@ import { Login } from "@/lib/features/accountHandle/loginSlice";
 import Loading from "@/components/Loading";
 import Icon from "@/components/Icon";
 import FindingFarmers from "@/components/FindingFarmers";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { checkUser } from "../action/user";
+
 
 export default function CropInterestForm() {
-  const [user] = useAuthState(auth);
-
+  
   const router = useRouter();
   const dispatch = useDispatch();
-  if (!user) {
-    router.push("/login");
-  } else {
-    console.log(user);
+  // if (user) {
+  //   router.push("/login");
+  // }else 
     dispatch(Login());
     interface Farmer {
       _id: string;
@@ -107,10 +108,17 @@ export default function CropInterestForm() {
         console.error("Error:", error);
       }
     };
+    const {
+      permissions,
+      user,
+
+    } = useKindeBrowserClient();
 
     useEffect(() => {
+
+      checkUser();
       handlePage;
-    }, []);
+    }, [user]);
 
     //??
     const togglePhoneNumberVisibility = (
@@ -127,6 +135,8 @@ export default function CropInterestForm() {
       }));
     };
 
+
+    console.log(user);
     if (isLoading)
       return (
         <Container>
@@ -483,5 +493,5 @@ export default function CropInterestForm() {
         </section>
       </Container>
     );
-  }
+  // }
 }
