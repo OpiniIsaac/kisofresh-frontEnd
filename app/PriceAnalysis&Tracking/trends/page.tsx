@@ -54,70 +54,68 @@ const Header: React.FC = () => {
 
   const Trends: React.FC = () => {
     const trends = [
-      {
-        id: 1,
-        imageSrc: '/images/crops.jpg',
-        title: 'Maize',
-        description: 'High demand in the market and suitable for planting in the current season.',
-      },
-      {
-        id: 2,
-        imageSrc: '/images/crops.jpg',
-        title: 'Beans',
-        description: 'Steady growth and profitable for traders.',
-      },
-      {
-        id: 3,
-        imageSrc: '/images/crops.jpg',
-        title: 'Sorghum',
-        description: 'Resilient to drought and high market value.',
-      },
-      // Add more crop trends as needed
-    ];
-  
-    const plantingSeasonCrops = [
-      {
-        id: 1,
-        imageSrc: '/images/crops.jpg',
-        title: 'Rice',
-        description: 'Ideal for planting in the current season.',
-      },
-      {
-        id: 2,
-        imageSrc: '/images/crops.jpg',
-        title: 'Wheat',
-        description: 'Suitable soil and weather conditions for optimal growth.',
-      },
-      {
-        id: 3,
-        imageSrc: '/images/crops.jpg',
-        title: 'Barley',
-        description: 'Thrives in cooler climates and has a short growing season.',
-      },
-      // Add more crops for planting season as needed
-    ];
-  
-    const bestCropsForFarmers = [
-      {
-        id: 1,
-        imageSrc: '/images/crops.jpg',
-        title: 'Soybeans',
-        description: 'High yield and good market price.',
-      },
-      {
-        id: 2,
-        imageSrc: '/images/crops.jpg',
-        title: 'Tomatoes',
-        description: 'Quick growth cycle and high demand.',
-      },
-      {
-        id: 3,
-        imageSrc: '/images/crops.jpg',
-        title: 'Potatoes',
-        description: 'High yield and versatile usage in cooking.',
-      },
-      // Add more best crops for farmers and traders as needed
-    ];
+        {
+          id: 1,
+          imageSrc: '/images/crops.jpg', // Replace with a specific maize image
+          title: 'Maize (Corn)',
+          description: 'Prices up 15%  due to high global demand. Ideal for planting in most regions.',
+        },
+        {
+          id: 2,
+          imageSrc: '/images/crops.jpg', // Replace with a specific beans image
+          title: 'Beans',
+          description: 'Steady growth expected this season. Profitable for farmers and traders due to low supply.',
+        },
+        {
+          id: 3,
+          imageSrc: '/images/crops.jpg', // Replace with a specific sorghum image
+          title: 'Sorghum',
+          description: 'Drought-resistant and high yielding. Market value increasing due to alternative grain demand.',
+        },
+      ];
+      
+      const plantingSeasonCrops = [
+        {
+          id: 1,
+          imageSrc: '/images/crops.jpg', // Replace with a specific rice image
+          title: 'Rice',
+          description: 'Planting window approaching in most regions. High demand ensures profitability.',
+        },
+        {
+          id: 2,
+          imageSrc: '/images/crops.jpg', // Replace with a specific wheat image
+          title: 'Wheat',
+          description: 'Favorable weather conditions expected for optimal growth this season.',
+        },
+        {
+          id: 3,
+          imageSrc: '/images/crops.jpg', // Replace with a specific barley image
+          title: 'Barley',
+          description: 'Short growing season makes it a good choice for double cropping.',
+        },
+      ];
+      
+      const bestCropsForFarmers = [
+        {
+          id: 1,
+          imageSrc: '/images/crops.jpg', // Replace with a specific soybeans image
+          title: 'Soybeans',
+          description: 'High protein content and increasing demand from livestock industries.',
+        },
+        {
+          id: 2,
+          imageSrc: '/images/crops.jpg', // Replace with a specific tomatoes image
+          title: 'Tomatoes',
+          description: 'Relatively short growing cycle and high demand throughout the year.',
+        },
+        {
+          id: 3,
+          imageSrc: '/images/crops.jpg', // Replace with a specific potatoes image
+          title: 'Potatoes',
+          description: 'Disease-resistant varieties available, ensuring high yields and market value.',
+        },
+      ];
+      
   
     return (
       <div className="bg-gray-100 min-h-screen">
