@@ -11,14 +11,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../firebase/config";
+// import { auth } from "../firebase/config";
 import { useDispatch } from "react-redux";
 import { Login } from "@/lib/features/accountHandle/loginSlice";
 import Loading from "@/components/Loading";
 import Icon from "@/components/Icon";
 import FindingFarmers from "@/components/FindingFarmers";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
-import { checkUser } from "../action/user";
+// import { checkUser } from "../action/user";
 
 
 export default function CropInterestForm() {
@@ -116,7 +116,7 @@ export default function CropInterestForm() {
 
     useEffect(() => {
 
-      checkUser();
+      // checkUser();
       handlePage;
     }, [user]);
 
