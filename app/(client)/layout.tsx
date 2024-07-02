@@ -6,30 +6,24 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 
-const inter = Outfit({
-  subsets: ["latin"],
-  display: "swap",
-});
 
-export const metadata: Metadata = {
-  title: "KisoIndex",
-  description: "Data for informed agricultural decisions.",
-};
 
-export default function RootLayout({
+
+
+export default function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <StoreProvider>
+    // <StoreProvider>
       <html lang="en">
-        <body className={inter.className}>
+        {/* <body className={inter.className}> */}
           <Header />
           {children}
           <Footer />
-        </body>
+        {/* </body> */}
       </html>
-    </StoreProvider>
+    // </StoreProvider>
   );
 }
