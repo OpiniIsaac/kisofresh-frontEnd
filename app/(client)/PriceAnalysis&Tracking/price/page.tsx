@@ -1,11 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ProductTable() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter();
 
   // Dummy data
   const products = [
@@ -60,6 +62,10 @@ export default function ProductTable() {
     return percentage;
   };
 
+  const handleRowClick = (id: any) => {
+    router.push(`/PriceAnalysis&Tracking/chart`);
+  };
+
   return (
     <div className="p-4 w-full overflow-x-auto">
       <div className="flex justify-between items-center mb-4">
@@ -96,7 +102,7 @@ export default function ProductTable() {
                 const isPriceIncreased = percentageChange > 0;
                 const isPriceDecreased = percentageChange < 0;
                 return (
-                  <tr key={product.id} className="hover:bg-gray-100">
+                  <tr key={product.id} className="hover:bg-gray-100 cursor-pointer" onClick={() => handleRowClick(product.id)}>
                     <td className="border px-2 py-1 md:px-4 md:py-2 whitespace-nowrap">{product.name}</td>
                     <td className="border px-2 py-1 md:px-4 md:py-2 whitespace-nowrap">
                       Ugx {product.price.toLocaleString()}
