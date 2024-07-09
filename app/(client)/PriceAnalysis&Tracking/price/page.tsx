@@ -1,51 +1,42 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { cropPrices } from "@/lib/actions/source.actions";
+
+type Product = {
+  _id: string;
+  Date: string;
+  Crop: string;
+  Prices: number;
+};
 
 export default function ProductTable() {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+
   const router = useRouter();
 
-  // Dummy data
-  const products = [
-    { id: 1, name: "Apple", price: 1000, unit: "kg", previousPrice: 900 },
-    { id: 2, name: "Banana", price: 8000, unit: "kg", previousPrice: 7000 },
-    { id: 3, name: "Carrot", price: 300, unit: "kg", previousPrice: 450 },
-    { id: 4, name: "Potato", price: 500, unit: "kg", previousPrice: 550 },
-    { id: 5, name: "Tomato", price: 800, unit: "kg", previousPrice: 750 },
-    { id: 6, name: "Cherry", price: 1350, unit: "kg", previousPrice: 1400 },
-    { id: 7, name: "Guava", price: 950, unit: "kg", previousPrice: 900 },
-    { id: 8, name: "Sweet potato", price: 500, unit: "kg", previousPrice: 450 },
-    { id: 9, name: "Irish Potato", price: 320, unit: "kg", previousPrice: 550 },
-    { id: 10, name: "Egg plant", price: 800, unit: "kg", previousPrice: 750 },
-    { id: 11, name: "Cereal", price: 1500, unit: "kg", previousPrice: 1400 },
-    { id: 12, name: "Star fruit", price: 7500, unit: "kg", previousPrice: 7000 },
-    { id: 13, name: "Soy", price: 5000, unit: "kg", previousPrice: 4500 },
-    { id: 14, name: "Bean", price: 600, unit: "kg", previousPrice: 550 },
-    { id: 15, name: "Small Tomato", price: 800, unit: "kg", previousPrice: 750 },
-    { id: 16, name: "Big Cherry", price: 1300, unit: "kg", previousPrice: 1400 },
-    { id: 17, name: "Guava Tropical", price: 7500, unit: "kg", previousPrice: 7000 },
-    { id: 18, name: "Dates", price: 500, unit: "kg", previousPrice: 450 },
-    { id: 19, name: "Rice", price: 600, unit: "kg", previousPrice: 950 },
-    { id: 20, name: "Peas", price: 800, unit: "kg", previousPrice: 750 },
-  ];
+  useEffect(() => {
+    async function fetchProducts() {
+      const data = await cropPrices();
+      console.log(data)
+      setProducts(data);
+    }
+    fetchProducts();
+  }, []);
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const handleEdit = (product: any) => {
-    // Implement your edit logic here
-    console.log("Edit product:", product);
-  };
-
-  const handleDelete = (id: any) => {
-    // Implement your delete logic here
-    console.log("Delete product with id:", id);
-  };
+  useEffect(() => {
+    setFilteredProducts(
+      products.filter((product: any) =>
+        product.Crop.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [searchTerm, products]);
 
   const handleNextClick = () => {
     const maxPage = Math.ceil(filteredProducts.length / rowsPerPage) - 1;
@@ -56,14 +47,8 @@ export default function ProductTable() {
     setPage((prevPage) => (prevPage > 0 ? prevPage - 1 : prevPage));
   };
 
-  const calculatePercentageChange = (currentPrice: any, previousPrice: any) => {
-    const change = currentPrice - previousPrice;
-    const percentage = (change / previousPrice) * 100;
-    return percentage;
-  };
-
-  const handleRowClick = (id: any) => {
-    router.push(`/PriceAnalysis&Tracking/chart`);
+  const handleRowClick = (crop: string) => {
+    router.push(`/PriceAnalysis&Tracking/chart?crop=${crop}`);
   };
 
   return (
@@ -84,53 +69,25 @@ export default function ProductTable() {
         <table className="w-full text-left table-auto">
           <thead>
             <tr>
-              <th className="px-2 py-1 md:px-4 md:py-2">Name</th>
+              <th className="px-2 py-1 md:px-4 md:py-2">Date</th>
+              <th className="px-2 py-1 md:px-4 md:py-2">Crop</th>
               <th className="px-2 py-1 md:px-4 md:py-2">Price</th>
-              <th className="px-2 py-1 md:px-4 md:py-2">Unit</th>
-              <th className="px-2 py-1 md:px-4 md:py-2">Indicator</th>
-              <th className="px-2 py-1 md:px-4 md:py-2">Change</th>
             </tr>
           </thead>
           <tbody>
             {filteredProducts
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((product) => {
-                const percentageChange = calculatePercentageChange(
-                  product.price,
-                  product.previousPrice
-                );
-                const isPriceIncreased = percentageChange > 0;
-                const isPriceDecreased = percentageChange < 0;
-                return (
-                  <tr key={product.id} className="hover:bg-gray-100 cursor-pointer" onClick={() => handleRowClick(product.id)}>
-                    <td className="border px-2 py-1 md:px-4 md:py-2 whitespace-nowrap">{product.name}</td>
-                    <td className="border px-2 py-1 md:px-4 md:py-2 whitespace-nowrap">
-                      Ugx {product.price.toLocaleString()}
-                    </td>
-                    <td className="border px-2 py-1 md:px-4 md:py-2 whitespace-nowrap">{product.unit}</td>
-                    <td className="border px-2 py-1 md:px-4 md:py-2 whitespace-nowrap">
-                      {isPriceIncreased ? (
-                        <span className="text-green-500">↑</span>
-                      ) : isPriceDecreased ? (
-                        <span className="text-red-500">↓</span>
-                      ) : (
-                        <span className="text-gray-500">↔</span>
-                      )}
-                    </td>
-                    <td
-                      className={`border px-2 py-1 md:px-4 md:py-2 whitespace-nowrap ${
-                        isPriceIncreased
-                          ? "text-green-500"
-                          : isPriceDecreased
-                          ? "text-red-500"
-                          : "text-gray-500"
-                      }`}
-                    >
-                      {percentageChange.toFixed(2)}%
-                    </td>
-                  </tr>
-                );
-              })}
+              .map((product: any) => (
+                <tr
+                  key={product._id}
+                  className="hover:bg-gray-100 cursor-pointer"
+                  onClick={() => handleRowClick(product.Crop)}
+                >
+                  <td className="border px-2 py-1 md:px-4 md:py-2 whitespace-nowrap">{product.Date}</td>
+                  <td className="border px-2 py-1 md:px-4 md:py-2 whitespace-nowrap">{product.Crop}</td>
+                  <td className="border px-2 py-1 md:px-4 md:py-2 whitespace-nowrap">{product.Prices}</td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

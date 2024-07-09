@@ -81,3 +81,19 @@ export async function fetchFarmersByCriteria({
     await client.close();
   }
 }
+
+
+export async function cropPrices() {
+  const uri = 'mongodb+srv://qwertyisaac9:fABvsWbvzyUu6er0@cluster0.xrpcdl9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const db = client.db('pricesTwo');
+    const collection = db.collection('crop_prices');
+    const cropPrices = await collection.find({}).toArray();
+    return cropPrices;
+  } finally {
+    await client.close();
+  }
+}
