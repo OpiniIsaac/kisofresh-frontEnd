@@ -17,9 +17,10 @@ type CropPrice = {
   Date: string;
   Crop: string;
   Prices: number;
+  date?: Date; // Add this to store parsed date
 };
 
-export default function PriceChart({ crop }: { crop: string }) {
+export default function PriceChart({ crop }: any) {
   const [data, setData] = useState<CropPrice[]>([]);
   const [selectedYear, setSelectedYear] = useState<string>("All Years");
 
@@ -30,16 +31,18 @@ export default function PriceChart({ crop }: { crop: string }) {
         .then((response) => {
           const filteredData: CropPrice[] = response.data
             .filter((item: CropPrice) => item.Crop === crop)
-            .filter((d) => d.Date); // Filter out any entries with null or empty dates
+            .filter((d:any) => d.Date); // Filter out any entries with null or empty dates
 
           const parseDate = (dateStr: string) => {
             return new Date(dateStr);
           };
 
-          const orderedData = filteredData.map((d) => ({
-            ...d,
-            date: parseDate(d.Date),
-          })).sort((a, b) => a.date.getTime() - b.date.getTime());
+          const orderedData = filteredData
+            .map((d) => ({
+              ...d,
+              date: parseDate(d.Date),
+            }))
+            .sort((a, b) => a.date!.getTime() - b.date!.getTime());
 
           setData(orderedData);
         })
@@ -50,22 +53,25 @@ export default function PriceChart({ crop }: { crop: string }) {
   }, [crop]);
 
   const availableYears = Array.from(
-    new Set(data.map((d) => d.date.getFullYear().toString()))
+    new Set(data.map((d) => d.date!.getFullYear().toString()))
   ).sort();
 
   const filteredData =
     selectedYear === "All Years"
       ? data
-      : data.filter((d) => d.date.getFullYear().toString() === selectedYear);
+      : data.filter((d) => d.date!.getFullYear().toString() === selectedYear);
 
   // Function to group data by year and sort months within each year
-  const groupedData = filteredData.reduce((acc, curr) => {
-    const year = curr.date.getFullYear().toString();
-    acc[year] = acc[year] || [];
-    acc[year].push(curr);
-    acc[year].sort((a, b) => a.date.getMonth() - b.date.getMonth());
-    return acc;
-  }, {});
+  const groupedData = filteredData.reduce<{ [key: string]: CropPrice[] }>(
+    (acc, curr) => {
+      const year = curr.date!.getFullYear().toString();
+      acc[year] = acc[year] || [];
+      acc[year].push(curr);
+      acc[year].sort((a, b) => a.date!.getMonth() - b.date!.getMonth());
+      return acc;
+    },
+    {}
+  );
 
   // Flatten grouped data back into a single array
   const chartData = Object.values(groupedData).flat();
