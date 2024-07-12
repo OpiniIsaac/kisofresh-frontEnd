@@ -21,11 +21,15 @@ export default function ProductTable() {
 
   const router = useRouter();
 
+  const [loading, setLoading] = useState<boolean>(true);
+
   useEffect(() => {
     async function fetchProducts() {
+      setLoading(true);
       const data = await cropPrices();
-      console.log(data)
+      console.log(data);
       setProducts(data);
+      setLoading(false);
     }
     fetchProducts();
   }, []);
@@ -57,7 +61,7 @@ export default function ProductTable() {
         <h2 className="text-xl font-bold">Product Table</h2>
         <div className="flex items-center">
           <input
-            className="border border-gray-300 rounded p-2 w-52 md:w-96"
+            className="border border-gray-300 rounded-lg p-2 w-52 md:w-96 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
             type="text"
             placeholder="Search products"
             value={searchTerm}
@@ -65,13 +69,12 @@ export default function ProductTable() {
           />
         </div>
       </div>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto shadow rounded-lg">
         <table className="w-full text-left table-auto">
-          <thead>
+          <thead className="bg-gray-50">
             <tr>
-              <th className="px-2 py-1 md:px-4 md:py-2">Date</th>
-              <th className="px-2 py-1 md:px-4 md:py-2">Crop</th>
-              <th className="px-2 py-1 md:px-4 md:py-2">Price</th>
+              <th className="px-4 py-2">Crop</th>
+              <th className="px-4 py-2">Price</th>
             </tr>
           </thead>
           <tbody>
@@ -80,25 +83,29 @@ export default function ProductTable() {
               .map((product: any) => (
                 <tr
                   key={product._id}
-                  className="hover:bg-gray-100 cursor-pointer"
+                  className="hover:bg-gray-100 cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-md"
                   onClick={() => handleRowClick(product.Crop)}
                 >
-                  <td className="border px-2 py-1 md:px-4 md:py-2 whitespace-nowrap">{product.Date}</td>
-                  <td className="border px-2 py-1 md:px-4 md:py-2 whitespace-nowrap">{product.Crop}</td>
-                  <td className="border px-2 py-1 md:px-4 md:py-2 whitespace-nowrap">{product.Prices}</td>
+                  <td className="border px-4 py-2">{product.Crop}</td>
+                  <td className="border px-4 py-2">{product.Prices}</td>
                 </tr>
               ))}
           </tbody>
         </table>
       </div>
-      <div className="w-full flex justify-between my-10">
-        <Button onClick={handlePrevClick}>Previous</Button>
-        <p className="flex items-center">
-          Showing {page * rowsPerPage + 1} to{" "}
-          {Math.min((page + 1) * rowsPerPage, filteredProducts.length)} of{" "}
-          {filteredProducts.length}
+      <div className="w-full flex justify-between items-center my-4">
+        <Button onClick={handlePrevClick} disabled={page === 0}>
+          Previous
+        </Button>
+        <p className="text-sm">
+          Page {page + 1} of {Math.ceil(filteredProducts.length / rowsPerPage)}
         </p>
-        <Button onClick={handleNextClick}>Next</Button>
+        <Button
+          onClick={handleNextClick}
+          disabled={page >= Math.ceil(filteredProducts.length / rowsPerPage) - 1}
+        >
+          Next
+        </Button>
       </div>
     </div>
   );

@@ -20,7 +20,11 @@ import {
 
 const NavLinkCollection: { title: string; route: string }[] = [
   {
-    title: "Price analysis & tracking",
+    title: "market trends",
+    route: "/PriceAnalysis&Tracking/trends",
+  },
+  {
+    title: "Analysis",
     route: "/PriceAnalysis&Tracking/price",
   },
   { title: "Source produce", route: "/SourceProduce" },
