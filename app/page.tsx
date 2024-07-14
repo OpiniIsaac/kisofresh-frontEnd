@@ -7,7 +7,7 @@ import React from "react";
 import { Logout } from "@/lib/features/accountHandle/loginSlice";
 import { useSelector } from "react-redux";
 import { signOut } from "firebase/auth";
-import { auth } from "../firebase/config";
+import { auth } from "./firebase/config";
 import SignUpPrompt from "@/components/Register";
 import Benefits from "@/components/Benefits";
 

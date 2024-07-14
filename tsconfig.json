@@ -21,6 +21,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/new/_components/Chart.tsx", "app/(client)/PriceAnalysis&Tracking/chart/page.tsx", "components/Chart.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/new/_components/Chart.tsx", "app/PriceAnalysis&Tracking/chart/page.tsx", "components/Chart.tsx"],
   "exclude": ["node_modules"]
 }
