@@ -7,8 +7,8 @@ export default function Loading() {
 
 <Image src="/images/Logo.png"
           alt=""
-          width={1000}
-          height={1000}
+          width={10000}
+          height={10000}
           className="animate-bounce w-40 md:pb-40w-40 md:pb-40"
         />
     </div>
