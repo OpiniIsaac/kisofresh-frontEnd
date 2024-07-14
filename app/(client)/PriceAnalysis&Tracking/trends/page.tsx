@@ -23,15 +23,7 @@ const TrendCard: React.FC<TrendCardProps> = ({ imageSrc, title, description }) =
   );
 };
 
-const Header: React.FC = () => {
-    return (
-      <header className="bg-blue-600 text-white py-6 shadow-md mb-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl font-bold">Crop Trends & Insights</h1>
-        </div>
-      </header>
-    );
-  };
+
 
   interface SectionProps {
     title: string;
@@ -41,7 +33,7 @@ const Header: React.FC = () => {
   const Section: React.FC<SectionProps> = ({ title, children }) => {
     return (
       <section className="my-12 px-4">
-        <h2 className="text-3xl font-bold text-center mb-8">{title}</h2>
+        <h2 className="text-4xl font-bold text-center mb-8">{title}</h2>
         <div className="max-w-6xl mx-auto">{children}</div>
       </section>
     );
@@ -119,7 +111,7 @@ const Header: React.FC = () => {
   
     return (
       <div className="bg-gray-100 min-h-screen">
-        <Header />
+      
         <main className="py-8">
           <Section title="Trending Crops">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
