@@ -1,4 +1,4 @@
- "use client"
+"use client";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import StoreProvider from "./StoreProvider";
@@ -12,7 +12,6 @@ const metadata = {
   description: "Data for informed agricultural decisions.",
 };
 
-
 const inter = Outfit({
   subsets: ["latin"],
   display: "swap",
@@ -23,25 +22,31 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   const isAdminRoute = pathname.startsWith("/admin");
 
   if (isAdminRoute) {
-    return <>
-     <html lang="en">
-     <body className={inter.className}>
-    {children}
-    </body>
-    </html>
-    
-    </>;
+    return (
+      <html lang="en">
+        <body className={inter.className}>
+          {children}
+        </body>
+      </html>
+    );
+  } else if (pathname.startsWith("/seller")) {
+    return (
+      <html lang="en">
+        <body className={inter.className}>
+          {children}
+        </body>
+      </html>
+    );
   }
 
   return (
     <StoreProvider>
-         <html lang="en">
-         <body className={inter.className}>
-      <Header />
-
-      {children}
-      <Footer />
-      </body>
+      <html lang="en">
+        <body className={inter.className}>
+          <Header />
+          {children}
+          <Footer />
+        </body>
       </html>
     </StoreProvider>
   );
