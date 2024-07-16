@@ -37,6 +37,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </body>
       </html>
     );
+  } else if (pathname.startsWith("/buyer")) {
+    return (
+      <html lang="en">
+        <body className={inter.className}>
+          {children}
+        </body>
+      </html>
+    );
   }
 
   return (

@@ -7,17 +7,17 @@ const Sidebar = () => {
       <ul className="p-4">
         <li className="mb-2">
           <Link href="/buyers">
-            <a className="text-gray-700">Dashboard</a>
+            <div className="text-gray-700">Dashboard</div>
           </Link>
         </li>
         <li className="mb-2">
           <Link href="/buyers/products">
-            <a className="text-gray-700">Products</a>
+            <div className="text-gray-700">Products</div>
           </Link>
         </li>
         <li className="mb-2">
           <Link href="/buyers/orders">
-            <a className="text-gray-700">Orders</a>
+            <div className="text-gray-700">Orders</div>
           </Link>
         </li>
       </ul>

@@ -1,5 +1,5 @@
 // app/admin/layout.js
-import AdminSideBar from '@/components/p&a/AdminSideBar';
+import Sidebar from '@/components/buyers/Sidebar';
 
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
