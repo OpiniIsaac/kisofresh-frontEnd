@@ -7,25 +7,19 @@ const Orders = () => {
     { id: 2, product: "Rice", quantity: 30, status: "Completed", details: "Order delivered on 05-Jan" },
     { id: 3, product: "Beans", quantity: 70, status: "Pending", details: "Order placed on 10-Jan" },
     { id: 4, product: "Wheat", quantity: 20, status: "Cancelled", details: "Order cancelled on 15-Jan" },
-    { id: 1, product: "Maize", quantity: 50, status: "Pending", details: "Order placed on 01-Jan" },
-    { id: 2, product: "Rice", quantity: 30, status: "Completed", details: "Order delivered on 05-Jan" },
-    { id: 3, product: "Beans", quantity: 70, status: "Pending", details: "Order placed on 10-Jan" },
-    { id: 4, product: "Wheat", quantity: 20, status: "Cancelled", details: "Order cancelled on 15-Jan" },  { id: 1, product: "Maize", quantity: 50, status: "Pending", details: "Order placed on 01-Jan" },
-    { id: 2, product: "Rice", quantity: 30, status: "Completed", details: "Order delivered on 05-Jan" },
-    { id: 3, product: "Beans", quantity: 70, status: "Pending", details: "Order placed on 10-Jan" },
-    { id: 4, product: "Wheat", quantity: 20, status: "Cancelled", details: "Order cancelled on 15-Jan" },  { id: 1, product: "Maize", quantity: 50, status: "Pending", details: "Order placed on 01-Jan" },
-    { id: 2, product: "Rice", quantity: 30, status: "Completed", details: "Order delivered on 05-Jan" },
-    { id: 3, product: "Beans", quantity: 70, status: "Pending", details: "Order placed on 10-Jan" },
-    { id: 4, product: "Wheat", quantity: 20, status: "Cancelled", details: "Order cancelled on 15-Jan" },  { id: 1, product: "Maize", quantity: 50, status: "Pending", details: "Order placed on 01-Jan" },
-    { id: 2, product: "Rice", quantity: 30, status: "Completed", details: "Order delivered on 05-Jan" },
-    { id: 3, product: "Beans", quantity: 70, status: "Pending", details: "Order placed on 10-Jan" },
-    { id: 4, product: "Wheat", quantity: 20, status: "Cancelled", details: "Order cancelled on 15-Jan" },
-    
+    { id: 5, product: "Barley", quantity: 40, status: "Completed", details: "Order delivered on 20-Jan" },
+    { id: 6, product: "Oats", quantity: 10, status: "Pending", details: "Order placed on 25-Jan" },
+    { id: 7, product: "Corn", quantity: 60, status: "Pending", details: "Order placed on 30-Jan" },
+    { id: 8, product: "Sorghum", quantity: 25, status: "Cancelled", details: "Order cancelled on 02-Feb" },
+    { id: 9, product: "Millet", quantity: 45, status: "Completed", details: "Order delivered on 07-Feb" },
+    { id: 10, product: "Quinoa", quantity: 35, status: "Pending", details: "Order placed on 12-Feb" },
+    { id: 11, product: "Rye", quantity: 50, status: "Pending", details: "Order placed on 17-Feb" },
+    { id: 12, product: "Spelt", quantity: 20, status: "Completed", details: "Order delivered on 22-Feb" },
   ];
 
   const [orders, setOrders] = useState(initialOrders);
   const [currentPage, setCurrentPage] = useState(1);
-  const [ordersPerPage] = useState(2);
+  const [ordersPerPage] = useState(10);
   const [sortConfig, setSortConfig] = useState<{ key: keyof typeof initialOrders[0], direction: 'asc' | 'desc' } | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<typeof initialOrders[0] | null>(null);
   const [searchQuery, setSearchQuery] = useState('');

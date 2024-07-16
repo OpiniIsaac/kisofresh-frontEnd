@@ -1,18 +1,26 @@
-import React from "react";
+ "use client"
+import React, { useEffect, useState } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
-// Dummy Data
-const ordersData = [
-  { name: "Jan", Sales: 4000, Orders: 2400 },
-  { name: "Feb", Sales: 3000, Orders: 1398 },
-  { name: "Mar", Sales: 2000, Orders: 9800 },
-  { name: "Apr", Sales: 2780, Orders: 3908 },
-  { name: "May", Sales: 1890, Orders: 4800 },
-  { name: "Jun", Sales: 2390, Orders: 3800 },
-  { name: "Jul", Sales: 3490, Orders: 4300 },
-];
 
-const OrdersPage = () => {
+
+const OrdersPage = async () => {
+  const [ordersData, setOrdersData] = useState([]);
+ 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/orders');
+        const data = await response.json();
+        setOrdersData(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
       <div className="w-full max-w-4xl p-4 bg-white shadow-lg rounded-lg">
@@ -21,7 +29,10 @@ const OrdersPage = () => {
           <LineChart
             data={ordersData}
             margin={{
-              top: 20, right: 30, left: 20, bottom: 10,
+              top: 20,
+              right: 30,
+              left: 20,
+              bottom: 10,
             }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
