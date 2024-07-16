@@ -1,8 +1,6 @@
-// app/admin/layout.js
 import Sidebar from '@/components/buyers/Sidebar';
 
-
-const AdminLayout = ({ children }: { children: React.ReactNode }) => {
+const BuyersLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
@@ -18,4 +16,4 @@ export const metadata = {
   description: "Admin dashboard for managing KisoIndex data.",
 };
 
-export default AdminLayout;
+export default BuyersLayout;

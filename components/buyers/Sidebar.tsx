@@ -1,27 +1,32 @@
-// components/buyers/Sidebar.tsx
+"use client";
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const Sidebar = () => {
+  const pathname = usePathname();
+
+  const isActive = (path: string) => pathname === path;
+
+  const menuItems = [
+    { href: '/buyers', label: 'Dashboard' },
+    { href: '/buyers/products', label: 'Products' },
+    { href: '/buyers/orders', label: 'Orders' },
+  ];
+
   return (
-    <div className="w-64 bg-white shadow-md">
+    <aside className="w-64 bg-white shadow-md">
       <ul className="p-4">
-        <li className="mb-2">
-          <Link href="/buyers">
-            <div className="text-gray-700">Dashboard</div>
-          </Link>
-        </li>
-        <li className="mb-2">
-          <Link href="/buyers/products">
-            <div className="text-gray-700">Products</div>
-          </Link>
-        </li>
-        <li className="mb-2">
-          <Link href="/buyers/orders">
-            <div className="text-gray-700">Orders</div>
-          </Link>
-        </li>
+        {menuItems.map((item) => (
+          <li key={item.href} className="mb-2">
+            <Link href={item.href}>
+              <div className={`block py-2.5 px-4 rounded hover:bg-gray-200 ${isActive(item.href) ? 'bg-blue-500 text-white' : 'text-gray-700'}`}>
+                {item.label}
+              </div>
+            </Link>
+          </li>
+        ))}
       </ul>
-    </div>
+    </aside>
   );
 };
 
