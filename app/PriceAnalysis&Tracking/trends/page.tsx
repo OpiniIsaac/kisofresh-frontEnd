@@ -54,13 +54,13 @@ const TrendCard: React.FC<TrendCardProps> = ({ imageSrc, title, description }) =
         },
         {
           id: 2,
-          imageSrc: '/images/crops.jpg', // Replace with a specific beans image
+          imageSrc: '/images/beans.jpeg', // Replace with a specific beans image
           title: 'Beans',
           description: 'Steady growth expected this season. Profitable for farmers and traders due to low supply.',
         },
         {
           id: 3,
-          imageSrc: '/images/crops.jpg', // Replace with a specific sorghum image
+          imageSrc: '/images/sorgbum.jpeg', // Replace with a specific sorghum image
           title: 'Sorghum',
           description: 'Drought-resistant and high yielding. Market value increasing due to alternative grain demand.',
         },
@@ -69,19 +69,19 @@ const TrendCard: React.FC<TrendCardProps> = ({ imageSrc, title, description }) =
       const plantingSeasonCrops = [
         {
           id: 1,
-          imageSrc: '/images/crops.jpg', // Replace with a specific rice image
+          imageSrc: '/images/rice.jpeg', // Replace with a specific rice image
           title: 'Rice',
           description: 'Planting window approaching in most regions. High demand ensures profitability.',
         },
         {
           id: 2,
-          imageSrc: '/images/crops.jpg', // Replace with a specific wheat image
+          imageSrc: '/images/wheat.jpg', // Replace with a specific wheat image
           title: 'Wheat',
           description: 'Favorable weather conditions expected for optimal growth this season.',
         },
         {
           id: 3,
-          imageSrc: '/images/crops.jpg', // Replace with a specific barley image
+          imageSrc: '/images/barley.jpg', // Replace with a specific barley image
           title: 'Barley',
           description: 'Short growing season makes it a good choice for double cropping.',
         },
@@ -90,19 +90,19 @@ const TrendCard: React.FC<TrendCardProps> = ({ imageSrc, title, description }) =
       const bestCropsForFarmers = [
         {
           id: 1,
-          imageSrc: '/images/crops.jpg', // Replace with a specific soybeans image
+          imageSrc: '/images/soybeans.jpeg', // Replace with a specific soybeans image
           title: 'Soybeans',
           description: 'High protein content and increasing demand from livestock industries.',
         },
         {
           id: 2,
-          imageSrc: '/images/crops.jpg', // Replace with a specific tomatoes image
+          imageSrc: '/images/tomatoes.jpg', // Replace with a specific tomatoes image
           title: 'Tomatoes',
           description: 'Relatively short growing cycle and high demand throughout the year.',
         },
         {
           id: 3,
-          imageSrc: '/images/crops.jpg', // Replace with a specific potatoes image
+          imageSrc: '/images/potatoes.jpg', // Replace with a specific potatoes image
           title: 'Potatoes',
           description: 'Disease-resistant varieties available, ensuring high yields and market value.',
         },
