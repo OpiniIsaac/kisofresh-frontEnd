@@ -89,7 +89,7 @@ export async function cropPrices() {
 
   try {
     await client.connect();
-    const db = client.db('pricesTwo');
+    const db = client.db('pricesThree');
     const collection = db.collection('crop_prices');
     const cropPrices = await collection.find({}).toArray();
     return cropPrices;

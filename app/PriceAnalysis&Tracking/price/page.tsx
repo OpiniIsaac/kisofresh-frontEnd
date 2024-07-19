@@ -51,8 +51,8 @@ export default function ProductTable() {
     setPage((prevPage) => (prevPage > 0 ? prevPage - 1 : prevPage));
   };
 
-  const handleRowClick = (crop: string) => {
-    router.push(`/PriceAnalysis&Tracking/chart?crop=${crop}`);
+  const handleRowClick = (crop: string,unit:string) => {
+    router.push(`/PriceAnalysis&Tracking/chart?crop=${crop}/unit${unit}`);
   };
 
   return (
@@ -84,7 +84,7 @@ export default function ProductTable() {
                 <tr
                   key={product._id}
                   className="hover:bg-gray-100 cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-md"
-                  onClick={() => handleRowClick(product.Crop)}
+                  onClick={() => handleRowClick(product.Crop,product.Units)}
                 >
                   <td className="border px-4 py-2">{product.Crop}</td>
                   <td className="border px-4 py-2">{product.Prices}</td>
