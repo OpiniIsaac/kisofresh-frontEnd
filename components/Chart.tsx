@@ -20,7 +20,7 @@ type CropPrice = {
   date?: Date; // Add this to store parsed date
 };
 
-export default function PriceChart({ crop }: any) {
+export default function PriceChart({ crop , unit}: any  ) {
   const [data, setData] = useState<CropPrice[]>([]);
   const [selectedYear, setSelectedYear] = useState<string>("All Years");
 
@@ -78,7 +78,7 @@ export default function PriceChart({ crop }: any) {
 
   return (
     <div className="bg-white p-4 rounded shadow">
-      <h2 className="text-2xl font-bold mb-4">{crop} Price Trends</h2>
+      <h2 className="text-2xl font-bold mb-4">{crop} Price Trends in {unit}</h2>
       <select
         value={selectedYear}
         onChange={(e) => setSelectedYear(e.target.value)}
