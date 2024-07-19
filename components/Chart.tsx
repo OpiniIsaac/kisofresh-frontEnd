@@ -1,112 +1,119 @@
-"use client";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import { format } from "date-fns";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { cropPrices } from "@/lib/actions/source.actions";
-
-type Product = {
+type CropPrice = {
   _id: string;
   Date: string;
   Crop: string;
   Prices: number;
-  Units: string; 
+  date?: Date; // Add this to store parsed date
 };
 
-export default function ProductTable() {
-  const [page, setPage] = useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [products, setProducts] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  const router = useRouter();
+export default function PriceChart({ crop }: any) {
+  const [data, setData] = useState<CropPrice[]>([]);
+  const [selectedYear, setSelectedYear] = useState<string>("All Years");
 
   useEffect(() => {
-    async function fetchProducts() {
-      setLoading(true);
-      const data = await cropPrices();
-      console.log(data);
-      setProducts(data);
-      setLoading(false);
+    if (crop) {
+      axios
+        .get("/api/cropPrices")
+        .then((response) => {
+          const filteredData: CropPrice[] = response.data
+            .filter((item: CropPrice) => item.Crop === crop)
+            .filter((d:any) => d.Date); // Filter out any entries with null or empty dates
+
+          const parseDate = (dateStr: string) => {
+            return new Date(dateStr);
+          };
+
+          const orderedData = filteredData
+            .map((d) => ({
+              ...d,
+              date: parseDate(d.Date),
+            }))
+            .sort((a, b) => a.date!.getTime() - b.date!.getTime());
+
+          setData(orderedData);
+        })
+        .catch((error) => {
+          console.error("There was an error fetching the data!", error);
+        });
     }
-    fetchProducts();
-  }, []);
+  }, [crop]);
 
-  useEffect(() => {
-    setFilteredProducts(
-      products.filter((product: Product) =>
-        product.Crop.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-  }, [searchTerm, products]);
+  const availableYears = Array.from(
+    new Set(data.map((d) => d.date!.getFullYear().toString()))
+  ).sort();
 
-  const handleNextClick = () => {
-    const maxPage = Math.ceil(filteredProducts.length / rowsPerPage) - 1;
-    setPage((prevPage) => (prevPage < maxPage ? prevPage + 1 : prevPage));
-  };
+  const filteredData =
+    selectedYear === "All Years"
+      ? data
+      : data.filter((d) => d.date!.getFullYear().toString() === selectedYear);
 
-  const handlePrevClick = () => {
-    setPage((prevPage) => (prevPage > 0 ? prevPage - 1 : prevPage));
-  };
+  // Function to group data by year and sort months within each year
+  const groupedData = filteredData.reduce<{ [key: string]: CropPrice[] }>(
+    (acc, curr) => {
+      const year = curr.date!.getFullYear().toString();
+      acc[year] = acc[year] || [];
+      acc[year].push(curr);
+      acc[year].sort((a, b) => a.date!.getMonth() - b.date!.getMonth());
+      return acc;
+    },
+    {}
+  );
 
-  const handleRowClick = (crop: string, unit: string) => {
-    router.push(`/PriceAnalysis&Tracking/chart?crop=${crop}&unit=${unit}`);
-  };
+  // Flatten grouped data back into a single array
+  const chartData = Object.values(groupedData).flat();
 
   return (
-    <div className="p-4 w-full overflow-x-auto">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Product Table</h2>
-        <div className="flex items-center">
-          <input
-            className="border border-gray-300 rounded-lg p-2 w-52 md:w-96 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-            type="text"
-            placeholder="Search products"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-      </div>
-      <div className="overflow-x-auto shadow rounded-lg">
-        <table className="w-full text-left table-auto">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-4 py-2">Crop</th>
-              <th className="px-4 py-2">Price</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredProducts
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((product: Product) => (
-                <tr
-                  key={product._id}
-                  className="hover:bg-gray-100 cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-md"
-                  onClick={() => handleRowClick(product.Crop, product.Units)}
-                >
-                  <td className="border px-4 py-2">{product.Crop}</td>
-                  <td className="border px-4 py-2">{product.Prices}</td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="w-full flex justify-between items-center my-4">
-        <Button onClick={handlePrevClick} disabled={page === 0}>
-          Previous
-        </Button>
-        <p className="text-sm">
-          Page {page + 1} of {Math.ceil(filteredProducts.length / rowsPerPage)}
-        </p>
-        <Button
-          onClick={handleNextClick}
-          disabled={page >= Math.ceil(filteredProducts.length / rowsPerPage) - 1}
+    <div className="bg-white p-4 rounded shadow">
+      <h2 className="text-2xl font-bold mb-4">{crop} Price Trends</h2>
+      <select
+        value={selectedYear}
+        onChange={(e) => setSelectedYear(e.target.value)}
+        className="mb-4 p-2 border rounded"
+      >
+        <option value="All Years">All Years</option>
+        {availableYears.map((year) => (
+          <option key={year} value={year}>
+            {year}
+          </option>
+        ))}
+      </select>
+      <ResponsiveContainer width="100%" height={400}>
+        <LineChart
+          data={chartData}
+          margin={{ top: 20, right: 30, bottom: 50, left: 50 }}
         >
-          Next
-        </Button>
-      </div>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            dataKey="date"
+            tickFormatter={(tick) => format(new Date(tick), "MMM yyyy")}
+          />
+          <YAxis />
+          <Tooltip
+            labelFormatter={(label) => format(new Date(label), "MMM yyyy")}
+          />
+          <Legend />
+          <Line
+            type="monotone"
+            dataKey="Prices"
+            stroke="#8884d8"
+            activeDot={{ r: 8 }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   );
 }
