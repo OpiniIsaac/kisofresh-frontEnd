@@ -10,7 +10,7 @@ type Product = {
   Date: string;
   Crop: string;
   Prices: number;
-  Units: string; // 
+  Units: string;
 };
 
 export default function ProductTable() {
@@ -27,8 +27,20 @@ export default function ProductTable() {
     async function fetchProducts() {
       setLoading(true);
       const data = await cropPrices();
-      console.log(data);
-      setProducts(data);
+
+      // Filter data to only include the latest price for each crop
+      const latestProducts: Record<string, Product> = {};
+      data.forEach((product: Product) => {
+        const productDate = new Date(product.Date);
+        if (
+          !latestProducts[product.Crop] ||
+          new Date(latestProducts[product.Crop].Date) < productDate
+        ) {
+          latestProducts[product.Crop] = product;
+        }
+      });
+
+      setProducts(Object.values(latestProducts));
       setLoading(false);
     }
     fetchProducts();
