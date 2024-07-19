@@ -52,7 +52,7 @@ export default function ProductTable() {
   };
 
   const handleRowClick = (crop: string,unit:string) => {
-    router.push(`/PriceAnalysis&Tracking/chart?crop=${crop}/unit${unit}`);
+    router.push(`/PriceAnalysis&Tracking/chart?crop=${crop}?unit${unit}`);
   };
 
   return (
