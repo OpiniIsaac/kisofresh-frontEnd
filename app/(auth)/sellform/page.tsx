@@ -6,7 +6,7 @@ import { PlusCircleIcon, XCircleIcon } from '@heroicons/react/solid';
 type Product = {
   crop: string;
   quantity: string;
-  description: string;
+  description?: string;
 };
 
 type SellerData = {
@@ -60,42 +60,19 @@ const SellerForm = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Seller Information</h2>
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl">
+        <h2 className="text-2xl font-bold mb-4 text-center">
+          List Your Products
+        </h2>
+        <p className="text-gray-600 text-center mb-8">
+          Provide details about your products to get started with selling.
+        </p>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="name" className="block text-gray-700 mb-2">
-              Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={sellerData.name}
-              onChange={(e) => handleChange(e)}
-              className="mt-1 p-2 w-full border rounded-lg"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-700 mb-2">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={sellerData.email}
-              onChange={(e) => handleChange(e)}
-              className="mt-1 p-2 w-full border rounded-lg"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold mb-2">Products</h3>
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-4">Products in Stock</h3>
             {sellerData.products.map((product, index) => (
-              <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
+              <div key={index} className="flex flex-col md:flex-row gap-4 mb-6">
+                <div className="flex-1">
                   <label htmlFor={`crop-${index}`} className="block text-gray-700 mb-2">
                     Crop
                   </label>
@@ -109,7 +86,7 @@ const SellerForm = () => {
                     required
                   />
                 </div>
-                <div>
+                <div className="flex-1">
                   <label htmlFor={`quantity-${index}`} className="block text-gray-700 mb-2">
                     Quantity (tonnes)
                   </label>
@@ -123,9 +100,9 @@ const SellerForm = () => {
                     required
                   />
                 </div>
-                <div>
+                <div className="flex-1">
                   <label htmlFor={`description-${index}`} className="block text-gray-700 mb-2">
-                    Description
+                    Description (Optional)
                   </label>
                   <input
                     type="text"
@@ -134,24 +111,24 @@ const SellerForm = () => {
                     value={product.description}
                     onChange={(e) => handleChange(e, index)}
                     className="mt-1 p-2 w-full border rounded-lg"
-                    required
+                    placeholder="e.g., Coffee Grade One"
                   />
                 </div>
-                <div className="flex items-center">
+                <div className="flex items-center mt-4 md:mt-0">
                   {index === 0 ? (
                     <button
                       type="button"
                       onClick={addProduct}
-                      className="ml-auto bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center"
+                      className="bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center"
                     >
                       <PlusCircleIcon className="h-5 w-5 mr-2" />
-                      Add Product
+                      Add Another Product
                     </button>
                   ) : (
                     <button
                       type="button"
                       onClick={() => removeProduct(index)}
-                      className="ml-auto bg-red-500 hover:bg-red-600 text-white rounded-lg px-4 py-2 flex items-center"
+                      className="bg-red-500 hover:bg-red-600 text-white rounded-lg px-4 py-2 flex items-center"
                     >
                       <XCircleIcon className="h-5 w-5 mr-2" />
                       Remove Product
@@ -166,7 +143,7 @@ const SellerForm = () => {
               type="submit"
               className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
             >
-              Submit
+              Submit Products
             </button>
           </div>
         </form>
