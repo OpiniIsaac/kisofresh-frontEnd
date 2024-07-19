@@ -4,7 +4,13 @@ import { useDispatch } from 'react-redux';
 import { Login } from "@/lib/features/accountHandle/loginSlice";
 import { useRouter } from 'next/navigation';
 
-const locationFields = {
+interface LocationField {
+  label: string;
+  type: string;
+  placeholder: string;
+}
+
+const locationFields: { [key: string]: LocationField[] } = {
   Uganda: [
     { label: 'District', type: 'text', placeholder: 'Enter your district' },
     { label: 'Sub-county', type: 'text', placeholder: 'Enter your sub-county' },
@@ -32,11 +38,11 @@ const locationFields = {
   ],
 };
 
-const OnboardingScreen = () => {
-  const [selectedCountry, setSelectedCountry] = useState('');
-  const [locationDetails, setLocationDetails] = useState([]);
+const OnboardingScreen: React.FC = () => {
+  const [selectedCountry, setSelectedCountry] = useState<string>('');
+  const [locationDetails, setLocationDetails] = useState<LocationField[]>([]);
 
-  const handleCountryChange = (e) => {
+  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const country = e.target.value;
     setSelectedCountry(country);
     setLocationDetails(locationFields[country] || []);
