@@ -10,6 +10,7 @@ type Product = {
   Date: string;
   Crop: string;
   Prices: number;
+  Units: string; // 
 };
 
 export default function ProductTable() {
@@ -18,10 +19,9 @@ export default function ProductTable() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const router = useRouter();
-
-  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -36,7 +36,7 @@ export default function ProductTable() {
 
   useEffect(() => {
     setFilteredProducts(
-      products.filter((product: any) =>
+      products.filter((product: Product) =>
         product.Crop.toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
@@ -51,8 +51,8 @@ export default function ProductTable() {
     setPage((prevPage) => (prevPage > 0 ? prevPage - 1 : prevPage));
   };
 
-  const handleRowClick = (crop: string,unit:string) => {
-    router.push(`/PriceAnalysis&Tracking/chart?crop=${crop}?unit${unit}`);
+  const handleRowClick = (crop: string, unit: string) => {
+    router.push(`/PriceAnalysis&Tracking/chart?crop=${crop}&unit=${unit}`);
   };
 
   return (
@@ -80,11 +80,11 @@ export default function ProductTable() {
           <tbody>
             {filteredProducts
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((product: any) => (
+              .map((product: Product) => (
                 <tr
                   key={product._id}
                   className="hover:bg-gray-100 cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-md"
-                  onClick={() => handleRowClick(product.Crop,product.Units)}
+                  onClick={() => handleRowClick(product.Crop, product.Units)}
                 >
                   <td className="border px-4 py-2">{product.Crop}</td>
                   <td className="border px-4 py-2">{product.Prices}</td>
