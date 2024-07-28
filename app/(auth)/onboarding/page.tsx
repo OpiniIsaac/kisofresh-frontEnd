@@ -1,8 +1,9 @@
 "use client";
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { Login } from "@/lib/features/accountHandle/loginSlice";
 import { useRouter } from 'next/navigation';
+import { addDoc, collection, Firestore } from 'firebase/firestore';
+import { db } from '@/app/firebase/config';
+
 
 interface LocationField {
   label: string;
@@ -40,7 +41,9 @@ const locationFields: { [key: string]: LocationField[] } = {
 
 const OnboardingScreen: React.FC = () => {
   const [selectedCountry, setSelectedCountry] = useState<string>('');
+  const [selectedRole, setSelectedRole] = useState<string>('');
   const [locationDetails, setLocationDetails] = useState<LocationField[]>([]);
+  const router = useRouter();
 
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const country = e.target.value;
@@ -48,12 +51,48 @@ const OnboardingScreen: React.FC = () => {
     setLocationDetails(locationFields[country] || []);
   };
 
+  const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedRole(e.target.value);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const userData = {
+      firstName: (document.getElementById('firstName') as HTMLInputElement).value,
+      secondName: (document.getElementById('secondName') as HTMLInputElement).value,
+      country: selectedCountry,
+      role: selectedRole,
+      locationDetails: locationDetails.map((field) => ({
+        label: field.label,
+        value: (document.getElementById(field.label.toLowerCase()) as HTMLInputElement).value,
+      })),
+    };
+
+    try {
+      // Save user data to Firebase Firestore using v9 syntax
+      const docRef = await addDoc(collection(db, 'users'), userData);
+      console.log('Document written with ID:', docRef.id);
+
+      // Redirect based on selected role
+      if (selectedRole === 'seller') {
+        router.push('/sellers');
+      } else if (selectedRole === 'buyer') {
+        router.push('/buyers');
+      } else if (selectedRole === 'trader') {
+        router.push('/traders');
+      }
+    } catch (error) {
+      console.error('Error saving user data:', error);
+    }
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl">
         <h2 className="text-2xl font-bold mb-6 text-center">Personal Information</h2>
         
-        <div className='space-y-8'>
+        <form onSubmit={handleSubmit} className='space-y-8'>
           
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <div>
@@ -79,10 +118,11 @@ const OnboardingScreen: React.FC = () => {
             {selectedCountry && (
               <div>
                 <label htmlFor="userRole" className="block text-gray-700">Role</label>
-                <select id="userRole" className="mt-1 p-2 w-full border rounded-lg">
+                <select id="userRole" className="mt-1 p-2 w-full border rounded-lg" value={selectedRole} onChange={handleRoleChange}>
                   <option value="">Select Role</option>
                   <option value="seller">Seller (Farmers, Warehouses, etc.)</option>
                   <option value="buyer">Buyer (Exporters, Processors, etc.)</option>
+                  <option value="trader">Trader</option>
                 </select>
               </div>
             )}
@@ -103,11 +143,11 @@ const OnboardingScreen: React.FC = () => {
           )}
           
           <div className="mt-6">
-            <button type="submit" className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
+            <button  onClick= {handleSubmit} type="submit" className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
               Continue
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );
