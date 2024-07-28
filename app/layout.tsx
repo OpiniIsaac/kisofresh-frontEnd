@@ -18,34 +18,6 @@ const inter = Outfit({
 });
 
 export default function RootLayout({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
-  const isAdminRoute = pathname.startsWith("/admin");
-
-  if (isAdminRoute) {
-    return (
-      <html lang="en">
-        <body className={inter.className}>
-          {children}
-        </body>
-      </html>
-    );
-  } else if (pathname.startsWith("/seller")) {
-    return (
-      <html lang="en">
-        <body className={inter.className}>
-          {children}
-        </body>
-      </html>
-    );
-  } else if (pathname.startsWith("/buyer")) {
-    return (
-      <html lang="en">
-        <body className={inter.className}>
-          {children}
-        </body>
-      </html>
-    );
-  }
 
   return (
     <StoreProvider>

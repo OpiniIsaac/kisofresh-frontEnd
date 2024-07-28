@@ -1,119 +1,75 @@
 "use client";
+
 import React, { useState } from 'react';
 
-const Orders = () => {
-  const initialOrders = [
-    { id: 1, product: "Maize", quantity: 50, status: "Pending", details: "Order placed on 01-Jan" },
-    { id: 2, product: "Rice", quantity: 30, status: "Completed", details: "Order delivered on 05-Jan" },
-    { id: 3, product: "Beans", quantity: 70, status: "Pending", details: "Order placed on 10-Jan" },
-    { id: 4, product: "Wheat", quantity: 20, status: "Cancelled", details: "Order cancelled on 15-Jan" },
-    { id: 5, product: "Barley", quantity: 40, status: "Completed", details: "Order delivered on 20-Jan" },
-    { id: 6, product: "Oats", quantity: 10, status: "Pending", details: "Order placed on 25-Jan" },
-    { id: 7, product: "Corn", quantity: 60, status: "Pending", details: "Order placed on 30-Jan" },
-    { id: 8, product: "Sorghum", quantity: 25, status: "Cancelled", details: "Order cancelled on 02-Feb" },
-    { id: 9, product: "Millet", quantity: 45, status: "Completed", details: "Order delivered on 07-Feb" },
-    { id: 10, product: "Quinoa", quantity: 35, status: "Pending", details: "Order placed on 12-Feb" },
-    { id: 11, product: "Rye", quantity: 50, status: "Pending", details: "Order placed on 17-Feb" },
-    { id: 12, product: "Spelt", quantity: 20, status: "Completed", details: "Order delivered on 22-Feb" },
+type Order = {
+  orderId: number;
+  product: string;
+  quantity: number;
+  price: string;
+  status: string;
+  date: string;
+};
+
+const OrdersPage = () => {
+  const orders: Order[] = [
+    { orderId: 101, product: 'Maize', quantity: 20, price: '$1000', status: 'Delivered', date: '2023-07-01' },
+    { orderId: 102, product: 'Rice', quantity: 15, price: '$600', status: 'Pending', date: '2023-07-02' },
+    { orderId: 103, product: 'Beans', quantity: 30, price: '$1800', status: 'Delivered', date: '2023-07-03' },
+    { orderId: 104, product: 'Maize', quantity: 25, price: '$1250', status: 'Canceled', date: '2023-07-04' },
   ];
 
-  const [orders, setOrders] = useState(initialOrders);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [ordersPerPage] = useState(10);
-  const [sortConfig, setSortConfig] = useState<{ key: keyof typeof initialOrders[0], direction: 'asc' | 'desc' } | null>(null);
-  const [selectedOrder, setSelectedOrder] = useState<typeof initialOrders[0] | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-
-  // Pagination logic
-  const indexOfLastOrder = currentPage * ordersPerPage;
-  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
-
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
-  // Sorting logic
-  const sortOrders = (key: keyof typeof initialOrders[0]) => {
-    let direction: 'asc' | 'desc' = 'asc';
-    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
-    }
-    setSortConfig({ key, direction });
-
-    const sortedOrders = [...orders].sort((a, b) => {
-      if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
-      if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
-      return 0;
-    });
-
-    setOrders(sortedOrders);
-  };
-
-  // Search logic
-  const filteredOrders = currentOrders.filter(order =>
-    order.product.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   return (
-    <div className="p-4 bg-white shadow rounded max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center">Orders</h2>
-
-      <input
-        type="text"
-        placeholder="Search orders..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="mb-4 p-2 border rounded w-full"
-      />
-
-      <table className="min-w-full bg-white border border-gray-200">
-        <thead>
-          <tr>
-            <th className="py-2 px-4 border-b cursor-pointer" onClick={() => sortOrders('product')}>Product</th>
-            <th className="py-2 px-4 border-b cursor-pointer" onClick={() => sortOrders('quantity')}>Quantity</th>
-            <th className="py-2 px-4 border-b cursor-pointer" onClick={() => sortOrders('status')}>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredOrders.map(order => (
-            <tr key={order.id} onClick={() => setSelectedOrder(order)} className="cursor-pointer">
-              <td className="py-2 px-4 border-b">{order.product}</td>
-              <td className="py-2 px-4 border-b">{order.quantity}</td>
-              <td className="py-2 px-4 border-b">
-                <span
-                  className={`px-2 py-1 rounded-full text-white ${
-                    order.status === "Completed"
-                      ? "bg-green-500"
-                      : order.status === "Pending"
-                      ? "bg-yellow-500"
-                      : "bg-red-500"
-                  }`}
-                >
-                  {order.status}
-                </span>
-              </td>
+    <div className="min-h-screen flex flex-col items-center bg-gray-100 p-4">
+      <div className="w-full max-w-5xl p-6 bg-white shadow-lg rounded-lg">
+        <h1 className="text-3xl font-bold mb-6 text-center">Your Orders</h1>
+        <table className="w-full table-auto border-collapse">
+          <thead>
+            <tr className="bg-gray-200">
+              <th className="p-2 border">Order ID</th>
+              <th className="p-2 border">Product</th>
+              <th className="p-2 border">Quantity</th>
+              <th className="p-2 border">Price</th>
+              <th className="p-2 border">Status</th>
+              <th className="p-2 border">Date</th>
+              <th className="p-2 border">Details</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {selectedOrder && (
-        <div className="p-4 mt-4 bg-gray-100 rounded shadow">
-          <h3 className="text-xl font-bold mb-2">Order Details</h3>
-          <p><strong>Product:</strong> {selectedOrder.product}</p>
-          <p><strong>Quantity:</strong> {selectedOrder.quantity}</p>
-          <p><strong>Status:</strong> {selectedOrder.status}</p>
-          <p><strong>Details:</strong> {selectedOrder.details}</p>
-          <button onClick={() => setSelectedOrder(null)} className="mt-2 p-2 bg-blue-500 text-white rounded">Close</button>
-        </div>
-      )}
-
-      <div className="flex justify-between mt-4">
-        <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1} className="p-2 bg-gray-300 text-gray-700 rounded">Previous</button>
-        <span>Page {currentPage}</span>
-        <button onClick={() => paginate(currentPage + 1)} disabled={indexOfLastOrder >= orders.length} className="p-2 bg-gray-300 text-gray-700 rounded">Next</button>
+          </thead>
+          <tbody>
+            {orders.map(order => (
+              <tr key={order.orderId} className="text-center">
+                <td className="p-2 border">{order.orderId}</td>
+                <td className="p-2 border">{order.product}</td>
+                <td className="p-2 border">{order.quantity}</td>
+                <td className="p-2 border">{order.price}</td>
+                <td className={`p-2 border ${order.status === 'Delivered' ? 'text-green-500' : order.status === 'Pending' ? 'text-yellow-500' : 'text-red-500'}`}>
+                  {order.status}
+                </td>
+                <td className="p-2 border">{order.date}</td>
+                <td className="p-2 border">
+                  <button onClick={() => setSelectedOrder(order)} className="text-blue-500 underline">View</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {selectedOrder && (
+          <div className="mt-6 p-4 bg-gray-100 shadow rounded-lg">
+            <h2 className="text-xl font-bold mb-4">Order Details</h2>
+            <p><strong>Order ID:</strong> {selectedOrder.orderId}</p>
+            <p><strong>Product:</strong> {selectedOrder.product}</p>
+            <p><strong>Quantity:</strong> {selectedOrder.quantity}</p>
+            <p><strong>Price:</strong> {selectedOrder.price}</p>
+            <p><strong>Status:</strong> {selectedOrder.status}</p>
+            <p><strong>Date:</strong> {selectedOrder.date}</p>
+            <button onClick={() => setSelectedOrder(null)} className="mt-4 p-2 bg-blue-500 text-white rounded">Close</button>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default Orders;
+export default OrdersPage;

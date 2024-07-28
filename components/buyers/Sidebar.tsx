@@ -14,7 +14,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="w-64 bg-white shadow-md">
+    <aside className="mt-20 w-64 bg-white shadow-md">
       <ul className="p-4">
         {menuItems.map((item) => (
           <li key={item.href} className="mb-2">
