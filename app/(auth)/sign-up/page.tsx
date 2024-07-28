@@ -1,11 +1,12 @@
-// signup.js
-"use client";
+'use client';
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { setUser } from "@/lib/features/accountHandle/authSlice";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
@@ -14,8 +15,9 @@ export default function SignupPage() {
   const [errors, setErrors] = useState<{ email?: string; password?: string; confirmPassword?: string }>({});
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
-  const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
+  const [createUserWithEmailAndPassword, userCredentials, loadingCreate, errorCreate] = useCreateUserWithEmailAndPassword(auth);
 
   const handleSignup = async () => {
     const validationErrors = validateForm();
@@ -31,7 +33,17 @@ export default function SignupPage() {
       setEmail("");
       setPassword("");
       setConfirmPassword("");
-      router.push("/onboarding");
+
+      if (res?.user.uid && res?.user.email) {
+        const userData = {
+          uid: res.user.uid,
+          email: res.user.email,
+        };
+        dispatch(setUser(userData));
+        router.push("/onboarding");
+      } else {
+        throw new Error("User data is incomplete");
+      }
     } catch (e) {
       console.error(e);
     } finally {
@@ -119,8 +131,8 @@ export default function SignupPage() {
             {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>}
           </div>
           <div className="flex items-center justify-end">
-            <Button onClick={handleSignup} disabled={loading}>
-              {loading ? "Signing Up..." : "Sign Up"}
+            <Button onClick={handleSignup} disabled={loading || loadingCreate}>
+              {loading || loadingCreate ? "Signing Up..." : "Sign Up"}
             </Button>
           </div>
           <div className="flex justify-center pt-6 text-sm">

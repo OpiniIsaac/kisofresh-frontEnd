@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { addDoc, collection, Firestore } from 'firebase/firestore';
+import { addDoc, collection } from 'firebase/firestore';
 import { db } from '@/app/firebase/config';
-
+import { useAppSelector } from '@/lib/hooks';
 
 interface LocationField {
   label: string;
@@ -44,6 +44,7 @@ const OnboardingScreen: React.FC = () => {
   const [selectedRole, setSelectedRole] = useState<string>('');
   const [locationDetails, setLocationDetails] = useState<LocationField[]>([]);
   const router = useRouter();
+  const user = useAppSelector((state) => state.auth.user);
 
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const country = e.target.value;
@@ -91,7 +92,7 @@ const OnboardingScreen: React.FC = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl">
         <h2 className="text-2xl font-bold mb-6 text-center">Personal Information</h2>
-        
+  
         <form onSubmit={handleSubmit} className='space-y-8'>
           
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
@@ -143,7 +144,7 @@ const OnboardingScreen: React.FC = () => {
           )}
           
           <div className="mt-6">
-            <button  onClick= {handleSubmit} type="submit" className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
+            <button type="submit" className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
               Continue
             </button>
           </div>

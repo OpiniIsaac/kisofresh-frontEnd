@@ -1,11 +1,20 @@
-// login.js
 "use client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { auth } from "@/app/firebase/config";
+import { auth, db } from "@/app/firebase/config";
 import { useRouter } from "next/navigation";
+import { collection, doc, getDoc } from "firebase/firestore";
+import { useAppDispatch } from "@/lib/hooks";
+import { setUser } from "@/lib/features/accountHandle/authSlice";
+
+interface UserData {
+  uid: string;
+  email: string;
+  role: string;
+  [key: string]: any; // For any additional properties
+}
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,6 +22,7 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
 
@@ -25,11 +35,34 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      const res = await signInWithEmailAndPassword(email, password);
-      console.log("User logged in: ", { res });
+      const userCredential = await signInWithEmailAndPassword(email, password);
+      const user = userCredential?.user;
+      if (!user) throw new Error("User is not authenticated");
+
+      console.log("User logged in: ", { user });
+
+      // Fetch user data from Firestore
+      const userDocRef = doc(collection(db, "users"), user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (userDoc.exists()) {
+        const userData = userDoc.data() as UserData;
+        dispatch(setUser(userData)); // Update user state
+
+        // Redirect based on user role
+        if (userData.role === "seller") {
+          router.push("/sellers");
+        } else if (userData.role === "buyer") {
+          router.push("/buyers");
+        } else if (userData.role === "trader") {
+          router.push("/traders");
+        }
+      } else {
+        console.error("No such user document!");
+      }
+
       setEmail("");
       setPassword("");
-      router.push("/onboarding");
     } catch (e) {
       console.error(e);
     } finally {
@@ -51,10 +84,7 @@ export default function LoginPage() {
       <div className="w-full max-w-xs">
         <div className="bg-blue-500/10 hover:shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="email"
-            >
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
               Email
             </label>
             <input
@@ -65,7 +95,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
-                setErrors((prev) => ({ ...prev, email: '' }));
+                setErrors((prev) => ({ ...prev, email: "" }));
               }}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
@@ -73,10 +103,7 @@ export default function LoginPage() {
             {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
           </div>
           <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="password"
-            >
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
               Password
             </label>
             <input
@@ -86,7 +113,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
-                setErrors((prev) => ({ ...prev, password: '' }));
+                setErrors((prev) => ({ ...prev, password: "" }));
               }}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
@@ -101,9 +128,7 @@ export default function LoginPage() {
           <div className="flex justify-center pt-6 text-sm">
             Don't have an account?
             <Link href="/signup">
-              <span className="hover:underline hover:cursor-pointer ps-2">
-                Sign Up
-              </span>
+              <span className="hover:underline hover:cursor-pointer ps-2">Sign Up</span>
             </Link>
           </div>
         </div>

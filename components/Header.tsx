@@ -6,7 +6,7 @@ import Link from "next/link";
 import clsx from "clsx";
 import { IoIosMenu } from "react-icons/io";
 import { useDispatch } from "react-redux";
-import { Login, Logout } from "@/lib/features/accountHandle/loginSlice";
+import { Login, Logout } from "@/lib/features/loginSlice";
 import { useRouter, usePathname } from "next/navigation";
 import { hedvig, outfit } from "./Fonts";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
