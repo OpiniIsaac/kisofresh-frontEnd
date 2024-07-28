@@ -58,7 +58,12 @@ export default function Header() {
     } catch (e) {
       console.error(e);
     }
+    
   };
+
+  const handleSignIn = () =>{
+    router.push('/sign-up')
+  }
 
   return (
     <div>
@@ -153,7 +158,7 @@ export default function Header() {
               ) : (
                 <div className="hidden md:block">
                   <LoginLink>
-                    <Button className="">Sign in</Button>
+                    <Button className="" onClick={handleSignIn}>Sign in</Button>
                   </LoginLink>
                 </div>
               )}
