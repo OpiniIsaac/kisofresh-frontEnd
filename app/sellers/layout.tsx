@@ -14,8 +14,8 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const metadata = {
-  title: "Admin - KisoIndex",
-  description: "Admin dashboard for managing KisoIndex data.",
+  title: "Sellers- KisoIndex",
+  description: "sellers dashboard for managing KisoIndex data.",
 };
 
 export default AdminLayout;

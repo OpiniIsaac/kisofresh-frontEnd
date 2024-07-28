@@ -1,14 +1,33 @@
-// components/Sidebar.js
+"use client"
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-const Sidebar = () => (
-  <aside className="w-64 h-screen bg-gray-800 text-white p-4 fixed">
-    <ul>
-      <li><Link href="/sellers">Inventory</Link></li>
-      <li><Link href="/sellers/sales">Sales</Link></li>
-      <li><Link href="/sellers/orders">Orders</Link></li>
-    </ul>
-  </aside>
-);
+const Sidebar = () => {
+  const pathname = usePathname();
+
+  const isActive = (path: string) => pathname === path;
+
+  const menuItems = [
+    { href: '/sellers', label: 'Inventory' },
+    { href: '/sellers/sales', label: 'Sales' },
+    { href: '/sellers/orders', label: 'Orders' },
+  ];
+
+  return (
+    <aside className="w-64 bg-gray-800 text-white h-screen shadow-md fixed">
+      <ul className="p-4">
+        {menuItems.map((item) => (
+          <li key={item.href} className="mb-2">
+            <Link href={item.href}>
+              <div className={`block py-2.5 px-4 rounded hover:bg-gray-700 transition duration-200 ${isActive(item.href) ? 'bg-blue-500 text-white' : 'text-gray-300'}`}>
+                {item.label}
+              </div>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  );
+};
 
 export default Sidebar;
