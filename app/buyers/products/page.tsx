@@ -9,17 +9,12 @@ import React from "react";
 import Container from "@/components/Container";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { useAuthState } from "react-firebase-hooks/auth";
 
-
-import Loading from "@/components/Loading";
 import Icon from "@/components/Icon";
 import FindingFarmers from "@/components/FindingFarmers";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
-import { useDispatch } from "react-redux";
 import { useAppSelector } from "@/lib/hooks";
-// import { checkUser } from "../action/user";
+
 
 
 export default function CropInterestForm() {
@@ -59,7 +54,8 @@ export default function CropInterestForm() {
   const [showPhone, setShowPhone] = useState(false);
   const [isLoading, SetIsLoading] = useState(false);
   const [hasLoaded, SetHasLoaded] = useState(false);
-  const u = useAppSelector((state) => state.auth.user);
+  const user = useAppSelector((state) => state.auth.user);
+  const router = useRouter();
   //Function to show phone numbers of farmers
   const handleTogglePhone = () => setShowPhone(!showPhone);
 
@@ -69,7 +65,7 @@ export default function CropInterestForm() {
   };
 
   handlePage;
-
+ 
   //Function to handle next page click
   const handleNextClick = () => {
     const totalPages = Math.ceil(farmers.length / rowsPerPage);
@@ -81,6 +77,13 @@ export default function CropInterestForm() {
   // Function to handle previous page click
   const handlePrevClick = () => {
     setPage((prevPage) => (prevPage > 0 ? prevPage - 1 : 0));
+  };
+  const handleRequestQuote = (crop: string) => {
+    if (!user) {
+      router.push('/sign-up');
+    } else {
+      router.push(`/buyers/products/form?crop=${crop}&country=${country}&region=${region}&quantity=${quantity}`);
+    }
   };
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
@@ -105,17 +108,11 @@ export default function CropInterestForm() {
       console.error("Error:", error);
     }
   };
-  const {
-    permissions,
-    user,
-
-  } = useKindeBrowserClient();
-
+ 
   useEffect(() => {
 
-    // checkUser();
     handlePage;
-  }, [user]);
+  }, []);
 
   //??
   const togglePhoneNumberVisibility = (
@@ -133,7 +130,7 @@ export default function CropInterestForm() {
   };
 
 
-  console.log(user);
+
   if (isLoading)
     return (
       <Container>
@@ -462,10 +459,10 @@ export default function CropInterestForm() {
 
 
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <Button>
-                            <Link href={user ? "/Form" : 'signup'}>
+                          <Button onClick={()=>handleRequestQuote(farmer.CropType)}>
+                            
                               Request Quote
-                            </Link>
+                          
                           </Button>
                         </td>
                       </tr>

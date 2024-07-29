@@ -1,7 +1,9 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import swal from 'sweetalert';
+import { getFirestore, collection, addDoc } from "firebase/firestore"; 
+import { db } from '@/app/firebase/config';
 
 interface Errors {
   desiredDeliveryDate?: string;
@@ -19,7 +21,21 @@ const RequestQuoteForm: React.FC = () => {
   const [deliveryLocation, setDeliveryLocation] = useState<string>('');
   const [pickupDate, setPickupDate] = useState<string>('');
   const [pickupQuantity, setPickupQuantity] = useState<string>('');
+  const [dueDiligence, setDueDiligence] = useState<boolean>(false);
+  const [dueDiligenceTestType, setDueDiligenceTestType] = useState<string>('');
   const [errors, setErrors] = useState<Errors>({});
+
+  const [params, setParams] = useState<any>({});
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    setParams({
+      crop: searchParams.get('crop') || '',
+      country: searchParams.get('country') || '',
+      region: searchParams.get('region') || '',
+      quantity: searchParams.get('quantity') || ''
+    });
+  }, []);
 
   const validateForm = (): Errors => {
     const newErrors: Errors = {};
@@ -36,7 +52,7 @@ const RequestQuoteForm: React.FC = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
@@ -45,19 +61,39 @@ const RequestQuoteForm: React.FC = () => {
         title: "Form Error",
         text: "Please fill in all required fields.",
         icon: "error",
-      
       });
       return;
     }
 
-    swal({
-      title: "Form Submitted",
-      text: "Your quote request has been submitted successfully.",
-      icon: "success",
-    
-    });
-
-    resetForm();
+    try {
+      await addDoc(collection(db, "quoteRequests"), {
+        crop: params.crop,
+        country: params.country,
+        region: params.region,
+        initialQuantity: params.quantity,
+        quantity,
+        message,
+        deliveryOption,
+        desiredDeliveryDate,
+        deliveryLocation,
+        pickupDate,
+        pickupQuantity,
+        dueDiligence,
+        dueDiligenceTestType,
+      });
+      swal({
+        title: "Form Submitted",
+        text: "Your quote request has been submitted successfully.",
+        icon: "success",
+      });
+      resetForm();
+    } catch (error) {
+      swal({
+        title: "Submission Error",
+        text: "There was an error submitting your request. Please try again.",
+        icon: "error",
+      });
+    }
   };
 
   const resetForm = () => {
@@ -68,6 +104,8 @@ const RequestQuoteForm: React.FC = () => {
     setDeliveryLocation('');
     setPickupDate('');
     setPickupQuantity('');
+    setDueDiligence(false);
+    setDueDiligenceTestType('');
     setErrors({});
   };
 
@@ -77,6 +115,36 @@ const RequestQuoteForm: React.FC = () => {
         onSubmit={handleSubmit}
         className="bg-blue-500/10 border hover:shadow-lg rounded px-8 pt-6 pb-8 mb-4 w-full max-w-lg"
       >
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Due Diligence Testing
+          </label>
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="dueDiligence"
+              checked={dueDiligence}
+              onChange={(e) => setDueDiligence(e.target.checked)}
+              className="mr-2"
+            />
+            <label htmlFor="dueDiligence" className="text-gray-700">Request testing (e.g., avocado oil content, coffee quality)</label>
+          </div>
+          {dueDiligence && (
+            <div className="mt-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="dueDiligenceTestType">
+                Type of Test
+              </label>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="dueDiligenceTestType"
+                type="text"
+                value={dueDiligenceTestType}
+                onChange={(e) => setDueDiligenceTestType(e.target.value)}
+              />
+            </div>
+          )}
+        </div>
+
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">
             Delivery or Pickup

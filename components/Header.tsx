@@ -70,7 +70,7 @@ export default function Header() {
       }`}
     >
       <Container>
-        <div className="flex justify-between items-center py-4">
+        <div className="flex justify-between items-center ">
           <Link
             href="/"
             className={`ps-4 md:ps-0 text-blue-500 font-extrabold transition-all ease-in-out ${
