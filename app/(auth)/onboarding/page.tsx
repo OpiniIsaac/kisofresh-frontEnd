@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 import { db } from '@/app/firebase/config';
 import { useAppSelector } from '@/lib/hooks';
 
@@ -72,8 +72,11 @@ const OnboardingScreen: React.FC = () => {
 
     try {
       // Save user data to Firebase Firestore using v9 syntax
-      const docRef = await addDoc(collection(db, 'users'), userData);
-      console.log('Document written with ID:', docRef.id);
+      if (user){
+      await setDoc(doc(db, 'users', user.uid), userData);
+      console.log('Document written with ID:', user.uid);
+      }
+
 
       // Redirect based on selected role
       if (selectedRole === 'seller') {

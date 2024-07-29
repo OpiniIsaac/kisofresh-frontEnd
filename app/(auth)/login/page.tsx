@@ -127,7 +127,7 @@ export default function LoginPage() {
           </div>
           <div className="flex justify-center pt-6 text-sm">
             Don't have an account?
-            <Link href="/signup">
+            <Link href="/sign-up">
               <span className="hover:underline hover:cursor-pointer ps-2">Sign Up</span>
             </Link>
           </div>
