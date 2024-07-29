@@ -1,5 +1,4 @@
 "use client";
-import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import StoreProvider from "./StoreProvider";
 import Header from "@/components/Header";
@@ -12,19 +11,18 @@ const metadata = {
   description: "Data for informed agricultural decisions.",
 };
 
-const inter = Outfit({
+const outfit = Outfit({
   subsets: ["latin"],
   display: "swap",
 });
 
 export default function RootLayout({ children }: { children: ReactNode }) {
-
   return (
     <StoreProvider>
       <html lang="en">
-        <body className={inter.className}>
+        <body className={outfit.className}>
           <Header />
-          {children}
+          <main className="min-h-screen">{children}</main>
           <Footer />
         </body>
       </html>
