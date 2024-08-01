@@ -107,7 +107,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <Container className='mt-20'>
+    <Container className='mt-20 ml-56 pt-10'>
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6">Crop Inventory</Typography>
@@ -116,9 +116,7 @@ const App: React.FC = () => {
       <Toolbar />
       <Grid container spacing={2} alignItems="center" justifyContent="space-between">
         <Grid item>
-          <Typography variant="h4" gutterBottom>
-            Crop Inventory
-          </Typography>
+         
         </Grid>
         <Grid item>
           <Button variant="contained" color="primary" onClick={() => setOpenDialog(true)}>

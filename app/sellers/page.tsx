@@ -1,101 +1,267 @@
 "use client";
-import React, { useState, useEffect, FormEvent } from 'react';
+import React, { useState, useEffect } from 'react';
+import { 
+  Container,
+  Grid,
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  IconButton,
+  Snackbar,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  CircularProgress,
+  Switch
+} from '@mui/material';
+import { collection, addDoc, getDocs, onSnapshot, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { db } from '@/app/firebase/config';
+import { Plus, Delete } from 'lucide-react';
 
-interface Crop {
-  id: number;
+type Crop = {
+  id: string;
   name: string;
-  stock: number;
-}
+  location: string;
+  quality: number;
+  inStock: boolean;
+};
 
-const initialInventory: Crop[] = [
-  { id: 1, name: "Maize", stock: 150 },
-  { id: 2, name: "Rice", stock: 200 },
-  { id: 3, name: "Beans", stock: 300 },
-  { id: 4, name: "Wheat", stock: 50 }
-];
+const SellerDashboard: React.FC = () => {
+  const [crops, setCrops] = useState<Crop[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [newCrop, setNewCrop] = useState<Omit<Crop, 'id' | 'inStock'>>({ name: '', location: '', quality: 0 });
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [openDialog, setOpenDialog] = useState(false);
 
-const Inventory: React.FC = () => {
-  const [inventory, setInventory] = useState<Crop[]>(initialInventory);
-  const [newCrop, setNewCrop] = useState<Omit<Crop, 'id'>>({ name: '', stock: 0 });
-  const [editCrop, setEditCrop] = useState<Crop | null>(null);
-  const [error, setError] = useState<string>('');
+  useEffect(() => {
+    const fetchData = async () => {
+      const cropsCollection = collection(db, 'crops');
+      const snapshot = await getDocs(cropsCollection);
+      const cropList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Crop));
+      setCrops(cropList);
+      setLoading(false);
+    };
 
-  const handleAddCrop = (e: FormEvent) => {
-    e.preventDefault();
-    if (newCrop.name.trim() === '' || newCrop.stock <= 0) {
-      setError('Please enter valid crop name and stock.');
-      return;
+    fetchData();
+
+    const unsubscribe = onSnapshot(collection(db, 'crops'), (snapshot) => {
+      const cropList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Crop));
+      setCrops(cropList);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setNewCrop((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleAddCrop = async () => {
+    if (newCrop.name.trim() === '' || newCrop.location.trim() === '') return;
+
+    try {
+      await addDoc(collection(db, 'crops'), { ...newCrop, inStock: true });
+      setSnackbarMessage('Crop added successfully!');
+    } catch (error) {
+      setSnackbarMessage('Error adding crop.');
     }
-    const newCropWithId = { ...newCrop, id: inventory.length + 1 };
-    setInventory([...inventory, newCropWithId]);
-    setNewCrop({ name: '', stock: 0 });
-    setError('');
+    setNewCrop({ name: '', location: '', quality: 0 });
+    setOpenSnackbar(true);
+    setOpenDialog(false);
   };
 
-  const handleUpdateCrop = (e: FormEvent) => {
-    e.preventDefault();
-    if (editCrop && (editCrop.name.trim() === '' || editCrop.stock <= 0)) {
-      setError('Please enter valid crop name and stock.');
-      return;
+  const handleDeleteCrop = async (id: string) => {
+    try {
+      await deleteDoc(doc(db, 'crops', id));
+      setSnackbarMessage('Crop deleted successfully!');
+      setOpenSnackbar(true);
+    } catch (error) {
+      setSnackbarMessage('Error deleting crop.');
+      setOpenSnackbar(true);
     }
-    setInventory(inventory.map(crop => (crop.id === editCrop!.id ? editCrop! : crop)));
-    setEditCrop(null);
-    setError('');
   };
 
-  const handleDeleteCrop = (id: number) => {
-    setInventory(inventory.filter(crop => crop.id !== id));
-  };
-
-  const handleEditClick = (crop: Crop) => {
-    setEditCrop(crop);
+  const handleToggleStock = async (id: string, inStock: boolean) => {
+    try {
+      await updateDoc(doc(db, 'crops', id), { inStock: !inStock });
+      setSnackbarMessage('Stock status updated successfully!');
+      setOpenSnackbar(true);
+    } catch (error) {
+      setSnackbarMessage('Error updating stock status.');
+      setOpenSnackbar(true);
+    }
   };
 
   return (
-    <div className="p-4 bg-white shadow rounded max-w-3xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-center">Inventory</h2>
-      <div className="mb-4">
-        <h3 className="text-xl font-semibold mb-2">{editCrop ? 'Edit Crop' : 'Add New Crop'}</h3>
-        <form onSubmit={editCrop ? handleUpdateCrop : handleAddCrop} className="flex space-x-2">
-          <input
+    <Container className='mt-20 ml-56 '>
+      {/* <Typography variant="h3" gutterBottom>
+        Seller Dashboard
+      </Typography> */}
+      <Grid container spacing={3}>
+        {/* Key Metrics */}
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardContent>
+              <Typography variant="h5" gutterBottom>
+                Key Metrics
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <Card style={{ backgroundColor: '#bbdefb' }}>
+                    <CardContent>
+                      <Typography variant="h6">Total Crops Listed</Typography>
+                      <Typography variant="h4">{crops.length}</Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={6}>
+                  <Card style={{ backgroundColor: '#c8e6c9' }}>
+                    <CardContent>
+                      <Typography variant="h6">Crops In Stock</Typography>
+                      <Typography variant="h4">{crops.filter(crop => crop.inStock).length}</Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={6}>
+                  <Card style={{ backgroundColor: '#ffecb3' }}>
+                    <CardContent>
+                      <Typography variant="h6">Crops Out of Stock</Typography>
+                      <Typography variant="h4">{crops.filter(crop => !crop.inStock).length}</Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Recent Crops */}
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardContent>
+              <Typography variant="h5" gutterBottom>
+                Recent Crops
+              </Typography>
+              {loading ? (
+                <CircularProgress />
+              ) : (
+                <ul>
+                  {crops.slice(0, 5).map((crop) => (
+                    <li key={crop.id} className="border-b py-2">
+                      <Typography className="font-medium">{crop.name}</Typography>
+                      <Typography className="text-gray-600">{crop.location} - Quality: {crop.quality}</Typography>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+
+      <Button variant="contained" color="primary" className="mt-4" onClick={() => setOpenDialog(true)}>
+        <Plus /> Add Crop
+      </Button>
+
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Add New Crop</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Please enter the details of the new crop you want to add.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            name="name"
+            label="Crop Name"
             type="text"
-            placeholder="Crop Name"
-            value={editCrop ? editCrop.name : newCrop.name}
-            onChange={(e) => editCrop ? setEditCrop({ ...editCrop, name: e.target.value }) : setNewCrop({ ...newCrop, name: e.target.value })}
-            className="p-2 border rounded w-1/3"
-            required
+            fullWidth
+            value={newCrop.name}
+            onChange={handleChange}
           />
-          <input
+          <TextField
+            margin="dense"
+            name="quality"
+            label="Quality"
             type="number"
-            placeholder="Stock"
-            value={editCrop ? editCrop.stock : newCrop.stock}
-            onChange={(e) => editCrop ? setEditCrop({ ...editCrop, stock: parseInt(e.target.value) }) : setNewCrop({ ...newCrop, stock: parseInt(e.target.value) })}
-            className="p-2 border rounded w-1/3"
-            required
+            fullWidth
+            value={newCrop.quality}
+            onChange={handleChange}
           />
-          <button type="submit" className="p-2 bg-blue-500 text-white rounded">{editCrop ? 'Update' : 'Add'}</button>
-          {editCrop && (
-            <button onClick={() => setEditCrop(null)} className="p-2 bg-gray-500 text-white rounded">Cancel</button>
-          )}
-        </form>
-        {error && <div className="text-red-500 mt-2">{error}</div>}
-      </div>
-      <ul>
-        {inventory.map(item => (
-          <li key={item.id} className="flex justify-between items-center mb-2">
-            <div className="flex space-x-2">
-              <span className="font-bold">{item.name}</span>
-              <span>{item.stock}</span>
-            </div>
-            <div className="flex space-x-2">
-              <button onClick={() => handleEditClick(item)} className="p-2 bg-yellow-500 text-white rounded">Edit</button>
-              <button onClick={() => handleDeleteCrop(item.id)} className="p-2 bg-red-500 text-white rounded">Delete</button>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
+          <TextField
+            margin="dense"
+            name="location"
+            label="Location"
+            type="text"
+            fullWidth
+            value={newCrop.location}
+            onChange={handleChange}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleAddCrop} color="primary">
+            Add
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+        message={snackbarMessage}
+      />
+
+      <Typography variant="h5" gutterBottom className="mt-6">
+        Manage Crops
+      </Typography>
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        <table className="min-w-full bg-white">
+          <thead>
+            <tr>
+              <th className="py-2">Name</th>
+              <th className="py-2">Location</th>
+              <th className="py-2">Quality</th>
+              <th className="py-2">In Stock</th>
+              <th className="py-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {crops.map((crop) => (
+              <tr key={crop.id}>
+                <td className="border px-4 py-2">{crop.name}</td>
+                <td className="border px-4 py-2">{crop.location}</td>
+                <td className="border px-4 py-2">{crop.quality}</td>
+                <td className="border px-4 py-2">
+                  <Switch
+                    checked={crop.inStock}
+                    onChange={() => handleToggleStock(crop.id, crop.inStock)}
+                    color="primary"
+                  />
+                </td>
+                <td className="border px-4 py-2">
+                  <IconButton onClick={() => handleDeleteCrop(crop.id)}>
+                    <Delete />
+                  </IconButton>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </Container>
   );
 };
 
-export default Inventory;
+export default SellerDashboard;

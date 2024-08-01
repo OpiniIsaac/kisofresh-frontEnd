@@ -8,7 +8,8 @@ const Sidebar = () => {
   const isActive = (path: string) => pathname === path;
 
   const menuItems = [
-    { href: '/sellers', label: 'Inventory' },
+    { href: '/sellers', label: 'Dashboard' },
+    { href: '/sellers/inventory', label: 'Inventory' },
     { href: '/sellers/sales', label: 'Sales' },
     { href: '/sellers/orders', label: 'Orders' },
   ];
