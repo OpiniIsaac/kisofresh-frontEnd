@@ -11,6 +11,7 @@ import { auth } from "./firebase/config";
 import SignUpPrompt from "@/components/Register";
 import Benefits from "@/components/Benefits";
 import { useAppSelector } from "@/lib/hooks";
+import HighlightGraph from "@/components/HighLights";
 
 export default function page() {
   const user = useAppSelector((state) => state.auth.user);
@@ -23,6 +24,7 @@ export default function page() {
       <Hero />
       <About />
       <Benefits/>
+      <HighlightGraph/>
       <NewsLetter />
     </>
   );
