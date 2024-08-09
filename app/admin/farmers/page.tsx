@@ -1,18 +1,45 @@
-// pages/admin/farmers.js
-import React from 'react';
+"use client"
+import React, { useEffect, useState } from 'react';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '@/app/firebase/config';
+
+interface LocationDetail {
+  label: string;
+  value: string;
+}
+
+interface Farmer {
+  id: string;
+  country: string;
+  firstName: string;
+  secondName: string;
+  locationDetails: LocationDetail[];
+  role: string;
+}
 
 const Farmers = () => {
-  // Sample data for farmers
-  const farmers = [
-    { id: 1, name: 'Farmer John', location: 'Region A', crops: 'Corn, Wheat' },
-    { id: 2, name: 'Farmer Jane', location: 'Region B', crops: 'Rice, Barley' },
-    { id: 3, name: 'Farmer Bob', location: 'Region C', crops: 'Soybeans, Canola' },
-    { id: 4, name: 'Farmer Alice', location: 'Region D', crops: 'Tomatoes, Peppers' },
-    { id: 5, name: 'Farmer Sam', location: 'Region E', crops: 'Lettuce, Spinach' },
-    { id: 6, name: 'Farmer Mary', location: 'Region F', crops: 'Strawberries, Blueberries' },
-    { id: 7, name: 'Farmer Steve', location: 'Region G', crops: 'Potatoes, Carrots' },
-    { id: 8, name: 'Farmer Lucy', location: 'Region H', crops: 'Grapes, Apples' },
-  ];
+  const [farmers, setFarmers] = useState<Farmer[]>([]);
+
+  useEffect(() => {
+    const fetchFarmers = async () => {
+      const q = query(collection(db, "users"), where("role", "==", "seller"));
+      const querySnapshot = await getDocs(q);
+      const farmersList = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          country: data.country,
+          firstName: data.firstName,
+          secondName: data.secondName,
+          locationDetails: data.locationDetails,
+          role: data.role,
+        } as Farmer;
+      });
+      setFarmers(farmersList);
+    };
+
+    fetchFarmers();
+  }, []);
 
   return (
     <div className="p-4">
@@ -23,16 +50,20 @@ const Farmers = () => {
             <th className="py-2 px-4 border-b">ID</th>
             <th className="py-2 px-4 border-b">Name</th>
             <th className="py-2 px-4 border-b">Location</th>
-            <th className="py-2 px-4 border-b">Crops</th>
+            <th className="py-2 px-4 border-b">Role</th>
           </tr>
         </thead>
         <tbody>
           {farmers.map((farmer) => (
             <tr key={farmer.id}>
               <td className="py-2 px-4 border-b">{farmer.id}</td>
-              <td className="py-2 px-4 border-b">{farmer.name}</td>
-              <td className="py-2 px-4 border-b">{farmer.location}</td>
-              <td className="py-2 px-4 border-b">{farmer.crops}</td>
+              <td className="py-2 px-4 border-b">{`${farmer.firstName} ${farmer.secondName}`}</td>
+              <td className="py-2 px-4 border-b">
+                {farmer.locationDetails.map(detail => (
+                  <div key={detail.label}>{`${detail.label}: ${detail.value}`}</div>
+                ))}
+              </td>
+              <td className="py-2 px-4 border-b">{farmer.role}</td>
             </tr>
           ))}
         </tbody>

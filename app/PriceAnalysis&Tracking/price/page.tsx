@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cropPrices } from "@/lib/actions/source.actions";
 
+
 type Product = {
   _id: string;
   Date: string;
@@ -20,7 +21,7 @@ export default function ProductTable() {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
+ 
   const router = useRouter();
 
   useEffect(() => {
@@ -66,6 +67,8 @@ export default function ProductTable() {
   const handleRowClick = (crop: string, unit: string) => {
     router.push(`/PriceAnalysis&Tracking/chart?crop=${crop}&unit=${unit}`);
   };
+
+
 
   return (
     <div className="p-4 w-full overflow-x-auto">
