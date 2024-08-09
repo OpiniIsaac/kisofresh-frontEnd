@@ -29,12 +29,17 @@ const AdminSideBar = () => {
           </li>
           <li>
             <Link href="/admin/farmers">
-              <div className={`block py-2.5 px-4 rounded hover:bg-gray-200 ${isActive('/farmers') ? 'bg-gray-200' : ''}`}>Farmers</div>
+              <div className={`block py-2.5 px-4 rounded hover:bg-gray-200 ${isActive('/farmers') ? 'bg-gray-200' : ''}`}>Sellers</div>
             </Link>
           </li>
           <li>
             <Link href="/admin/buyers">
               <div className={`block py-2.5 px-4 rounded hover:bg-gray-200 ${isActive('/buyers') ? 'bg-gray-200' : ''}`}>Buyers</div>
+            </Link>
+          </li>
+          <li>
+            <Link href="/admin/buyers">
+              <div className={`block py-2.5 px-4 rounded hover:bg-gray-200 ${isActive('/traders') ? 'bg-gray-200' : ''}`}>Traders</div>
             </Link>
           </li>
         </ul>

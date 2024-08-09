@@ -8,7 +8,7 @@ interface LocationDetail {
   value: string;
 }
 
-interface Buyers {
+interface Traders {
   id: string;
   country: string;
   firstName: string;
@@ -18,11 +18,11 @@ interface Buyers {
 }
 
 const Farmers = () => {
-  const [farmers, setFarmers] = useState<Buyers[]>([]);
+  const [farmers, setFarmers] = useState<Traders[]>([]);
 
   useEffect(() => {
     const fetchFarmers = async () => {
-      const q = query(collection(db, "users"), where("role", "==", "buyer"));
+      const q = query(collection(db, "users"), where("role", "==", "trader"));
       const querySnapshot = await getDocs(q);
       const farmersList = querySnapshot.docs.map(doc => {
         const data = doc.data();
@@ -33,7 +33,7 @@ const Farmers = () => {
           secondName: data.secondName,
           locationDetails: data.locationDetails,
           role: data.role,
-        } as Buyers;
+        } as Traders;
       });
       setFarmers(farmersList);
     };
