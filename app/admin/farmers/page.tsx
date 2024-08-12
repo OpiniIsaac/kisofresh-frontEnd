@@ -1,8 +1,5 @@
-"use client"
-import React, { useEffect, useState } from 'react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/app/firebase/config';
-
 interface LocationDetail {
   label: string;
   value: string;
@@ -17,29 +14,25 @@ interface Farmer {
   role: string;
 }
 
-const Farmers = () => {
-  const [farmers, setFarmers] = useState<Farmer[]>([]);
+const fetchFarmers = async (): Promise<Farmer[]> => {
+  const q = query(collection(db, "users"), where("role", "==", "seller"));
+  const querySnapshot = await getDocs(q);
+  const farmersList = querySnapshot.docs.map(doc => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      country: data.country,
+      firstName: data.firstName,
+      secondName: data.secondName,
+      locationDetails: data.locationDetails,
+      role: data.role,
+    } as Farmer;
+  });
+  return farmersList;
+};
 
-  useEffect(() => {
-    const fetchFarmers = async () => {
-      const q = query(collection(db, "users"), where("role", "==", "seller"));
-      const querySnapshot = await getDocs(q);
-      const farmersList = querySnapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          country: data.country,
-          firstName: data.firstName,
-          secondName: data.secondName,
-          locationDetails: data.locationDetails,
-          role: data.role,
-        } as Farmer;
-      });
-      setFarmers(farmersList);
-    };
-
-    fetchFarmers();
-  }, []);
+const Farmers = async () => {
+  const farmers = await fetchFarmers();
 
   return (
     <div className="p-4">

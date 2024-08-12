@@ -12,7 +12,7 @@ const Sidebar = () => {
 
   const menuItems = [
     { href: '/buyers', label: 'Dashboard' },
-    { href: '/buyers/products', label: 'Products' },
+    { href: '/buyers/products', label: 'Source' },
     { href: '/buyers/orders', label: 'Orders' },
   ];
 

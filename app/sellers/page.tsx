@@ -21,22 +21,38 @@ import {
 import { collection, addDoc, getDocs, onSnapshot, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '@/app/firebase/config';
 import { Plus, Delete } from 'lucide-react';
+import { useAppSelector } from '@/lib/hooks';
 
 type Crop = {
   id: string;
-  name: string;
+ 
   location: string;
+  country: string;
+  region: string;
+  cropType: string;
+  quantity: number;
   quality: number;
   inStock: boolean;
 };
 
+
 const SellerDashboard: React.FC = () => {
   const [crops, setCrops] = useState<Crop[]>([]);
   const [loading, setLoading] = useState(true);
-  const [newCrop, setNewCrop] = useState<Omit<Crop, 'id' | 'inStock'>>({ name: '', location: '', quality: 0 });
+  const [newCrop, setNewCrop] = useState<Omit<Crop, 'id' | 'inStock'>>({
+ 
+    location: '',
+    quality: 0,
+    country: '',
+    region: '',
+    cropType: '',
+    quantity: 0,
+  });
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
+  // gettingthe 
+  const user = useAppSelector((state) => state.auth.user);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,7 +79,7 @@ const SellerDashboard: React.FC = () => {
   };
 
   const handleAddCrop = async () => {
-    if (newCrop.name.trim() === '' || newCrop.location.trim() === '') return;
+    if (newCrop.cropType.trim() === '' || newCrop.location.trim() === '') return;
 
     try {
       await addDoc(collection(db, 'crops'), { ...newCrop, inStock: true });
@@ -71,7 +87,13 @@ const SellerDashboard: React.FC = () => {
     } catch (error) {
       setSnackbarMessage('Error adding crop.');
     }
-    setNewCrop({ name: '', location: '', quality: 0 });
+    setNewCrop({
+      location: '',
+      quality: 0,
+      country: '',
+      region: '',
+      cropType: '',
+      quantity: 0,});
     setOpenSnackbar(true);
     setOpenDialog(false);
   };
@@ -154,7 +176,7 @@ const SellerDashboard: React.FC = () => {
                 <ul>
                   {crops.slice(0, 5).map((crop) => (
                     <li key={crop.id} className="border-b py-2">
-                      <Typography className="font-medium">{crop.name}</Typography>
+                      <Typography className="font-medium">{crop.cropType}</Typography>
                       <Typography className="text-gray-600">{crop.location} - Quality: {crop.quality}</Typography>
                     </li>
                   ))}
@@ -170,49 +192,86 @@ const SellerDashboard: React.FC = () => {
       </Button>
 
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>Add New Crop</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Please enter the details of the new crop you want to add.
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            name="name"
-            label="Crop Name"
-            type="text"
-            fullWidth
-            value={newCrop.name}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="dense"
-            name="quality"
-            label="Quality"
-            type="number"
-            fullWidth
-            value={newCrop.quality}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="dense"
-            name="location"
-            label="Location"
-            type="text"
-            fullWidth
-            value={newCrop.location}
-            onChange={handleChange}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleAddCrop} color="primary">
-            Add
-          </Button>
-        </DialogActions>
-      </Dialog>
+  <DialogTitle>Add New Crop</DialogTitle>
+  <DialogContent>
+    <DialogContentText>
+      Please enter the details of the new crop you want to add.
+    </DialogContentText>
+    <TextField
+      autoFocus
+      margin="dense"
+      name="name"
+      label="Crop Name"
+      type="text"
+      fullWidth
+      value={newCrop.cropType}
+      onChange={handleChange}
+    />
+    <TextField
+      margin="dense"
+      name="country"
+      label="Country"
+      type="text"
+      fullWidth
+      value={newCrop.country}
+      onChange={handleChange}
+    />
+    <TextField
+      margin="dense"
+      name="region"
+      label="Region"
+      type="text"
+      fullWidth
+      value={newCrop.region}
+      onChange={handleChange}
+    />
+    <TextField
+      margin="dense"
+      name="cropType"
+      label="Crop Type"
+      type="text"
+      fullWidth
+      value={newCrop.cropType}
+      onChange={handleChange}
+    />
+    <TextField
+      margin="dense"
+      name="quality"
+      label="Quality"
+      type="number"
+      fullWidth
+      value={newCrop.quality}
+      onChange={handleChange}
+    />
+    <TextField
+      margin="dense"
+      name="quantity"
+      label="Quantity"
+      type="number"
+      fullWidth
+      value={newCrop.quantity}
+      onChange={handleChange}
+    />
+    <TextField
+      margin="dense"
+      name="location"
+      label="Location"
+      type="text"
+      fullWidth
+      value={newCrop.location}
+      onChange={handleChange}
+    />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setOpenDialog(false)} color="primary">
+      Cancel
+    </Button>
+    <Button onClick={handleAddCrop} color="primary">
+      Add
+    </Button>
+  </DialogActions>
+</Dialog>
+
 
       <Snackbar
         open={openSnackbar}
@@ -240,7 +299,7 @@ const SellerDashboard: React.FC = () => {
           <tbody>
             {crops.map((crop) => (
               <tr key={crop.id}>
-                <td className="border px-4 py-2">{crop.name}</td>
+                <td className="border px-4 py-2">{crop.cropType}</td>
                 <td className="border px-4 py-2">{crop.location}</td>
                 <td className="border px-4 py-2">{crop.quality}</td>
                 <td className="border px-4 py-2">
