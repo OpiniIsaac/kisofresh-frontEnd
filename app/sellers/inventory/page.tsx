@@ -28,42 +28,45 @@ import {
 import { addDoc, collection, getDocs, deleteDoc, doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { db } from '@/app/firebase/config';
 import { Plus, Delete } from 'lucide-react';
+import { addCropToInventory, fetchCropsByUserId } from '@/lib/actions/source.actions';
+import { useAppSelector } from '@/lib/hooks';
+import { capitalizeFirstLetter } from '@/utilis/capitalLetter';
 
 // Define the Crop type
 type Crop = {
   id: string;
-  name: string;
-  location: string;
+  CropType: string;
+  country: string;
+  Region: string;
   quality: number;
   inStock: boolean;
+  userId: string; // Added userId field
 };
 
-const App: React.FC = () => {
+const InventoryPage: React.FC = () => {
   const [crops, setCrops] = useState<Crop[]>([]);
   const [loading, setLoading] = useState(true);
-  const [newCrop, setNewCrop] = useState<Omit<Crop, 'id' | 'inStock'>>({ name: '', location: '', quality: 0 });
+  const [newCrop, setNewCrop] = useState<Omit<Crop, 'id' | 'inStock' | 'userId'>>({
+    CropType: '',
+    country: '',
+    Region: '',
+    quality: 0
+  });
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
-
+  const user = useAppSelector((state) => state.auth.user);
   useEffect(() => {
     const fetchData = async () => {
-      const cropsCollection = collection(db, 'crops');
-      const snapshot = await getDocs(cropsCollection);
-      const cropList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Crop));
-      setCrops(cropList);
+      if (user?.uid) {
+        const cropsData = await fetchCropsByUserId(user.uid);
+        setCrops(cropsData);
+      }
       setLoading(false);
     };
 
     fetchData();
-
-    const unsubscribe = onSnapshot(collection(db, 'crops'), (snapshot) => {
-      const cropList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Crop));
-      setCrops(cropList);
-    });
-
-    return () => unsubscribe();
-  }, []);
+  }, [user]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -71,19 +74,33 @@ const App: React.FC = () => {
   };
 
   const handleAddCrop = async () => {
-    if (newCrop.name.trim() === '' || newCrop.location.trim() === '') return;
-
+   
+  
+    const capitalizedCrop = {
+      CropType: capitalizeFirstLetter(newCrop.CropType),
+      country: capitalizeFirstLetter(newCrop.country),
+      Region: capitalizeFirstLetter(newCrop.Region),
+      quality: newCrop.quality,
+    };
+  
     try {
-      await addDoc(collection(db, 'crops'), { ...newCrop, inStock: true });
+      await addCropToInventory({
+        country: capitalizedCrop.country,
+        name: capitalizedCrop.CropType,
+        quality: capitalizedCrop.quality,
+        inStock: true,
+        userId: user?.uid ?? '',
+        region: capitalizedCrop.Region,
+      });
       setSnackbarMessage('Crop added successfully!');
     } catch (error) {
       setSnackbarMessage('Error adding crop.');
     }
-    setNewCrop({ name: '', location: '', quality: 0 });
+  
+    setNewCrop({ CropType: '', country: '', Region: '', quality: 0 });
     setOpenSnackbar(true);
     setOpenDialog(false);
   };
-
   const handleDeleteCrop = async (id: string) => {
     try {
       await deleteDoc(doc(db, 'crops', id));
@@ -116,9 +133,9 @@ const App: React.FC = () => {
       <Toolbar />
       <Grid container spacing={2} alignItems="center" justifyContent="space-between">
         <Grid item>
-         
+          {/* Additional content or components can be added here */}
         </Grid>
-        <Grid item>
+        <Grid item className='p-5'>
           <Button variant="contained" color="primary" onClick={() => setOpenDialog(true)}>
             <Plus /> Add Crop
           </Button>
@@ -141,8 +158,8 @@ const App: React.FC = () => {
             <TableBody>
               {crops.map((crop) => (
                 <TableRow key={crop.id}>
-                  <TableCell>{crop.name}</TableCell>
-                  <TableCell>{crop.location}</TableCell>
+                  <TableCell>{crop.CropType}</TableCell>
+                  <TableCell>{crop.Region}</TableCell>
                   <TableCell>{crop.quality}</TableCell>
                   <TableCell>
                     <Switch
@@ -152,9 +169,9 @@ const App: React.FC = () => {
                     />
                   </TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleDeleteCrop(crop.id)}>
-                      <Delete />
-                    </IconButton>
+                    <Button onClick={() => handleDeleteCrop(crop.id)}  color='error' variant='contained'>
+                      Delete
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -177,11 +194,20 @@ const App: React.FC = () => {
           <TextField
             autoFocus
             margin="dense"
-            name="name"
+            name="CropType"
             label="Crop Name"
             type="text"
             fullWidth
-            value={newCrop.name}
+            value={newCrop.CropType}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            name="country"
+            label="Country"
+            type="text"
+            fullWidth
+            value={newCrop.country}
             onChange={handleChange}
           />
           <TextField
@@ -195,11 +221,11 @@ const App: React.FC = () => {
           />
           <TextField
             margin="dense"
-            name="location"
-            label="Location"
+            name="Region"
+            label="Region"
             type="text"
             fullWidth
-            value={newCrop.location}
+            value={newCrop.Region}
             onChange={handleChange}
           />
         </DialogContent>
@@ -216,4 +242,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default InventoryPage;
