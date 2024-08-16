@@ -24,7 +24,7 @@ const OrdersPage = () => {
   return (
     <div className="min-h-screen mt-10 flex flex-col items-center bg-gray-100 p-4">
       <div className="w-full max-w-5xl p-6 bg-white shadow-lg rounded-lg">
-        <h1 className="text-3xl font-bold mb-6 text-center">Your Orders</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center">Your Quotes</h1>
         <table className="w-full table-auto border-collapse">
           <thead>
             <tr className="bg-gray-200">

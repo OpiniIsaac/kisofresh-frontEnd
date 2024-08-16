@@ -1,35 +1,7 @@
 "use server";
 const { MongoClient } = require("mongodb");
 
-// export async function fetchUploadedData() {
-//   const uri =
-//     "mongodb+srv://isaacopini8:cool@data.17kkyxj.mongodb.net/Cotton?retryWrites=true&w=majority";
-//   const client = new MongoClient(uri, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   });
 
-//   try {
-//     await client.connect();
-//     console.log("Connected to MongoDB");
-
-//     const db = client.db('DatasetTwo');
-//     const collection = db.collection('farmers');
-
-//     // Fetch all documents
-//     const cursor = collection.find({}).limit(10);
-
-//     // Convert cursor to array of documents
-//     const documents = await cursor.toArray();
-
-//     console.log("Uploaded Data:", documents);
-//     return documents;
-//   } catch (error) {
-//     console.error("Error fetching uploaded data:", error);
-//   } finally {
-//     await client.close();
-//   }
-// }
 
 export async function fetchFarmersByCriteria({
   country,
@@ -79,37 +51,19 @@ export async function fetchFarmersByCriteria({
 }
 
 
-// export async function cropPrices() {
-//   const uri = 'mongodb+srv://qwertyisaac9:fABvsWbvzyUu6er0@cluster0.xrpcdl9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
-//   const client = new MongoClient(uri);
 
-//   try {
-//     await client.connect();
-//     const db = client.db('priceFour');
-//     const collection = db.collection('crop_prices');
-//     const cropPrices = await collection.find({}).toArray();
-//     return cropPrices;
-//   } finally {
-//     await client.close();
-//   }
-// }
-
-// import { MongoClient } from 'mongodb';
 
 export async function addCropToInventory({
   name,
-  country,
-  region,
   quality,
   inStock,
   userId,
 }: {
   name: string;
-  country: string;
   quality: number;
   inStock: boolean;
   userId:string, 
-  region: string
+
 }) {
   const uri = process.env.TEST_DATABASE;
   const client = new MongoClient(uri, {
@@ -127,11 +81,9 @@ export async function addCropToInventory({
     // Add new crop to the collection
     const result = await collection.insertOne({
       CropType : name,
-      'Country ': country,
       quality,
       inStock,
-      userId,
-      Region: region
+      userId
     });
 
     console.log('Crop added:', result);

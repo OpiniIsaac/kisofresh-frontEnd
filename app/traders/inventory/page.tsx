@@ -28,6 +28,9 @@ import {
 import { addDoc, collection, getDocs, deleteDoc, doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { db } from '@/app/firebase/config';
 import { Plus, Delete } from 'lucide-react';
+import { useAppSelector } from '@/lib/hooks';
+import { addCropToInventory, fetchCropsByUserId } from '@/lib/actions/source.actions';
+import { capitalizeFirstLetter } from '@/utilis/capitalLetter';
 
 // Define the Crop type
 type Crop = {
@@ -38,52 +41,61 @@ type Crop = {
   inStock: boolean;
 };
 
-const App: React.FC = () => {
+const TraderInventory: React.FC =  async () => {
   const [crops, setCrops] = useState<Crop[]>([]);
   const [loading, setLoading] = useState(true);
   const [newCrop, setNewCrop] = useState<Omit<Crop, 'id' | 'inStock'>>({ name: '', location: '', quality: 0 });
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
+  const user = useAppSelector((state) => state.auth.user);
 
+
+    
   useEffect(() => {
-    const fetchData = async () => {
-      const cropsCollection = collection(db, 'crops');
-      const snapshot = await getDocs(cropsCollection);
-      const cropList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Crop));
-      setCrops(cropList);
-      setLoading(false);
+    const fetchCrops = async () => {
+      if (user) {
+        try {
+          const cropsData = await fetchCropsByUserId(user.uid);
+          setCrops(cropsData);
+        } catch (error) {
+          console.error('Error fetching crops:', error);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setLoading(false);
+      }
     };
 
-    fetchData();
-
-    const unsubscribe = onSnapshot(collection(db, 'crops'), (snapshot) => {
-      const cropList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Crop));
-      setCrops(cropList);
-    });
-
-    return () => unsubscribe();
-  }, []);
+    fetchCrops();
+  }, [user]);
+       
+      
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewCrop((prev) => ({ ...prev, [name]: value }));
   };
 
+ 
   const handleAddCrop = async () => {
-    if (newCrop.name.trim() === '' || newCrop.location.trim() === '') return;
-
+   
+  
+  
     try {
-      await addDoc(collection(db, 'crops'), { ...newCrop, inStock: true });
+      // await addCropToInventory({
+       
+      // });
       setSnackbarMessage('Crop added successfully!');
     } catch (error) {
       setSnackbarMessage('Error adding crop.');
     }
-    setNewCrop({ name: '', location: '', quality: 0 });
+  
+    // setNewCrop({ CropType: '', country: '', Region: '', quality: 0 });
     setOpenSnackbar(true);
     setOpenDialog(false);
   };
-
   const handleDeleteCrop = async (id: string) => {
     try {
       await deleteDoc(doc(db, 'crops', id));
@@ -110,14 +122,14 @@ const App: React.FC = () => {
     <Container className='mt-20'>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6">Crop Inventory</Typography>
+          <Typography variant="h6">Crop TraderInventory</Typography>
         </Toolbar>
       </AppBar>
       <Toolbar />
       <Grid container spacing={2} alignItems="center" justifyContent="space-between">
         <Grid item>
           <Typography variant="h4" gutterBottom>
-            Crop Inventory
+            Crop TraderInventory
           </Typography>
         </Grid>
         <Grid item>
@@ -133,11 +145,12 @@ const App: React.FC = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Location</TableCell>
-                <TableCell>Quality</TableCell>
+                <TableCell>Crop</TableCell>
+                
+                <TableCell>Quantity</TableCell>
                 <TableCell>In Stock</TableCell>
-                <TableCell>Actions</TableCell>
+                <TableCell>Edit</TableCell>
+                <TableCell>Delete</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -154,9 +167,14 @@ const App: React.FC = () => {
                     />
                   </TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleDeleteCrop(crop.id)}>
-                      <Delete />
-                    </IconButton>
+                    <Button onClick={() => handleDeleteCrop(crop.id)}>
+                      Edit
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <Button onClick={() => handleDeleteCrop(crop.id)} >
+                      Delete
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -218,4 +236,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default TraderInventory;

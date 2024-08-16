@@ -6,10 +6,10 @@ import Footer from "@/components/Footer";
 import { Outfit } from "next/font/google";
 import "./globals.css";
 
-const metadata = {
-  title: "KisoIndex",
-  description: "Data for informed agricultural decisions.",
-};
+// const metadata = {
+//   title: "KisoIndex",
+//   description: "Data for informed agricultural decisions.",
+// };
 
 const outfit = Outfit({
   subsets: ["latin"],

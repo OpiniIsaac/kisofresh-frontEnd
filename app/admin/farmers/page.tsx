@@ -40,7 +40,7 @@ const Farmers = async () => {
       <table className="min-w-full bg-white border border-gray-200">
         <thead>
           <tr>
-            <th className="py-2 px-4 border-b">ID</th>
+            {/* <th className="py-2 px-4 border-b">ID</th> */}
             <th className="py-2 px-4 border-b">Name</th>
             <th className="py-2 px-4 border-b">Location</th>
             <th className="py-2 px-4 border-b">Role</th>
@@ -49,7 +49,7 @@ const Farmers = async () => {
         <tbody>
           {farmers.map((farmer) => (
             <tr key={farmer.id}>
-              <td className="py-2 px-4 border-b">{farmer.id}</td>
+              {/* <td className="py-2 px-4 border-b">{farmer.id}</td> */}
               <td className="py-2 px-4 border-b">{`${farmer.firstName} ${farmer.secondName}`}</td>
               <td className="py-2 px-4 border-b">
                 {farmer.locationDetails.map(detail => (

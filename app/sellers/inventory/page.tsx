@@ -56,6 +56,7 @@ const InventoryPage: React.FC = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
   const user = useAppSelector((state) => state.auth.user);
+
   useEffect(() => {
     const fetchData = async () => {
       if (user?.uid) {
@@ -101,6 +102,7 @@ const InventoryPage: React.FC = () => {
     setOpenSnackbar(true);
     setOpenDialog(false);
   };
+  
   const handleDeleteCrop = async (id: string) => {
     try {
       await deleteDoc(doc(db, 'crops', id));

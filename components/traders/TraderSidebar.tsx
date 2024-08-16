@@ -9,11 +9,14 @@ const TraderSidebar = () => {
 
   const menuItems = [
     { href: '/traders', label: 'Dashboard' },
-    { href: '/traders/products', label: 'Products' },
-    { href: '/traders/orders', label: 'Orders' },
+    { href: '/traders/products', label: 'Source Produce' },
+    { href: '/traders/orders', label: 'Quotes' },
+   
+    
     { href: '/traders/inventory', label: 'Inventory' },
+    { href: '/traders/orders', label: 'Orders' },
     { href: '/traders/sales', label: 'Sales' },
-    { href: '/traders/purchases', label: 'Purchases' },
+    { href: '/traders/purchases', label: 'Purchase History' },
   ];
 
   return (
