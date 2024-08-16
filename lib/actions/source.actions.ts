@@ -1,4 +1,8 @@
 "use server";
+
+import { db } from "@/app/firebase/config";
+import { doc, getDoc } from "firebase/firestore";
+
 const { MongoClient } = require("mongodb");
 
 
@@ -55,15 +59,12 @@ export async function fetchFarmersByCriteria({
 
 export async function addCropToInventory({
   name,
-  quality,
-  inStock,
+  quantity,
   userId,
 }: {
   name: string;
-  quality: number;
-  inStock: boolean;
-  userId:string, 
-
+  quantity: number;
+  userId: string;
 }) {
   const uri = process.env.TEST_DATABASE;
   const client = new MongoClient(uri, {
@@ -75,21 +76,40 @@ export async function addCropToInventory({
     await client.connect();
     console.log('Connected to MongoDB');
 
-    const db = client.db('FarmerDataTest');
-    const collection = db.collection('crops');
+    // Fetch user information from Firebase
+    const userRef = doc(db, 'users', userId);
+    const userDoc = await getDoc(userRef);
 
-    // Add new crop to the collection
-    const result = await collection.insertOne({
-      CropType : name,
-      quality,
-      inStock,
-      userId
+    if (!userDoc.exists()) {
+      throw new Error('User not found');
+    }
+
+    const userData = userDoc.data();
+    const { firstName, secondName, locationDetails } = userData;
+
+    // Extract values from locationDetails array
+    const district = locationDetails[0]?.value || '';
+    const subcounty = locationDetails[1]?.value || '';
+    const village = locationDetails[2]?.value || '';
+
+    // Add new crop to the collection with user information
+    const cropsCollection = client.db('KisoIndex').collection('crops');
+    const result = await cropsCollection.insertOne({
+      CropType: name,
+      quantity,
+      userId,
+      firstName,
+      secondName,
+      district,
+      subcounty,
+      village,
     });
 
-    console.log('Crop added:', result);
-    return result;
+    console.log('Crop added:', result.insertedId);
+    return { insertedId: result.insertedId.toString() };
   } catch (error) {
     console.error('Error adding crop to inventory:', error);
+    return { error: error };
   } finally {
     await client.close();
   }
@@ -106,7 +126,7 @@ export async function fetchCropsByUserId(userId: string) {
     await client.connect();
     console.log('Connected to MongoDB');
 
-    const db = client.db('FarmerDataTest');
+    const db = client.db('KisoIndex');
     const collection = db.collection('crops');
 
     // Fetch crops where the userId matches
