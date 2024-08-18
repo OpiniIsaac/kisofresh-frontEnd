@@ -27,11 +27,11 @@ import {
 } from '@mui/material';
 import { Plus, Delete } from 'lucide-react';
 import { useAppSelector } from '@/lib/hooks';
-import { addCropToInventory, fetchCropsByUserId } from '@/lib/actions/source.actions';
+import { addCropToInventory, deleteCropFromInventory, fetchCropsByUserId } from '@/lib/actions/source.actions';
 
 // Define the Crop type
 type Crop = {
-  id: string;
+  _id: string;
   CropType: string;
   location: string;
   quantity: number;
@@ -41,7 +41,7 @@ type Crop = {
 const TraderInventory: React.FC = () => {
   const [crops, setCrops] = useState<Crop[]>([]);
   const [loading, setLoading] = useState(true);
-  const [newCrop, setNewCrop] = useState<Omit<Crop, 'id' | 'inStock'>>({ CropType: '', location: '', quantity: 0});
+  const [newCrop, setNewCrop] = useState<Omit<Crop, '_id' | 'inStock'>>({ CropType: '', location: '', quantity: 0});
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
@@ -83,7 +83,7 @@ const TraderInventory: React.FC = () => {
 
       
       setSnackbarMessage('Crop added successfully!');
-      setCrops([...crops, { ...newCrop, id: result.insertedId, inStock: true }]);
+      setCrops([...crops, { ...newCrop, _id: result.insertedId, inStock: true }]);
      }
 
      
@@ -97,8 +97,23 @@ const TraderInventory: React.FC = () => {
   };
 
   const handleDeleteCrop = async (id: string) => {
-    // Your delete logic here
+    try {
+      const result = await deleteCropFromInventory(id);
+  
+      if (result.success) {
+        setSnackbarMessage('Crop deleted successfully!');
+        setCrops(crops.filter((crop) => crop._id !== id));
+      } else {
+        setSnackbarMessage(result.message || 'Error deleting crop.');
+      }
+    } catch (error) {
+      setSnackbarMessage('Error deleting crop.');
+      console.error('Error:', error);
+    }
+  
+    setOpenSnackbar(true);
   };
+  
 
   const handleToggleStock = async (id: string, inStock: boolean) => {
     // Your toggle logic here
@@ -140,7 +155,7 @@ const TraderInventory: React.FC = () => {
             </TableHead>
             <TableBody>
               {crops.map((crop) => (
-                <TableRow key={crop.id}>
+                <TableRow key={crop._id}>
                   <TableCell>{crop.CropType}</TableCell>
                   <TableCell>{crop.quantity}</TableCell>
                 
@@ -150,7 +165,7 @@ const TraderInventory: React.FC = () => {
                     </Button>
                   </TableCell>
                   <TableCell>
-                    <Button onClick={() => handleDeleteCrop(crop.id)} color='error' variant='contained'>
+                    <Button onClick={() => handleDeleteCrop(crop._id)} color='error' variant='contained'>
                       Delete
                     </Button>
                   </TableCell>

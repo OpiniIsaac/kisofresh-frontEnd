@@ -82,7 +82,7 @@ export default function CropInterestForm() {
     if (!user) {
       router.push('/sign-up');
     } else {
-      router.push(`/traders/products/form?crop=${crop}&country=${country}&region=${region}&quantity=${quantity}`);
+      router.push(`SourceProduce/form?crop=${crop}&country=${country}&region=${region}&quantity=${quantity}`);
     }
   };
 
@@ -339,11 +339,8 @@ export default function CropInterestForm() {
         <div className={`${hasLoaded ? "hidden" : ""}`}>
           <Icon />
         </div>
-        {
-          <div
-            className={`${!hasLoaded ? "hidden" : ""
-              } bg-blue-500/5 overflow-auto px-4 border rounded-md mb-10`}
-          >
+        {hasLoaded && (
+          <div className="bg-blue-500/5 overflow-auto px-4 border rounded-md mb-10">
             <h2 className="text-2xl font-bold mb-4 pt-20">
               Farmers Matching Criteria:
             </h2>
@@ -355,57 +352,36 @@ export default function CropInterestForm() {
                       scope="col"
                       className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      Name
+                      {cropType === "cotton" ? "Name" : "Farmer Name"}
                     </th>
-
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       District
                     </th>
-                    {
-                      cropType === "cotton" &&
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Subcounty
-                      </th>}
-                    {
-                      cropType !== "cotton" &&
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Yeild Estamtion
-                      </th>
-                    }
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      {cropType === "cotton" ? " Village" : "Number of Farmers"}
+                      Subcounty
                     </th>
-                    {
-                      cropType === "cotton" &&
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        {cropType === "cotton" ? "Yield Estimation Result" : "Type of Coffee"}
-                      </th>
-                    }
-
-                    {
-                      cropType === "cotton" &&
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Yield Estimation Result
-                      </th>
-                    }
+                    {cropType === "cotton" && (
+                      <>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Village
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Yield Estimation Result
+                        </th>
+                      </>
+                    )}
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -423,46 +399,31 @@ export default function CropInterestForm() {
                     .map((farmer, index) => (
                       <tr key={index}>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          {cropType === "cotton" ? farmer["familyName"] +
-                            "  " +
-                            " " +
-                            farmer["otherName"] : farmer.name}
+                          {cropType === "cotton"
+                            ? `${farmer.familyName} ${farmer.otherName}`
+                            : farmer.name}
                         </td>
-
                         <td className="px-6 py-4 whitespace-nowrap">
                           {farmer.Districk}
                         </td>
-                        {cropType === "cotton" &&
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {farmer.Subcounty}
-                          </td>}
-
-
                         <td className="px-6 py-4 whitespace-nowrap">
-                          {farmer.Village}
+                          {farmer.Subcounty}
                         </td>
-
-
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {farmer["AcresCultivation"]}
-                        </td>
-                        {
-                          cropType === "cotton" &&
-                          <td className="border px-4 py-2">
+                        {cropType === "cotton" && (
+                          <>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              {farmer.Village}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
                             {cropType === "cotton"
                               ? (farmer["YieldEstimation "] as { result: number }).result
                               : (farmer["YieldEstimation "] as number)}
-                          </td>
-
-                        }
-
-
-
+                            </td>
+                          </>
+                        )}
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <Button onClick={()=>handleRequestQuote(farmer.CropType)}>
-                            
-                              Request Quote
-                          
+                          <Button onClick={() => handleRequestQuote(farmer.CropType)}>
+                            Request Quote
                           </Button>
                         </td>
                       </tr>
@@ -471,7 +432,7 @@ export default function CropInterestForm() {
               </table>
             </div>
           </div>
-        }
+        )}
         <div
           className={`${hasLoaded ? "flex justify-between my-4 px-4" : "hidden"
             }`}

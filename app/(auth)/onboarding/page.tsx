@@ -62,7 +62,7 @@ const OnboardingScreen: React.FC = () => {
     const userData = {
       firstName: (document.getElementById('firstName') as HTMLInputElement).value,
       secondName: (document.getElementById('secondName') as HTMLInputElement).value,
-      country: selectedCountry,
+      country: selectedCountry, // Ensure the selected country is captured here
       role: selectedRole,
       locationDetails: locationDetails.map((field) => ({
         label: field.label,
@@ -73,10 +73,9 @@ const OnboardingScreen: React.FC = () => {
     try {
       // Save user data to Firebase Firestore using v9 syntax
       if (user){
-      await setDoc(doc(db, 'users', user.uid), userData);
-      console.log('Document written with ID:', user.uid);
+        await setDoc(doc(db, 'users', user.uid), userData);
+        console.log('Document written with ID:', user.uid);
       }
-
 
       // Redirect based on selected role
       if (selectedRole === 'seller') {
@@ -124,7 +123,7 @@ const OnboardingScreen: React.FC = () => {
                 <label htmlFor="userRole" className="block text-gray-700">Role</label>
                 <select id="userRole" className="mt-1 p-2 w-full border rounded-lg" value={selectedRole} onChange={handleRoleChange}>
                   <option value="">Select Role</option>
-                  <option value="seller">Seller (Farmers, Warehouses, etc.)</option>
+                  <option value="farmer">Farmers</option>
                   <option value="buyer">Buyer (Exporters, Processors, etc.)</option>
                   <option value="trader">Trader</option>
                 </select>
