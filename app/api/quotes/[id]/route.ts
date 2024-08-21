@@ -6,7 +6,7 @@ const client = new MongoClient(uri);
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   const { id } = params;
-  const { status } = await request.json();
+  const { pricePerUnit, markupPercentage, status } = await request.json();
 
   if (!ObjectId.isValid(id)) {
     return NextResponse.json({ error: 'Invalid quote ID' }, { status: 400 });
@@ -17,9 +17,16 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     const db = client.db('KisoIndex');
     const collection = db.collection('quoteRequests');
 
+    // Prepare the update object
+    const updateObject: any = {};
+    if (pricePerUnit !== undefined) updateObject.pricePerUnit = pricePerUnit;
+    if (markupPercentage !== undefined) updateObject.markupPercentage = markupPercentage;
+    if (status !== undefined) updateObject.status = status;
+
+    // Update the quote
     await collection.updateOne(
       { _id: new ObjectId(id) },
-      { $set: { status } }
+      { $set: updateObject }
     );
 
     return NextResponse.json({ success: true });

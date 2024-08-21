@@ -3,10 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { WithId, Document } from 'mongodb';
-import { getSingleQuote } from '@/lib/actions/source.actions';
 import { Card, Grid, TextField, Dialog, DialogTitle, DialogContent, DialogActions, FormLabel } from "@mui/material"; 
 import { CircularProgress as Spinner } from '@mui/material'; 
-
+import swal from 'sweetalert';
 const QuoteDetails = ({ params }: { params: { id: string } }) => {
   const [quote, setQuote] = useState<WithId<Document> | null>(null);
   const [pricePerUnit, setPricePerUnit] = useState<number>(0);
@@ -71,8 +70,8 @@ const QuoteDetails = ({ params }: { params: { id: string } }) => {
 
   const handleConfirm = async () => {
     try {
-      const response = await fetch(`/api/quotes/${params.id}/status`, {
-        method: 'POST',
+      const response = await fetch(`/api/quotes/${params.id}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -192,7 +191,7 @@ const QuoteDetails = ({ params }: { params: { id: string } }) => {
           <p>Are you sure you want to {confirmAction} this quote?</p>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setShowConfirmModal(false)} variant="outlined">
+          <Button onClick={() => setShowConfirmModal(false)} variant='outline'>
             Cancel
           </Button>
           <Button onClick={handleConfirm} color={confirmAction === "accept" ? "primary" : "secondary"}>

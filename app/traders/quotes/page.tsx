@@ -1,20 +1,13 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Container,
   AppBar,
   Toolbar,
   Typography,
-  Button,
-  Grid,
-  TextField,
   CircularProgress,
   Snackbar,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
+  Button,
   Table,
   TableBody,
   TableCell,
@@ -22,38 +15,42 @@ import {
   TableHead,
   TableRow,
   Paper,
-} from '@mui/material';
-import { Plus, Delete } from 'lucide-react';
-import { useAppSelector } from '@/lib/hooks';
-import { addCropToInventory, deleteCropFromInventory, fetchCropsByUserId } from '@/lib/actions/source.actions';
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
+import { useAppSelector } from "@/lib/hooks";
+// import {  approveQuote, rejectQuote } from "@/lib/actions/source.actions";
+import { fetchQuotesByUserId } from "@/lib/actions/trader.actions";
 
-// Define the Crop type
-type Crop = {
+// Define the Quote type
+type Quote = {
   _id: string;
-  CropType: string;
-  location: string;
+  cropType: string;
   quantity: number;
-  inStock: boolean;
+  price: number;
+  status: string;
 };
 
-const TraderInventory: React.FC = () => {
-  const [crops, setCrops] = useState<Crop[]>([]);
+const TraderQuotes: React.FC = () => {
+  const [quotes, setQuotes] = useState<Quote[]>([]);
   const [loading, setLoading] = useState(true);
-  const [newCrop, setNewCrop] = useState<Omit<Crop, '_id' | 'inStock'>>({ CropType: '', location: '', quantity: 0 });
-  const [editCrop, setEditCrop] = useState<Crop | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
   const user = useAppSelector((state) => state.auth.user);
 
   useEffect(() => {
-    const fetchCrops = async () => {
+    const fetchQuotes = async () => {
       if (user) {
         try {
-          const cropsData = await fetchCropsByUserId(user.uid);
-          setCrops(cropsData);
+          const quotesData = await fetchQuotesByUserId(user.uid);
+          setQuotes(quotesData);
         } catch (error) {
-          console.error('Error fetching crops:', error);
+          console.error("Error fetching quotes:", error);
         } finally {
           setLoading(false);
         }
@@ -62,127 +59,75 @@ const TraderInventory: React.FC = () => {
       }
     };
 
-    fetchCrops();
+    fetchQuotes();
   }, [user]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    if (editCrop) {
-      setEditCrop((prev) => prev ? { ...prev, [name]: value } : prev);
-    } else {
-      setNewCrop((prev) => ({ ...prev, [name]: value }));
-    }
-  };
-
-  const handleAddCrop = async (e: React.FormEvent) => {
-    e.preventDefault(); // Prevent the page from refreshing
-    try {
-      if (user) {
-        const result = await addCropToInventory({
-          name: newCrop.CropType,
-          quantity: newCrop.quantity,
-          userId: user.uid,
-        });
-
-        setSnackbarMessage('Crop added successfully!');
-        setCrops([...crops, { ...newCrop, _id: result.insertedId, inStock: true }]);
-        setNewCrop({CropType:'',location:"",quantity:0})
+  const handleApproveQuote = async () => {
+    if (selectedQuote) {
+      try {
+        // const result = await approveQuote(selectedQuote._id);
+        // if (result.success) {
+        //   setSnackbarMessage("Quote approved successfully!");
+        //   setQuotes(
+        //     quotes.map((quote) =>
+        //       quote._id === selectedQuote._id
+        //         ? { ...quote, status: "APPROVED" }
+        //         : quote
+        //     )
+        //   );
+        // } else {
+        //   setSnackbarMessage(result.message || "Error approving quote.");
+        // }
+      } catch (error) {
+        setSnackbarMessage("Error approving quote.");
+      } finally {
+        setOpenSnackbar(true);
+        setOpenDialog(false);
       }
-    } catch (error) {
-      setSnackbarMessage('Error adding crop.');
     }
-
-    setOpenSnackbar(true);
-    setOpenDialog(false);
   };
 
-  // const handleEditCrop = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  
-  //   if (editCrop && user) {
-  //     try {
-  //       const updatedCrop = {
-  //         _id: editCrop._id,
-  //         CropType: editCrop.CropType,
-  //         quantity:  editCrop.quantity,
-  //         location: editCrop.location,
-  //       };
-  
-  //       const result = await updateCropInInventory({
-  //         cropId: updatedCrop._id,
-  //         name: updatedCrop.CropType,
-  //         quantity: updatedCrop.quantity,
-  //       });
-  
-  //       if (result.success) {
-  //         setCrops((prevCrops) =>
-  //           prevCrops.map((crop) =>
-  //             crop._id === updatedCrop._id ? { ...updatedCrop, inStock: crop.inStock } : crop
-  //           )
-  //         );
-  //         setSnackbarMessage('Crop updated successfully!');
-  //       } else {
-  //         setSnackbarMessage(result.message || 'Error updating crop.');
-  //       }
-  //     } catch (error) {
-  //       setSnackbarMessage('Error updating crop.');
-  //       console.error('Error:', error);
-  //     }
-  
-  //     setOpenSnackbar(true);
-  //     setOpenDialog(false);
-  //     setEditCrop(null);
-  //     setNewCrop({ CropType: '', location: '', quantity: 0 });
-  //   }
-  // };
-  
-  
-  
-
-  const handleDeleteCrop = async (id: string) => {
-    try {
-      const result = await deleteCropFromInventory(id);
-
-      if (result.success) {
-        setSnackbarMessage('Crop deleted successfully!');
-        setCrops(crops.filter((crop) => crop._id !== id));
-      } else {
-        setSnackbarMessage(result.message || 'Error deleting crop.');
+  const handleRejectQuote = async () => {
+    if (selectedQuote) {
+      try {
+        // const result = await rejectQuote(selectedQuote._id);
+        // if (result.success) {
+        //   setSnackbarMessage("Quote rejected successfully!");
+        //   setQuotes(
+        //     quotes.map((quote) =>
+        //       quote._id === selectedQuote._id
+        //         ? { ...quote, status: "REJECTED" }
+        //         : quote
+        //     )
+        //   );
+        // } else {
+        //   setSnackbarMessage(result.message || "Error rejecting quote.");
+        // }
+      } catch (error) {
+        setSnackbarMessage("Error rejecting quote.");
+      } finally {
+        setOpenSnackbar(true);
+        setOpenDialog(false);
       }
-    } catch (error) {
-      setSnackbarMessage('Error deleting crop.');
-      console.error('Error:', error);
     }
-
-    setOpenSnackbar(true);
   };
 
-  const handleEditClick = (crop: Crop) => {
-    setEditCrop(crop);
-    setNewCrop({ CropType: crop.CropType, location: crop.location, quantity: crop.quantity });
+  const handleViewDetails = (quote: Quote) => {
+    setSelectedQuote(quote);
     setOpenDialog(true);
   };
 
   return (
-    <Container className='mt-20'>
+    <Container className="mt-20">
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6">Crop Trader Inventory</Typography>
+          <Typography variant="h6">Trader Quotes</Typography>
         </Toolbar>
       </AppBar>
       <Toolbar />
-      <Grid container spacing={2} alignItems="center" justifyContent="space-between">
-        <Grid item>
-          <Typography variant="h4" gutterBottom>
-            Crop Trader Inventory
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Button variant="contained" color="primary" onClick={() => { setNewCrop({ CropType: '', location: '', quantity: 0 }); setOpenDialog(true); }}>
-            <Plus /> Add Crop
-          </Button>
-        </Grid>
-      </Grid>
+      <Typography variant="h4" gutterBottom>
+        Your Quotes
+      </Typography>
       {loading ? (
         <CircularProgress />
       ) : (
@@ -192,23 +137,25 @@ const TraderInventory: React.FC = () => {
               <TableRow>
                 <TableCell>Crop</TableCell>
                 <TableCell>Quantity</TableCell>
-                {/* <TableCell>Edit</TableCell> */}
-                <TableCell>Delete</TableCell>
+                <TableCell>Price</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {crops.map((crop) => (
-                <TableRow key={crop._id}>
-                  <TableCell>{crop.CropType}</TableCell>
-                  <TableCell>{crop.quantity}</TableCell>
-                  {/* <TableCell>
-                    <Button onClick={() => handleEditClick(crop)} variant="outlined">
-                      Edit
-                    </Button>
-                  </TableCell> */}
+              {quotes.map((quote) => (
+                <TableRow key={quote._id}>
+                  <TableCell>{quote.cropType}</TableCell>
+                  <TableCell>{quote.quantity}</TableCell>
+                  <TableCell>{quote.price}</TableCell>
+                  <TableCell>{quote.status}</TableCell>
                   <TableCell>
-                    <Button onClick={() => handleDeleteCrop(crop._id)} variant="outlined" color="secondary">
-                      Delete
+                    <Button
+                      variant="outlined"
+                      onClick={() => handleViewDetails(quote)}
+                      disabled={quote.status !== "QUOTE_FINALIZED"}
+                    >
+                      View & Approve/Reject
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -224,47 +171,38 @@ const TraderInventory: React.FC = () => {
         message={snackbarMessage}
       />
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>{editCrop ? "Edit Crop" : "Add New Crop"}</DialogTitle>
+        <DialogTitle>Quote Details</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {editCrop
-              ? "Please update the details of the crop."
-              : "Please enter the details of the new crop you want to add."}
+            Review the details of the quote below.
           </DialogContentText>
-          <form onSubmit={handleAddCrop}>
-            <TextField
-              autoFocus
-              margin="dense"
-              name="CropType"
-              label="Crop Name"
-              type="text"
-              fullWidth
-              value={editCrop ? editCrop.CropType : newCrop.CropType} // Use editCrop if editing
-              onChange={handleChange}
-            />
-            <TextField
-              margin="dense"
-              name="quantity"
-              label="Quantity"
-              type="number"
-              fullWidth
-              value={editCrop ? editCrop.quantity : newCrop.quantity} // Use editCrop if editing
-              onChange={handleChange}
-            />
-          
-            <DialogActions>
-              <Button onClick={() => setOpenDialog(false)} color="primary">
-                Cancel
-              </Button>
-              <Button type="submit" color="primary">
-                {editCrop ? "Update" : "Add"}
-              </Button>
-            </DialogActions>
-          </form>
+          <Typography>Crop: {selectedQuote?.cropType}</Typography>
+          <Typography>Quantity: {selectedQuote?.quantity}</Typography>
+          <Typography>Price: {selectedQuote?.price}</Typography>
+          <Typography>Status: {selectedQuote?.status}</Typography>
         </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleApproveQuote}
+            color="primary"
+            disabled={selectedQuote?.status !== "QUOTE_FINALIZED"}
+          >
+            Approve
+          </Button>
+          <Button
+            onClick={handleRejectQuote}
+            color="secondary"
+            disabled={selectedQuote?.status !== "QUOTE_FINALIZED"}
+          >
+            Reject
+          </Button>
+        </DialogActions>
       </Dialog>
     </Container>
   );
 };
 
-export default TraderInventory;
+export default TraderQuotes;

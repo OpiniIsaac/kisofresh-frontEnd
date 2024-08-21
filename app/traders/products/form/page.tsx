@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import swal from 'sweetalert';
 import { getFirestore, collection, addDoc } from "firebase/firestore"; 
 import { db } from '@/app/firebase/config';
+import { useAppSelector } from '@/lib/hooks';
 
 interface Errors {
   desiredDeliveryDate?: string;
@@ -26,7 +27,7 @@ const RequestQuoteForm: React.FC = () => {
   const [errors, setErrors] = useState<Errors>({});
 
   const [params, setParams] = useState<any>({});
-
+  const user = useAppSelector((state) => state.auth.user);
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     setParams({
@@ -84,6 +85,7 @@ const RequestQuoteForm: React.FC = () => {
           pickupQuantity,
           dueDiligence,
           dueDiligenceTestType,
+          userId: user?.uid,
         }),
       });
   
