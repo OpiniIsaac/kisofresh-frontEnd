@@ -180,3 +180,53 @@ export async function fetchCropsByUserId(userId: string) {
     await client.close();
   }
 }
+// export async function updateCropInInventory({
+//   cropId,
+//   name,
+//   quantity,
+
+// }:{
+//   cropId:string,
+//   name:string,
+//   quantity:Number
+// }) {
+//   const uri = process.env.TEST_DATABASE;
+//   const client = new MongoClient(uri, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   });
+
+//   try {
+//     await client.connect();
+//     console.log('Connected to MongoDB');
+
+//     const db = client.db('KisoIndex');
+//     const collection = db.collection('crops');
+
+
+//     const result = await collection.updateOne(
+//       { _id: new ObjectId(cropId) },
+//       {
+//         $set: {
+//           CropType: name,
+//           quantity: quantity,
+      
+//         },
+//       }
+//     );
+
+//     if (result.matchedCount > 0) {
+//       console.log('Crop updated:', cropId);
+//       return { success: true, updatedId: cropId };
+//     } else {
+//       console.log('No crop found with ID:', cropId);
+//       return { success: false, message: 'Crop not found' };
+//     }
+//   } catch (error) {
+//     console.error('Error updating crop in inventory:', error);
+//     return { success: false, error: error};
+//   } finally {
+//     await client.close();
+//   }
+// }
+

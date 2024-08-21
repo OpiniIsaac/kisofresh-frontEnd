@@ -82,7 +82,7 @@ export default function CropInterestForm() {
     if (!user) {
       router.push('/sign-up');
     } else {
-      router.push(`SourceProduce/form?crop=${crop}&country=${country}&region=${region}&quantity=${quantity}`);
+      router.push(`/traders/products/form?crop=${crop}&country=${country}&region=${region}&quantity=${quantity}`);
     }
   };
 

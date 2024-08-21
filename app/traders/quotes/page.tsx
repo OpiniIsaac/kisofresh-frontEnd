@@ -25,7 +25,7 @@ import {
 } from '@mui/material';
 import { Plus, Delete } from 'lucide-react';
 import { useAppSelector } from '@/lib/hooks';
-import { addCropToInventory, deleteCropFromInventory, fetchCropsByUserId} from '@/lib/actions/source.actions';
+import { addCropToInventory, deleteCropFromInventory, fetchCropsByUserId } from '@/lib/actions/source.actions';
 
 // Define the Crop type
 type Crop = {
@@ -103,16 +103,15 @@ const TraderInventory: React.FC = () => {
   //     try {
   //       const updatedCrop = {
   //         _id: editCrop._id,
-  //         CropType: newCrop.CropType || editCrop.CropType,
-  //         quantity: newCrop.quantity || editCrop.quantity,
-  //         location: newCrop.location || editCrop.location,
+  //         CropType: editCrop.CropType,
+  //         quantity:  editCrop.quantity,
+  //         location: editCrop.location,
   //       };
   
   //       const result = await updateCropInInventory({
   //         cropId: updatedCrop._id,
   //         name: updatedCrop.CropType,
   //         quantity: updatedCrop.quantity,
-         
   //       });
   
   //       if (result.success) {
@@ -133,9 +132,10 @@ const TraderInventory: React.FC = () => {
   //     setOpenSnackbar(true);
   //     setOpenDialog(false);
   //     setEditCrop(null);
-  //     setNewCrop({ CropType: '', location: '', quantity: 0 }); // Reset newCrop
+  //     setNewCrop({ CropType: '', location: '', quantity: 0 });
   //   }
   // };
+  
   
   
 
@@ -207,7 +207,7 @@ const TraderInventory: React.FC = () => {
                     </Button>
                   </TableCell> */}
                   <TableCell>
-                    <Button onClick={() => handleDeleteCrop(crop._id)} variant="outlined" color="error">
+                    <Button onClick={() => handleDeleteCrop(crop._id)} variant="outlined" color="secondary">
                       Delete
                     </Button>
                   </TableCell>

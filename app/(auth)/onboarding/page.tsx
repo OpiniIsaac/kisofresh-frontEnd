@@ -4,6 +4,9 @@ import { useRouter } from 'next/navigation';
 import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 import { db } from '@/app/firebase/config';
 import { useAppSelector } from '@/lib/hooks';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+
 
 interface LocationField {
   label: string;
@@ -43,6 +46,7 @@ const OnboardingScreen: React.FC = () => {
   const [selectedCountry, setSelectedCountry] = useState<string>('');
   const [selectedRole, setSelectedRole] = useState<string>('');
   const [locationDetails, setLocationDetails] = useState<LocationField[]>([]);
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
   const router = useRouter();
   const user = useAppSelector((state) => state.auth.user);
 
@@ -62,8 +66,9 @@ const OnboardingScreen: React.FC = () => {
     const userData = {
       firstName: (document.getElementById('firstName') as HTMLInputElement).value,
       secondName: (document.getElementById('secondName') as HTMLInputElement).value,
-      country: selectedCountry, // Ensure the selected country is captured here
+      country: selectedCountry,
       role: selectedRole,
+      phoneNumber: phoneNumber,
       locationDetails: locationDetails.map((field) => ({
         label: field.label,
         value: (document.getElementById(field.label.toLowerCase()) as HTMLInputElement).value,
@@ -71,13 +76,11 @@ const OnboardingScreen: React.FC = () => {
     };
 
     try {
-      // Save user data to Firebase Firestore using v9 syntax
-      if (user){
+      if (user) {
         await setDoc(doc(db, 'users', user.uid), userData);
         console.log('Document written with ID:', user.uid);
       }
 
-      // Redirect based on selected role
       if (selectedRole === 'seller') {
         router.push('/sellers');
       } else if (selectedRole === 'buyer') {
@@ -94,9 +97,8 @@ const OnboardingScreen: React.FC = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl">
         <h2 className="text-2xl font-bold mb-6 text-center">Personal Information</h2>
-  
+
         <form onSubmit={handleSubmit} className='space-y-8'>
-          
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <div>
               <label htmlFor="firstName" className="block text-gray-700">First Name</label>
@@ -107,7 +109,7 @@ const OnboardingScreen: React.FC = () => {
               <input type="text" id="secondName" className="mt-1 p-2 w-full border rounded-lg" />
             </div>
           </div>
-          
+
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <div>
               <label htmlFor="country" className="block text-gray-700">Country</label>
@@ -130,7 +132,7 @@ const OnboardingScreen: React.FC = () => {
               </div>
             )}
           </div>
-          
+
           {selectedCountry && (
             <div className='space-y-4'>
               <h3 className="text-xl font-semibold">Location Details</h3>
@@ -144,7 +146,19 @@ const OnboardingScreen: React.FC = () => {
               </div>
             </div>
           )}
-          
+
+          <div>
+            <label htmlFor="phoneNumber" className="block text-gray-700">Phone Number</label>
+            <PhoneInput
+              country={'ug'} 
+              value={phoneNumber}
+              onChange={(phone) => setPhoneNumber(phone)}
+              preferredCountries={['ug', 'ke', 'tz', 'rw', 'bi']}
+              placeholder="Enter phone number"
+              inputClass="mt-1 p-2 w-full border rounded-lg"
+            />
+          </div>
+
           <div className="mt-6">
             <button type="submit" className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
               Continue
@@ -157,3 +171,6 @@ const OnboardingScreen: React.FC = () => {
 };
 
 export default OnboardingScreen;
+
+
+

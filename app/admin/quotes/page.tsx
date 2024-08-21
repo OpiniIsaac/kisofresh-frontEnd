@@ -1,78 +1,137 @@
-"use client"
-import { useState } from 'react';
+ "use client"
+import React, { useState, useEffect } from 'react';
+import { Button, TextField, Typography, Card, CardContent, CardActions } from '@mui/material';
+import swal from 'sweetalert';
 
+const AdminQuoteManager = () => {
+  const [selectedQuote, setSelectedQuote] = useState(null);
+  const [markupPercentage, setMarkupPercentage] = useState<number>(10);
+  const [markupAmount, setMarkupAmount] = useState<number>(0);
+  const [totalCost, setTotalCost] = useState<number>(0);
+  const [notes, setNotes] = useState<string>('');
 
-const Quotes = () => {
-  // Dummy data for quotes
-  const initialQuotes = [
-    { id: 'QUO001', buyer: 'John Doe', quote: '$500', status: 'Pending', date: '2024-06-20' },
-    { id: 'QUO002', buyer: 'Jane Smith', quote: '$750', status: 'Pending', date: '2024-06-21' },
-    { id: 'QUO003', buyer: 'Alice Brown', quote: '$600', status: 'Pending', date: '2024-06-22' },
-    { id: 'QUO004', buyer: 'Bob Johnson', quote: '$900', status: 'Pending', date: '2024-06-23' },
-    { id: 'QUO005', buyer: 'Charlie Green', quote: '$700', status: 'Pending', date: '2024-06-24' },
-  ];
+  useEffect(() => {
+    if (selectedQuote) {
+      calculateMarkup(selectedQuote.initialPrice);
+    }
+  }, [markupPercentage, selectedQuote]);
 
-  const [quotes, setQuotes] = useState(initialQuotes);
-
-  const handleApprove = (id:String) => {
-    setQuotes(quotes.map(quote => quote.id === id ? { ...quote, status: 'Approved' } : quote));
+  const calculateMarkup = (initialPrice: number) => {
+    const markup = (markupPercentage / 100) * initialPrice;
+    setMarkupAmount(markup);
+    setTotalCost(initialPrice + markup);
   };
 
-  const handleReject = (id:String) => {
-    setQuotes(quotes.map(quote => quote.id === id ? { ...quote, status: 'Rejected' } : quote));
+  const handleAcceptQuote = async () => {
+    try {
+      // Send updated quote details to the backend
+      await fetch('/api/quotes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...selectedQuote,
+          markupPercentage,
+          markupAmount,
+          totalCost,
+          notes,
+          status: 'accepted',
+        }),
+      });
+
+      swal({
+        title: "Quote Accepted",
+        text: "The quote has been accepted successfully.",
+        icon: "success",
+      });
+
+      // Reset the form or fetch the next quote
+    } catch (error) {
+      swal({
+        title: "Error",
+        text: "There was an error accepting the quote.",
+        icon: "error",
+      });
+    }
+  };
+
+  const handleRejectQuote = async () => {
+    try {
+      await fetch('/api/quotes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...selectedQuote,
+          status: 'rejected',
+        }),
+      });
+
+      swal({
+        title: "Quote Rejected",
+        text: "The quote has been rejected.",
+        icon: "success",
+      });
+
+      // Reset the form or fetch the next quote
+    } catch (error) {
+      swal({
+        title: "Error",
+        text: "There was an error rejecting the quote.",
+        icon: "error",
+      });
+    }
   };
 
   return (
-    
-      <div className="p-6 bg-gray-100 min-h-screen">
-        <h1 className="text-3xl font-bold mb-6">Quotes Dashboard</h1>
-        <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-          <h2 className="text-2xl font-semibold mb-4">Quotes to be Approved</h2>
-          <div className="mt-4 overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead>
-                <tr>
-                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quote ID</th>
-                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Buyer</th>
-                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quality</th>
-                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {quotes.map((quote) => (
-                  <tr key={quote.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">{quote.id}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{quote.buyer}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{quote.quote}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-yellow-600">{quote.status}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{quote.date}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <button
-                        className="bg-green-500 text-white px-3 py-1 rounded mr-2 hover:bg-green-600 transition"
-                        onClick={() => handleApprove(quote.id)}
-                        disabled={quote.status !== 'Pending'}
-                      >
-                        Approve
-                      </button>
-                      <button
-                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
-                        onClick={() => handleReject(quote.id)}
-                        disabled={quote.status !== 'Pending'}
-                      >
-                        Reject
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+    <div className="quote-manager-container">
+      {selectedQuote ? (
+        <Card>
+          <CardContent>
+            <Typography variant="h5">Quote Details</Typography>
+            <Typography variant="body1">Crop: {selectedQuote.crop}</Typography>
+            <Typography variant="body1">Quantity: {selectedQuote.quantity}</Typography>
+            <Typography variant="body1">Initial Price: UGX {selectedQuote.initialPrice}</Typography>
 
+            <TextField
+              label="Markup Percentage"
+              type="number"
+              value={markupPercentage}
+              onChange={(e) => setMarkupPercentage(parseFloat(e.target.value))}
+              fullWidth
+              margin="normal"
+            />
+
+            <Typography variant="body1">Markup Amount: UGX {markupAmount.toFixed(2)}</Typography>
+            <Typography variant="h6">Total Cost: UGX {totalCost.toFixed(2)}</Typography>
+
+            <TextField
+              label="Additional Notes"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              fullWidth
+              multiline
+              rows={4}
+              margin="normal"
+            />
+          </CardContent>
+
+          <CardActions>
+            <Button color="primary" onClick={handleAcceptQuote}>
+              Accept Quote
+            </Button>
+            <Button color="secondary" onClick={handleRejectQuote}>
+              Reject Quote
+            </Button>
+          </CardActions>
+        </Card>
+      ) : (
+        <Typography variant="h6">Select a quote to view details</Typography>
+      )}
+    </div>
   );
 };
 
-export default Quotes;
+export default AdminQuoteManager;

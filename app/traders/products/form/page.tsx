@@ -64,29 +64,45 @@ const RequestQuoteForm: React.FC = () => {
       });
       return;
     }
-
+  
     try {
-      await addDoc(collection(db, "quoteRequests"), {
-        crop: params.crop,
-        country: params.country,
-        region: params.region,
-        initialQuantity: params.quantity,
-        quantity,
-        message,
-        deliveryOption,
-        desiredDeliveryDate,
-        deliveryLocation,
-        pickupDate,
-        pickupQuantity,
-        dueDiligence,
-        dueDiligenceTestType,
+      const response = await fetch('/api/quotes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          crop: params.crop,
+          country: params.country,
+          region: params.region,
+          initialQuantity: params.quantity,
+          quantity,
+          message,
+          deliveryOption,
+          desiredDeliveryDate,
+          deliveryLocation,
+          pickupDate,
+          pickupQuantity,
+          dueDiligence,
+          dueDiligenceTestType,
+        }),
       });
-      swal({
-        title: "Form Submitted",
-        text: "Your quote request has been submitted successfully.",
-        icon: "success",
-      });
-      resetForm();
+  
+      if (response.ok) {
+        swal({
+          title: "Form Submitted",
+          text: "Your quote request has been submitted successfully.",
+          icon: "success",
+        });
+        resetForm();
+      } else {
+        const errorData = await response.json();
+        swal({
+          title: "Submission Error",
+          text: `There was an error submitting your request: ${errorData.message}. Please try again.`,
+          icon: "error",
+        });
+      }
     } catch (error) {
       swal({
         title: "Submission Error",
@@ -95,6 +111,7 @@ const RequestQuoteForm: React.FC = () => {
       });
     }
   };
+  
 
   const resetForm = () => {
     setQuantity('');
@@ -110,7 +127,7 @@ const RequestQuoteForm: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center w-full h-full">
+    <div className="flex items-center justify-center w-full h-full  m-5">
       <form
         onSubmit={handleSubmit}
         className="bg-blue-500/10 border hover:shadow-lg rounded px-8 pt-6 pb-8 mb-4 w-full max-w-lg"
