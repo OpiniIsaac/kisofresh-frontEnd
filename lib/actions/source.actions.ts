@@ -230,3 +230,45 @@ export async function fetchCropsByUserId(userId: string) {
 //   }
 // }
 
+
+
+const uri = process.env.TEST_DATABASE ?? '';
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+interface Quote {
+  _id: typeof ObjectId;
+  crop: string;
+  country: string;
+  region: string;
+  quantity: number;
+  deliveryOption: string;
+  status: string;
+}
+
+export async function getSingleQuote(id: string): Promise<{ quote?: Quote; error?: string; status?: number }> {
+  if (!ObjectId.isValid(id)) {
+    return { error: 'Invalid quote ID', status: 400 };
+  }
+
+  try {
+    await client.connect();
+    const db = client.db('KisoIndex');
+    const collection = db.collection('quoteRequests');
+
+    const quote = await collection.findOne({ _id: new ObjectId(id) });
+
+    if (!quote) {
+      return { error: 'Quote not found', status: 404 };
+    }
+
+    return { quote: quote as Quote };
+  } catch (error) {
+    console.error('Error fetching quote:', error);
+    return { error: 'Failed to fetch quote', status: 500 };
+  } finally {
+    await client.close();
+  }
+}

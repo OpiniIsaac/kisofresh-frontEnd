@@ -75,7 +75,6 @@ const RequestQuoteForm: React.FC = () => {
           crop: params.crop,
           country: params.country,
           region: params.region,
-          initialQuantity: params.quantity,
           quantity,
           message,
           deliveryOption,

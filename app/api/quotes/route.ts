@@ -42,6 +42,7 @@ export async function POST(request: Request) {
       pickupDate,
       pickupQuantity,
       dueDiligence,
+      status:"pending",
       dueDiligenceTestType,
       createdAt: new Date(),
     });
@@ -54,3 +55,27 @@ export async function POST(request: Request) {
     await client.close();
   }
 }
+
+export async function GET() {
+  const client = new MongoClient(process.env.TEST_DATABASE ?? '');
+
+  try {
+    await client.connect();
+    console.log('Connected to MongoDB');
+
+    const db = client.db('KisoIndex');
+    const collection = db.collection('quoteRequests');
+
+    const quotes = await collection.find().toArray();
+
+    return NextResponse.json(quotes, { status: 200 });
+  } catch (error) {
+    console.error('Error fetching quotes:', error);
+    return NextResponse.json({ message: 'Error fetching quotes', error }, { status: 500 });
+  } finally {
+    await client.close();
+  }
+}
+
+
+
