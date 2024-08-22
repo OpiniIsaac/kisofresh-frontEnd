@@ -6,6 +6,7 @@ import { WithId, Document } from 'mongodb';
 import { Card, Grid, TextField, Dialog, DialogTitle, DialogContent, DialogActions, FormLabel } from "@mui/material"; 
 import { CircularProgress as Spinner } from '@mui/material'; 
 import swal from 'sweetalert';
+
 const QuoteDetails = ({ params }: { params: { id: string } }) => {
   const [quote, setQuote] = useState<WithId<Document> | null>(null);
   const [pricePerUnit, setPricePerUnit] = useState<number>(0);
@@ -13,6 +14,10 @@ const QuoteDetails = ({ params }: { params: { id: string } }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [confirmAction, setConfirmAction] = useState<"accept" | "reject">("accept");
+
+  // New state variables for calculated prices
+  const [pricePerUnitWithMarkup, setPricePerUnitWithMarkup] = useState<number>(0);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
 
   useEffect(() => {
     if (!params.id) {
@@ -41,6 +46,15 @@ const QuoteDetails = ({ params }: { params: { id: string } }) => {
     fetchData();
   }, [params.id]);
 
+  // Calculate price per unit with markup and total price
+  useEffect(() => {
+    const calculatedPricePerUnitWithMarkup = pricePerUnit * (1 + markupPercentage / 100);
+    setPricePerUnitWithMarkup(calculatedPricePerUnitWithMarkup);
+    
+    const calculatedTotalPrice = calculatedPricePerUnitWithMarkup * (quote?.quantity || 0);
+    setTotalPrice(calculatedTotalPrice);
+  }, [pricePerUnit, markupPercentage, quote]);
+
   const handleSave = async () => {
     try {
       const response = await fetch(`/api/quotes/${params.id}`, {
@@ -48,7 +62,7 @@ const QuoteDetails = ({ params }: { params: { id: string } }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ pricePerUnit, markupPercentage }),
+        body: JSON.stringify({ pricePerUnit, markupPercentage, totalPrice,pricePerUnitWithMarkup }),
       });
 
       if (!response.ok) throw new Error('Failed to update quote');
@@ -96,11 +110,6 @@ const QuoteDetails = ({ params }: { params: { id: string } }) => {
     }
   };
 
-  const calculateTotalPrice = () => {
-    const totalPrice = pricePerUnit * (1 + markupPercentage / 100) * (quote?.quantity || 0);
-    return totalPrice.toFixed(2);
-  };
-
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -135,7 +144,13 @@ const QuoteDetails = ({ params }: { params: { id: string } }) => {
               <strong>Delivery Option:</strong> {quote.deliveryOption}
             </div>
             <div className="mb-4">
-              <strong>Total Price:</strong> ${calculateTotalPrice()}
+              <strong>Actual Price per Unit:</strong> ${pricePerUnit.toFixed(2)}
+            </div>
+            <div className="mb-4">
+              <strong>Price per Unit (with Markup):</strong> ${pricePerUnitWithMarkup.toFixed(2)}
+            </div>
+            <div className="mb-4">
+              <strong>Total Price:</strong> ${totalPrice.toFixed(2)}
             </div>
           </Grid>
           <Grid item xs={12} md={6}>

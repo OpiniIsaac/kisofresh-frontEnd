@@ -6,7 +6,7 @@ const client = new MongoClient(uri);
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   const { id } = params;
-  const { pricePerUnit, markupPercentage, status } = await request.json();
+  const { pricePerUnit, markupPercentage, status , totalPrice,pricePerUnitWithMarkup} = await request.json();
 
   if (!ObjectId.isValid(id)) {
     return NextResponse.json({ error: 'Invalid quote ID' }, { status: 400 });
@@ -22,7 +22,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     if (pricePerUnit !== undefined) updateObject.pricePerUnit = pricePerUnit;
     if (markupPercentage !== undefined) updateObject.markupPercentage = markupPercentage;
     if (status !== undefined) updateObject.status = status;
-
+    if (totalPrice !== undefined) updateObject.totalPrice = totalPrice;
+    if (pricePerUnitWithMarkup !== undefined) updateObject.pricePerUnitWithMarkup = pricePerUnitWithMarkup;
     // Update the quote
     await collection.updateOne(
       { _id: new ObjectId(id) },

@@ -28,10 +28,12 @@ import { fetchQuotesByUserId } from "@/lib/actions/trader.actions";
 // Define the Quote type
 type Quote = {
   _id: string;
-  cropType: string;
+  crop: string;
   quantity: number;
   price: number;
   status: string;
+  totalPrice: number;
+  pricePerUnitWithMarkup: number;
 };
 
 const TraderQuotes: React.FC = () => {
@@ -145,15 +147,15 @@ const TraderQuotes: React.FC = () => {
             <TableBody>
               {quotes.map((quote) => (
                 <TableRow key={quote._id}>
-                  <TableCell>{quote.cropType}</TableCell>
+                  <TableCell>{quote.crop}</TableCell>
                   <TableCell>{quote.quantity}</TableCell>
-                  <TableCell>{quote.price}</TableCell>
+                  <TableCell>{quote.totalPrice}</TableCell>
                   <TableCell>{quote.status}</TableCell>
                   <TableCell>
                     <Button
                       variant="outlined"
                       onClick={() => handleViewDetails(quote)}
-                      disabled={quote.status !== "QUOTE_FINALIZED"}
+                      // disabled={quote.status !== "QUOTE_FINALIZED"}
                     >
                       View & Approve/Reject
                     </Button>
@@ -176,10 +178,11 @@ const TraderQuotes: React.FC = () => {
           <DialogContentText>
             Review the details of the quote below.
           </DialogContentText>
-          <Typography>Crop: {selectedQuote?.cropType}</Typography>
+          <Typography>Crop: {selectedQuote?.crop}</Typography>
           <Typography>Quantity: {selectedQuote?.quantity}</Typography>
-          <Typography>Price: {selectedQuote?.price}</Typography>
+          <Typography>Price: {selectedQuote?.pricePerUnitWithMarkup}</Typography>
           <Typography>Status: {selectedQuote?.status}</Typography>
+          <Typography>Total Cost: {selectedQuote?.totalPrice}</Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)} color="primary">
