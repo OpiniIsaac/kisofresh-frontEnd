@@ -86,12 +86,9 @@ const InventoryPage: React.FC = () => {
   
     try {
       await addCropToInventory({
-        country: capitalizedCrop.country,
-        name: capitalizedCrop.CropType,
-        quality: capitalizedCrop.quality,
-        inStock: true,
+        name: capitalizedCrop.country,
+        quantity: Number(capitalizedCrop.CropType),
         userId: user?.uid ?? '',
-        region: capitalizedCrop.Region,
       });
       setSnackbarMessage('Crop added successfully!');
     } catch (error) {
