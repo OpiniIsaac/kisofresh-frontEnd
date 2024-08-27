@@ -89,22 +89,38 @@ const RequestQuoteForm: React.FC = () => {
         }),
       });
   
-      if (response.ok) {
-        swal({
-          title: "Form Submitted",
-          text: "Your quote request has been submitted successfully.",
-          icon: "success",
-        });
-        resetForm();
-      } else {
-        const errorData = await response.json();
-        swal({
-          title: "Submission Error",
-          text: `There was an error submitting your request: ${errorData.message}. Please try again.`,
-          icon: "error",
-        });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+  
+      const data = await response.json();
+  
+      // Send email notification
+      await fetch('/api/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: user?.email,
+          crop: params.crop,
+          quantity,
+          message,
+          deliveryOption,
+          location: deliveryOption === 'delivery' ? deliveryLocation : '',
+          status: 'ORDER_REVIEVED',
+         desiredDeliveryDate, deliveryLocation, pickupDate, pickupQuantity
+        }),
+      });
+  
+      swal({
+        title: "Form Submitted",
+        text: "Your quote request has been submitted successfully.",
+        icon: "success",
+      });
+      resetForm();
     } catch (error) {
+      console.error('Error submitting form:', error);
       swal({
         title: "Submission Error",
         text: "There was an error submitting your request. Please try again.",
@@ -112,6 +128,7 @@ const RequestQuoteForm: React.FC = () => {
       });
     }
   };
+  
   
 
   const resetForm = () => {

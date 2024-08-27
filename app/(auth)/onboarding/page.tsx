@@ -7,7 +7,6 @@ import { useAppSelector } from '@/lib/hooks';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 
-
 interface LocationField {
   label: string;
   type: string;
@@ -47,6 +46,7 @@ const OnboardingScreen: React.FC = () => {
   const [selectedRole, setSelectedRole] = useState<string>('');
   const [locationDetails, setLocationDetails] = useState<LocationField[]>([]);
   const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [countryCode, setCountryCode] = useState<string>('ug'); // Default to Uganda
   const router = useRouter();
   const user = useAppSelector((state) => state.auth.user);
 
@@ -55,7 +55,17 @@ const OnboardingScreen: React.FC = () => {
     setSelectedCountry(country);
     setLocationDetails(locationFields[country] || []);
   };
-
+  interface CustomCountryData {
+    dialCode: string;
+    [key: string]: any;
+  }
+  
+  const handlePhoneNumberChange = (phone: string, country: CustomCountryData) => {
+    const dialCode = country.dialCode || '';
+    console.log(`Dial code: ${dialCode}`);
+    setPhoneNumber(phone);
+  };
+  
   const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedRole(e.target.value);
   };
@@ -68,7 +78,7 @@ const OnboardingScreen: React.FC = () => {
       secondName: (document.getElementById('secondName') as HTMLInputElement).value,
       country: selectedCountry,
       role: selectedRole,
-      phoneNumber: phoneNumber,
+      phoneNumber: `${countryCode}${phoneNumber}`,
       locationDetails: locationDetails.map((field) => ({
         label: field.label,
         value: (document.getElementById(field.label.toLowerCase()) as HTMLInputElement).value,
@@ -150,13 +160,14 @@ const OnboardingScreen: React.FC = () => {
           <div>
             <label htmlFor="phoneNumber" className="block text-gray-700">Phone Number</label>
             <PhoneInput
-              country={'ug'} 
-              value={phoneNumber}
-              onChange={(phone) => setPhoneNumber(phone)}
-              preferredCountries={['ug', 'ke', 'tz', 'rw', 'bi']}
-              placeholder="Enter phone number"
-              inputClass="mt-1 p-2 w-full border rounded-lg"
-            />
+  country={'ug'}
+  value={phoneNumber}
+  onChange={(phone, countryData) => handlePhoneNumberChange(phone, countryData as CustomCountryData)}
+  preferredCountries={['ug', 'ke', 'tz', 'rw', 'bi']}
+  placeholder="Enter phone number"
+  inputClass="mt-1 p-2 w-full border rounded-lg"
+/>
+
           </div>
 
           <div className="mt-6">
@@ -171,6 +182,3 @@ const OnboardingScreen: React.FC = () => {
 };
 
 export default OnboardingScreen;
-
-
-
