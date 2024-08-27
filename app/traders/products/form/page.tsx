@@ -91,6 +91,7 @@ const RequestQuoteForm: React.FC = () => {
           dueDiligence,
           dueDiligenceTestType,
           userId: user?.uid,
+          userEmail:user?.email
         }),
       });
   

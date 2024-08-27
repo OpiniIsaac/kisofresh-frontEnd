@@ -28,6 +28,7 @@ export async function POST(request: Request) {
       dueDiligence,
       dueDiligenceTestType,
       userId,
+      userEmail
     } = data;
 
     const result = await collection.insertOne({
@@ -45,6 +46,7 @@ export async function POST(request: Request) {
       dueDiligence,
       status:"ORDER_RECIEVED",
       userId,
+      userEmail,
       dueDiligenceTestType,
       createdAt: new Date(),
     });
