@@ -7,6 +7,7 @@ import { Card, Grid, TextField, Dialog, DialogTitle, DialogContent, DialogAction
 import { CircularProgress as Spinner } from '@mui/material'; 
 import swal from 'sweetalert';
 
+
 const QuoteDetails = ({ params }: { params: { id: string } }) => {
   const [quote, setQuote] = useState<WithId<Document> | null>(null);
   const [pricePerUnit, setPricePerUnit] = useState<number>(0);
@@ -62,18 +63,33 @@ const QuoteDetails = ({ params }: { params: { id: string } }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ pricePerUnit, markupPercentage, totalPrice,pricePerUnitWithMarkup }),
+        body: JSON.stringify({ pricePerUnit, markupPercentage, totalPrice, pricePerUnitWithMarkup }),
       });
-
+  
       if (!response.ok) throw new Error('Failed to update quote');
-
+  
+      // Notify the user that the quote has been viewed
+      const emailResponse = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: quote?.userEmail,
+          subject: 'Quote Viewed',
+          text: `Dear User,\n\nYour quote has been viewed and updated with the following details:\n- Price per Unit: ${pricePerUnit}\n- Markup Percentage: ${markupPercentage}%\n- Total Price: ${totalPrice}\n\nThank you,\nKisoIndex Team`,
+        }),
+      });
+  
+      if (!emailResponse.ok) throw new Error('Failed to send email');
+  
       swal({
         title: "Success",
         text: "Quote updated successfully.",
         icon: "success",
       });
     } catch (error) {
-      console.error('Error updating quote:', error);
+      console.error('Error:', error);
       swal({
         title: "Error",
         text: "Failed to update the quote.",
@@ -81,19 +97,51 @@ const QuoteDetails = ({ params }: { params: { id: string } }) => {
       });
     }
   };
-
+  
+  
   const handleConfirm = async () => {
     try {
+      const status = confirmAction === "accept" ? "accepted" : "rejected";
       const response = await fetch(`/api/quotes/${params.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ status: confirmAction === "accept" ? "accepted" : "rejected" }),
+        body: JSON.stringify({ status }),
       });
-
+  
       if (!response.ok) throw new Error(`Failed to ${confirmAction} the quote`);
+  
+      // Prepare email details based on the action
+      const userEmail = quote?.userEmail;
+      const emailSubject = confirmAction === "accept" ? 'Quote Accepted' : 'Quote Rejected';
+      const emailText = `Dear User,
 
+Your quote has been ${status}. Here are the details:
+- Price per Unit: ${pricePerUnit}
+- Markup Percentage: ${markupPercentage}%
+- Total Price: ${totalPrice}
+
+Thank you,
+KisoIndex Team`;
+  
+      // Send email using the /api/send-email endpoint
+      if (userEmail) {
+        const emailResponse = await fetch('/api/send-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            to: userEmail,
+            subject: emailSubject,
+            text: emailText,
+          }),
+        });
+  
+        if (!emailResponse.ok) throw new Error('Failed to send email');
+      }
+  
       swal({
         title: "Success",
         text: `Quote ${confirmAction}ed successfully.`,
@@ -109,7 +157,7 @@ const QuoteDetails = ({ params }: { params: { id: string } }) => {
       });
     }
   };
-
+  
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
