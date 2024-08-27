@@ -25,9 +25,11 @@ const RequestQuoteForm: React.FC = () => {
   const [dueDiligence, setDueDiligence] = useState<boolean>(false);
   const [dueDiligenceTestType, setDueDiligenceTestType] = useState<string>('');
   const [errors, setErrors] = useState<Errors>({});
+  const [loading, setLoading] = useState<boolean>(false);  // Added loading state
 
   const [params, setParams] = useState<any>({});
   const user = useAppSelector((state) => state.auth.user);
+
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     setParams({
@@ -55,6 +57,8 @@ const RequestQuoteForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);  // Disable the button and show loading state
+
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -63,6 +67,7 @@ const RequestQuoteForm: React.FC = () => {
         text: "Please fill in all required fields.",
         icon: "error",
       });
+      setLoading(false);  // Re-enable the button if there are errors
       return;
     }
   
@@ -108,8 +113,8 @@ const RequestQuoteForm: React.FC = () => {
           message,
           deliveryOption,
           location: deliveryOption === 'delivery' ? deliveryLocation : '',
-          status: 'ORDER_REVIEVED',
-         desiredDeliveryDate, deliveryLocation, pickupDate, pickupQuantity
+          status: 'ORDER_RECIEVED',
+          desiredDeliveryDate, deliveryLocation, pickupDate, pickupQuantity
         }),
       });
   
@@ -126,10 +131,10 @@ const RequestQuoteForm: React.FC = () => {
         text: "There was an error submitting your request. Please try again.",
         icon: "error",
       });
+    } finally {
+      setLoading(false);  // Re-enable the button after submission
     }
   };
-  
-  
 
   const resetForm = () => {
     setQuantity('');
@@ -143,6 +148,7 @@ const RequestQuoteForm: React.FC = () => {
     setDueDiligenceTestType('');
     setErrors({});
   };
+
 
   return (
     <div className="flex items-center justify-center w-full h-full  m-5">
@@ -298,8 +304,8 @@ const RequestQuoteForm: React.FC = () => {
         </div>
 
         <div className="flex items-center justify-center pt-6">
-          <Button type="submit">
-            Submit
+        <Button type="submit" disabled={loading}>
+            {loading ? 'Submitting...' : 'Submit'}
           </Button>
         </div>
       </form>

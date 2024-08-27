@@ -43,7 +43,7 @@ export async function POST(request: Request) {
       pickupDate,
       pickupQuantity,
       dueDiligence,
-      status:"pending",
+      status:"ORDER_RECIEVED",
       userId,
       dueDiligenceTestType,
       createdAt: new Date(),
@@ -68,7 +68,10 @@ export async function GET() {
     const db = client.db('KisoIndex');
     const collection = db.collection('quoteRequests');
 
-    const quotes = await collection.find().toArray();
+    // Filter quotes by status and sort them by createdAt in descending order
+    const quotes = await collection.find({
+      status: { $in: ['ORDER_RECIEVED', 'ORDER_REVIEWED'] }
+    }).sort({ createdAt: -1 }).toArray();
 
     return NextResponse.json(quotes, { status: 200 });
   } catch (error) {
@@ -78,6 +81,7 @@ export async function GET() {
     await client.close();
   }
 }
+
 
 
 
