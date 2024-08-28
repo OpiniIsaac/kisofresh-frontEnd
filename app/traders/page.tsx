@@ -1,15 +1,34 @@
 "use client";
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getUserCropCount } from '@/lib/actions/source.actions';
+import { useAppSelector } from '@/lib/hooks';
 
 const TraderDashboard = () => {
+  const user = useAppSelector((state) => state.auth.user);
+  const [totalProducts, setTotalProducts] = useState(0);
   const [purchaseData, setPurchaseData] = useState({ item: '', quantity: '', boughtFrom: '', soldTo: '' });
 
-  const handleChange = (e: { target: { name: any; value: any; }; }) => {
+  useEffect(() => {
+    const fetchUserCropCount = async () => {
+      if (user?.uid) {
+        try {
+          const data = await getUserCropCount(user.uid);
+          setTotalProducts(data.count);
+        } catch (error) {
+          console.error("Failed to fetch crop count", error);
+        }
+      }
+    };
+
+    fetchUserCropCount();
+  }, [user?.uid]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setPurchaseData({ ...purchaseData, [name]: value });
   };
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Handle form submission to save purchase data
     console.log(purchaseData);
@@ -27,7 +46,7 @@ const TraderDashboard = () => {
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-blue-100 p-4 rounded-lg">
               <h3 className="text-lg font-medium">Total Products</h3>
-              <p className="text-2xl font-bold">120</p>
+              <p className="text-2xl font-bold">{totalProducts}</p>
             </div>
             <div className="bg-green-100 p-4 rounded-lg">
               <h3 className="text-lg font-medium">Total Sales</h3>
