@@ -22,10 +22,8 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { useAppSelector } from "@/lib/hooks";
-// import {  approveQuote, rejectQuote } from "@/lib/actions/source.actions";
-import { fetchQuotesByUserId } from "@/lib/actions/trader.actions";
+import { approveQuote, fetchQuotesByUserId, rejectQuote } from "@/lib/actions/trader.actions";
 
-// Define the Quote type
 type Quote = {
   _id: string;
   crop: string;
@@ -50,7 +48,21 @@ const TraderQuotes: React.FC = () => {
       if (user) {
         try {
           const quotesData = await fetchQuotesByUserId(user.uid);
-          setQuotes(quotesData);
+          // Filter out quotes with status QUOTE_APPROVED or QUOTE_REJECTED
+          const filteredQuotes = quotesData.filter(
+            (quote) =>
+              quote.status !== "QUOTE_APPROVED" && quote.status !== "QUOTE_REJECTED"
+          );
+          const formattedQuotesData = filteredQuotes.map((quote) => ({
+            _id: quote._id.toString(),
+            crop: quote.crop,
+            quantity: quote.quantity,
+            price: quote.price,
+            status: quote.status,
+            totalPrice: quote.totalPrice,
+            pricePerUnitWithMarkup: quote.pricePerUnitWithMarkup,
+          }));
+          setQuotes(formattedQuotesData);
         } catch (error) {
           console.error("Error fetching quotes:", error);
         } finally {
@@ -67,19 +79,19 @@ const TraderQuotes: React.FC = () => {
   const handleApproveQuote = async () => {
     if (selectedQuote) {
       try {
-        // const result = await approveQuote(selectedQuote._id);
-        // if (result.success) {
-        //   setSnackbarMessage("Quote approved successfully!");
-        //   setQuotes(
-        //     quotes.map((quote) =>
-        //       quote._id === selectedQuote._id
-        //         ? { ...quote, status: "APPROVED" }
-        //         : quote
-        //     )
-        //   );
-        // } else {
-        //   setSnackbarMessage(result.message || "Error approving quote.");
-        // }
+        const result = await approveQuote(selectedQuote._id);
+        if (result.success) {
+          setSnackbarMessage("Quote approved successfully!");
+          setQuotes(
+            quotes.map((quote) =>
+              quote._id === selectedQuote._id
+                ? { ...quote, status: "QUOTE_APPROVED" }
+                : quote
+            ).filter((quote) => quote.status !== "QUOTE_APPROVED")
+          );
+        } else {
+          setSnackbarMessage(result.message || "Error approving quote.");
+        }
       } catch (error) {
         setSnackbarMessage("Error approving quote.");
       } finally {
@@ -92,19 +104,19 @@ const TraderQuotes: React.FC = () => {
   const handleRejectQuote = async () => {
     if (selectedQuote) {
       try {
-        // const result = await rejectQuote(selectedQuote._id);
-        // if (result.success) {
-        //   setSnackbarMessage("Quote rejected successfully!");
-        //   setQuotes(
-        //     quotes.map((quote) =>
-        //       quote._id === selectedQuote._id
-        //         ? { ...quote, status: "REJECTED" }
-        //         : quote
-        //     )
-        //   );
-        // } else {
-        //   setSnackbarMessage(result.message || "Error rejecting quote.");
-        // }
+        const result = await rejectQuote(selectedQuote._id);
+        if (result.success) {
+          setSnackbarMessage("Quote rejected successfully!");
+          setQuotes(
+            quotes.map((quote) =>
+              quote._id === selectedQuote._id
+                ? { ...quote, status: "QUOTE_REJECTED" }
+                : quote
+            ).filter((quote) => quote.status !== "QUOTE_REJECTED")
+          );
+        } else {
+          setSnackbarMessage(result.message || "Error rejecting quote.");
+        }
       } catch (error) {
         setSnackbarMessage("Error rejecting quote.");
       } finally {
@@ -155,7 +167,6 @@ const TraderQuotes: React.FC = () => {
                     <Button
                       variant="outlined"
                       onClick={() => handleViewDetails(quote)}
-                      // disabled={quote.status !== "QUOTE_FINALIZED"}
                     >
                       View & Approve/Reject
                     </Button>
@@ -191,14 +202,12 @@ const TraderQuotes: React.FC = () => {
           <Button
             onClick={handleApproveQuote}
             color="primary"
-            disabled={selectedQuote?.status !== "QUOTE_FINALIZED"}
           >
             Approve
           </Button>
           <Button
             onClick={handleRejectQuote}
             color="secondary"
-            disabled={selectedQuote?.status !== "QUOTE_FINALIZED"}
           >
             Reject
           </Button>
