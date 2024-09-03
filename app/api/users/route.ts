@@ -25,7 +25,8 @@ export async function POST(request: Request) {
         users.push({
           id: userId,
           firstName: userData.firstName,
-          secondName: userData.secondName,
+          secondName: userData.secondName, 
+          
         });
       } else {
         console.error(`User with ID ${userId} does not exist`);
