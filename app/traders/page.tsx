@@ -68,15 +68,15 @@ const TraderDashboard = () => {
           <h2 className="text-xl font-semibold mb-4">Recent Transactions</h2>
           <ul>
             <li className="border-b py-2">
-              <p className="font-medium">Bought 50kg of Maize from Farmer A</p>
+              <p className="font-medium">Bought 50kg of Maize </p>
               <p className="text-gray-600">UGX 100,000</p>
             </li>
             <li className="border-b py-2">
-              <p className="font-medium">Sold 30kg of Beans to Warehouse B</p>
+              <p className="font-medium">Sold 30kg of Beans </p>
               <p className="text-gray-600">UGX 75,000</p>
             </li>
             <li className="border-b py-2">
-              <p className="font-medium">Bought 20kg of Coffee from Farmer C</p>
+              <p className="font-medium">Bought 20kg of Coffee</p>
               <p className="text-gray-600">UGX 50,000</p>
             </li>
           </ul>
