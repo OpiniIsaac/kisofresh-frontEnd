@@ -17,10 +17,10 @@ export async function getQuotes(userId: any) {
     // Map MongoDB documents to Order type
     const mapToOrder = (doc: any) => ({
       orderId: doc._id, // Or another field if you have a separate order ID field
-      product: doc.product,
+      crop: doc.crop,
       quantity: doc.quantity,
       
-price: doc.price,
+totalPrice: doc.totalPrice,
       status: doc.status,
       date: doc.date,
     });

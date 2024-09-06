@@ -3,14 +3,26 @@
 import { getQuotes } from '@/lib/actions/tradersOrders.action';
 import { useAppSelector } from '@/lib/hooks';
 import { useEffect, useState } from 'react';
-import { Tabs, Tab, Box, useMediaQuery } from '@mui/material';
+import {
+  Tabs,
+  Tab,
+  Box,
+  useMediaQuery,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Typography,
+} from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 type Order = {
   orderId: number;
-  product: string;
+  
+crop: string;
   quantity: number;
-  price: string;
+  totalPrice: string;
   status: string;
   date: string;
 };
@@ -46,6 +58,10 @@ const OrdersPage = () => {
     setActiveTab(newValue);
   };
 
+  const handleCloseDialog = () => {
+    setSelectedOrder(null);
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -74,7 +90,7 @@ const OrdersPage = () => {
               <table className="w-full table-auto border-collapse mb-6">
                 <thead>
                   <tr className="bg-gray-200">
-                    <th className="p-2 border">Order ID</th>
+                    {/* <th className="p-2 border">Order ID</th> */}
                     <th className="p-2 border">Product</th>
                     <th className="p-2 border">Quantity</th>
                     <th className="p-2 border">Price</th>
@@ -86,10 +102,11 @@ const OrdersPage = () => {
                 <tbody>
                   {approvedOrders.map((order) => (
                     <tr key={order.orderId} className="text-center">
-                      <td className="p-2 border">{order.orderId}</td>
-                      <td className="p-2 border">{order.product}</td>
+                      {/* <td className="p-2 border">{order.orderId}</td> */}
+                      <td className="p-2 border">{order.
+crop}</td>
                       <td className="p-2 border">{order.quantity}</td>
-                      <td className="p-2 border">{order.price}</td>
+                      <td className="p-2 border">{order.totalPrice}</td>
                       <td className="p-2 border text-green-500">{order.status}</td>
                       <td className="p-2 border">{order.date}</td>
                       <td className="p-2 border">
@@ -126,9 +143,10 @@ const OrdersPage = () => {
                   {rejectedOrders.map((order) => (
                     <tr key={order.orderId} className="text-center">
                       <td className="p-2 border">{order.orderId}</td>
-                      <td className="p-2 border">{order.product}</td>
+                      <td className="p-2 border">{order.
+crop}</td>
                       <td className="p-2 border">{order.quantity}</td>
-                      <td className="p-2 border">{order.price}</td>
+                      <td className="p-2 border">{order.totalPrice}</td>
                       <td className="p-2 border text-red-500">{order.status}</td>
                       <td className="p-2 border">{order.date}</td>
                       <td className="p-2 border">
@@ -147,35 +165,40 @@ const OrdersPage = () => {
           )}
         </Box>
 
-        {selectedOrder && (
-          <div className="mt-6 p-4 bg-gray-100 shadow rounded-lg">
-            <h2 className="text-xl font-bold mb-4">Order Details</h2>
-            <p>
-              <strong>Order ID:</strong> {selectedOrder.orderId}
-            </p>
-            <p>
-              <strong>Product:</strong> {selectedOrder.product}
-            </p>
-            <p>
-              <strong>Quantity:</strong> {selectedOrder.quantity}
-            </p>
-            <p>
-              <strong>Price:</strong> {selectedOrder.price}
-            </p>
-            <p>
-              <strong>Status:</strong> {selectedOrder.status}
-            </p>
-            <p>
-              <strong>Date:</strong> {selectedOrder.date}
-            </p>
-            <button
-              onClick={() => setSelectedOrder(null)}
-              className="mt-4 p-2 bg-blue-500 text-white rounded"
-            >
+        {/* Dialog for order details */}
+        <Dialog open={!!selectedOrder} onClose={handleCloseDialog} fullWidth maxWidth="sm">
+          <DialogTitle>Order Details</DialogTitle>
+          <DialogContent dividers>
+            {selectedOrder && (
+              <>
+                <Typography variant="body1">
+                  <strong>Order ID:</strong> {selectedOrder.orderId}
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Product:</strong> {selectedOrder.
+crop}
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Quantity:</strong> {selectedOrder.quantity}
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Price:</strong> {selectedOrder.totalPrice}
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Status:</strong> {selectedOrder.status}
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Date:</strong> {selectedOrder.date}
+                </Typography>
+              </>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color="primary">
               Close
-            </button>
-          </div>
-        )}
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     </div>
   );
