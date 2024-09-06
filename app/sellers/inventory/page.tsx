@@ -22,120 +22,163 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton,
-  Switch,
 } from '@mui/material';
-import { addDoc, collection, getDocs, deleteDoc, doc, onSnapshot, updateDoc } from 'firebase/firestore';
-import { db } from '@/app/firebase/config';
 import { Plus, Delete } from 'lucide-react';
-import { addCropToInventory, fetchCropsByUserId } from '@/lib/actions/source.actions';
 import { useAppSelector } from '@/lib/hooks';
-import { capitalizeFirstLetter } from '@/utilis/capitalLetter';
+import { addCropToInventory, deleteCropFromInventory, fetchCropsByUserId} from '@/lib/actions/source.actions';
 
 // Define the Crop type
 type Crop = {
-  id: string;
+  _id: string;
   CropType: string;
-  country: string;
-  Region: string;
-  quality: number;
+  location: string;
+  quantity: number;
   inStock: boolean;
-  userId: string; // Added userId field
 };
 
-const InventoryPage: React.FC = () => {
+const TraderInventory: React.FC = () => {
   const [crops, setCrops] = useState<Crop[]>([]);
   const [loading, setLoading] = useState(true);
-  const [newCrop, setNewCrop] = useState<Omit<Crop, 'id' | 'inStock' | 'userId'>>({
-    CropType: '',
-    country: '',
-    Region: '',
-    quality: 0
-  });
+  const [newCrop, setNewCrop] = useState<Omit<Crop, '_id' | 'inStock'>>({ CropType: '', location: '', quantity: 0 });
+  const [editCrop, setEditCrop] = useState<Crop | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
   const user = useAppSelector((state) => state.auth.user);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (user?.uid) {
-        const cropsData = await fetchCropsByUserId(user.uid);
-        setCrops(cropsData);
+    const fetchCrops = async () => {
+      if (user) {
+        try {
+          const cropsData = await fetchCropsByUserId(user.uid);
+          setCrops(cropsData);
+        } catch (error) {
+          console.error('Error fetching crops:', error);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
-    fetchData();
+    fetchCrops();
   }, [user]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setNewCrop((prev) => ({ ...prev, [name]: value }));
+    if (editCrop) {
+      setEditCrop((prev) => prev ? { ...prev, [name]: value } : prev);
+    } else {
+      setNewCrop((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
-  const handleAddCrop = async () => {
-   
-  
-    const capitalizedCrop = {
-      CropType: capitalizeFirstLetter(newCrop.CropType),
-      country: capitalizeFirstLetter(newCrop.country),
-      Region: capitalizeFirstLetter(newCrop.Region),
-      quality: newCrop.quality,
-    };
-  
+  const handleAddCrop = async (e: React.FormEvent) => {
+    e.preventDefault(); // Prevent the page from refreshing
     try {
-      await addCropToInventory({
-        name: capitalizedCrop.country,
-        quantity: Number(capitalizedCrop.CropType),
-        userId: user?.uid ?? '',
-      });
-      setSnackbarMessage('Crop added successfully!');
+      if (user) {
+        const result = await addCropToInventory({
+          name: newCrop.CropType,
+          quantity: newCrop.quantity,
+          userId: user.uid,
+        });
+
+        setSnackbarMessage('Crop added successfully!');
+        setCrops([...crops, { ...newCrop, _id: result.insertedId, inStock: true }]);
+        setNewCrop({CropType:'',location:"",quantity:0})
+      }
     } catch (error) {
       setSnackbarMessage('Error adding crop.');
     }
-  
-    setNewCrop({ CropType: '', country: '', Region: '', quality: 0 });
+
     setOpenSnackbar(true);
     setOpenDialog(false);
   };
+
+  // const handleEditCrop = async (e: React.FormEvent) => {
+  //   e.preventDefault();
   
+  //   if (editCrop && user) {
+  //     try {
+  //       const updatedCrop = {
+  //         _id: editCrop._id,
+  //         CropType: newCrop.CropType || editCrop.CropType,
+  //         quantity: newCrop.quantity || editCrop.quantity,
+  //         location: newCrop.location || editCrop.location,
+  //       };
+  
+  //       const result = await updateCropInInventory({
+  //         cropId: updatedCrop._id,
+  //         name: updatedCrop.CropType,
+  //         quantity: updatedCrop.quantity,
+         
+  //       });
+  
+  //       if (result.success) {
+  //         setCrops((prevCrops) =>
+  //           prevCrops.map((crop) =>
+  //             crop._id === updatedCrop._id ? { ...updatedCrop, inStock: crop.inStock } : crop
+  //           )
+  //         );
+  //         setSnackbarMessage('Crop updated successfully!');
+  //       } else {
+  //         setSnackbarMessage(result.message || 'Error updating crop.');
+  //       }
+  //     } catch (error) {
+  //       setSnackbarMessage('Error updating crop.');
+  //       console.error('Error:', error);
+  //     }
+  
+  //     setOpenSnackbar(true);
+  //     setOpenDialog(false);
+  //     setEditCrop(null);
+  //     setNewCrop({ CropType: '', location: '', quantity: 0 }); // Reset newCrop
+  //   }
+  // };
+  
+  
+
   const handleDeleteCrop = async (id: string) => {
     try {
-      await deleteDoc(doc(db, 'crops', id));
-      setSnackbarMessage('Crop deleted successfully!');
-      setOpenSnackbar(true);
+      const result = await deleteCropFromInventory(id);
+
+      if (result.success) {
+        setSnackbarMessage('Crop deleted successfully!');
+        setCrops(crops.filter((crop) => crop._id !== id));
+      } else {
+        setSnackbarMessage(result.message || 'Error deleting crop.');
+      }
     } catch (error) {
       setSnackbarMessage('Error deleting crop.');
-      setOpenSnackbar(true);
+      console.error('Error:', error);
     }
+
+    setOpenSnackbar(true);
   };
 
-  const handleToggleStock = async (id: string, inStock: boolean) => {
-    try {
-      await updateDoc(doc(db, 'crops', id), { inStock: !inStock });
-      setSnackbarMessage('Stock status updated successfully!');
-      setOpenSnackbar(true);
-    } catch (error) {
-      setSnackbarMessage('Error updating stock status.');
-      setOpenSnackbar(true);
-    }
+  const handleEditClick = (crop: Crop) => {
+    setEditCrop(crop);
+    setNewCrop({ CropType: crop.CropType, location: crop.location, quantity: crop.quantity });
+    setOpenDialog(true);
   };
 
   return (
-    <Container className='mt-20 ml-56 pt-10'>
+    <Container className='mt-20 ml-50 pl-60'>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6">Crop Inventory</Typography>
+          <Typography variant="h6">Crop Trader Inventory</Typography>
         </Toolbar>
       </AppBar>
       <Toolbar />
       <Grid container spacing={2} alignItems="center" justifyContent="space-between">
         <Grid item>
-          {/* Additional content or components can be added here */}
+          <Typography variant="h4" gutterBottom>
+            Crop Trader Inventory
+          </Typography>
         </Grid>
-        <Grid item className='p-5'>
-          <Button variant="contained" color="primary" onClick={() => setOpenDialog(true)}>
+        <Grid item>
+          <Button variant="contained" color="primary" onClick={() => { setNewCrop({ CropType: '', location: '', quantity: 0 }); setOpenDialog(true); }}>
             <Plus /> Add Crop
           </Button>
         </Grid>
@@ -147,28 +190,24 @@ const InventoryPage: React.FC = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Location</TableCell>
-                <TableCell>Quality</TableCell>
-                <TableCell>In Stock</TableCell>
-                <TableCell>Actions</TableCell>
+                <TableCell>Crop</TableCell>
+                <TableCell>Quantity</TableCell>
+                {/* <TableCell>Edit</TableCell> */}
+                <TableCell>Delete</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {crops.map((crop) => (
-                <TableRow key={crop.id}>
+                <TableRow key={crop._id}>
                   <TableCell>{crop.CropType}</TableCell>
-                  <TableCell>{crop.Region}</TableCell>
-                  <TableCell>{crop.quality}</TableCell>
+                  <TableCell>{crop.quantity}</TableCell>
+                  {/* <TableCell>
+                    <Button onClick={() => handleEditClick(crop)} variant="outlined">
+                      Edit
+                    </Button>
+                  </TableCell> */}
                   <TableCell>
-                    <Switch
-                      checked={crop.inStock}
-                      onChange={() => handleToggleStock(crop.id, crop.inStock)}
-                      color="primary"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Button onClick={() => handleDeleteCrop(crop.id)}  color='error' variant='contained'>
+                    <Button onClick={() => handleDeleteCrop(crop._id)} variant="outlined" color="error">
                       Delete
                     </Button>
                   </TableCell>
@@ -185,60 +224,47 @@ const InventoryPage: React.FC = () => {
         message={snackbarMessage}
       />
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>Add New Crop</DialogTitle>
+        <DialogTitle>{editCrop ? "Edit Crop" : "Add New Crop"}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Please enter the details of the new crop you want to add.
+            {editCrop
+              ? "Please update the details of the crop."
+              : "Please enter the details of the new crop you want to add."}
           </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            name="CropType"
-            label="Crop Name"
-            type="text"
-            fullWidth
-            value={newCrop.CropType}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="dense"
-            name="country"
-            label="Country"
-            type="text"
-            fullWidth
-            value={newCrop.country}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="dense"
-            name="quality"
-            label="Quality"
-            type="number"
-            fullWidth
-            value={newCrop.quality}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="dense"
-            name="Region"
-            label="Region"
-            type="text"
-            fullWidth
-            value={newCrop.Region}
-            onChange={handleChange}
-          />
+          <form onSubmit={handleAddCrop}>
+            <TextField
+              autoFocus
+              margin="dense"
+              name="CropType"
+              label="Crop Name"
+              type="text"
+              fullWidth
+              value={editCrop ? editCrop.CropType : newCrop.CropType} // Use editCrop if editing
+              onChange={handleChange}
+            />
+            <TextField
+              margin="dense"
+              name="quantity"
+              label="Quantity"
+              type="number"
+              fullWidth
+              value={editCrop ? editCrop.quantity : newCrop.quantity} // Use editCrop if editing
+              onChange={handleChange}
+            />
+          
+            <DialogActions>
+              <Button onClick={() => setOpenDialog(false)} color="primary">
+                Cancel
+              </Button>
+              <Button type="submit" color="primary">
+                {editCrop ? "Update" : "Add"}
+              </Button>
+            </DialogActions>
+          </form>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleAddCrop} color="primary">
-            Add
-          </Button>
-        </DialogActions>
       </Dialog>
     </Container>
   );
 };
 
-export default InventoryPage;
+export default TraderInventory;

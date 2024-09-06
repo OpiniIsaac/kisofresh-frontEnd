@@ -8,13 +8,13 @@ const TraderSidebar = () => {
   const isActive = (path: string) => pathname === path;
 
   const menuItems = [
-    { href: '/traders', label: 'Dashboard' },
+    // { href: '/traders', label: 'Dashboard' },
     { href: '/traders/products', label: 'Source Produce' },
     { href: '/traders/quotes', label: 'Quotes' },
     { href: '/traders/inventory', label: 'Inventory' },
     { href: '/traders/orders', label: 'Orders' },
     { href: '/traders/sales', label: 'Sales' },
-    { href: '/traders/purchases', label: 'Purchase History' },
+    // { href: '/traders/purchases', label: 'Purchase History' },
   ];
 
   return (

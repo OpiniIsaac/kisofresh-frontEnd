@@ -187,7 +187,7 @@ const SellerDashboard: React.FC = () => {
         </Grid>
       </Grid>
 
-      <Button variant="contained" color="primary" className="mt-4" onClick={() => setOpenDialog(true)}>
+      {/* <Button variant="contained" color="primary" className="mt-4" onClick={() => setOpenDialog(true)}>
         <Plus /> Add Crop
       </Button>
 
@@ -278,9 +278,9 @@ const SellerDashboard: React.FC = () => {
         autoHideDuration={6000}
         onClose={() => setOpenSnackbar(false)}
         message={snackbarMessage}
-      />
+      /> */}
 
-      <Typography variant="h5" gutterBottom className="mt-6">
+      {/* <Typography variant="h5" gutterBottom className="mt-6">
         Manage Crops
       </Typography>
       {loading ? (
@@ -318,7 +318,7 @@ const SellerDashboard: React.FC = () => {
             ))}
           </tbody>
         </table>
-      )}
+      )} */}
     </Container>
   );
 };

@@ -24,7 +24,7 @@ crop: string;
   quantity: number;
   totalPrice: string;
   status: string;
-  date: string;
+  createdAt: string;
 };
 
 const OrdersPage = () => {
@@ -108,7 +108,7 @@ crop}</td>
                       <td className="p-2 border">{order.quantity}</td>
                       <td className="p-2 border">{order.totalPrice}</td>
                       <td className="p-2 border text-green-500">{order.status}</td>
-                      <td className="p-2 border">{order.date}</td>
+                      <td className="p-2 border">{order.createdAt}</td>
                       <td className="p-2 border">
                         <button
                           onClick={() => setSelectedOrder(order)}
@@ -148,7 +148,7 @@ crop}</td>
                       <td className="p-2 border">{order.quantity}</td>
                       <td className="p-2 border">{order.totalPrice}</td>
                       <td className="p-2 border text-red-500">{order.status}</td>
-                      <td className="p-2 border">{order.date}</td>
+                      <td className="p-2 border">{order.createdAt}</td>
                       <td className="p-2 border">
                         <button
                           onClick={() => setSelectedOrder(order)}
@@ -188,7 +188,7 @@ crop}
                   <strong>Status:</strong> {selectedOrder.status}
                 </Typography>
                 <Typography variant="body1">
-                  <strong>Date:</strong> {selectedOrder.date}
+                  <strong>Date:</strong> {selectedOrder.createdAt}
                 </Typography>
               </>
             )}
