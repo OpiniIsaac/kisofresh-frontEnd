@@ -64,7 +64,7 @@ const TraderDashboard = () => {
         </div>
 
         {/* Recent Transactions */}
-        <div className="bg-white p-4 rounded-lg shadow-md">
+        {/* <div className="bg-white p-4 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Recent Transactions</h2>
           <ul>
             <li className="border-b py-2">
@@ -80,7 +80,7 @@ const TraderDashboard = () => {
               <p className="text-gray-600">UGX 50,000</p>
             </li>
           </ul>
-        </div>
+        </div> */}
       </div>
 
       {/* Record a Purchase */}
