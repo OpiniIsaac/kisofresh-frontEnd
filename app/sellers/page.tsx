@@ -142,22 +142,8 @@ const SellerDashboard: React.FC = () => {
                     </CardContent>
                   </Card>
                 </Grid>
-                <Grid item xs={6}>
-                  <Card style={{ backgroundColor: '#c8e6c9' }}>
-                    <CardContent>
-                      <Typography variant="h6">Crops In Stock</Typography>
-                      <Typography variant="h4">{crops.filter(crop => crop.inStock).length}</Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-                <Grid item xs={6}>
-                  <Card style={{ backgroundColor: '#ffecb3' }}>
-                    <CardContent>
-                      <Typography variant="h6">Crops Out of Stock</Typography>
-                      <Typography variant="h4">{crops.filter(crop => !crop.inStock).length}</Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
+                
+                
               </Grid>
             </CardContent>
           </Card>
@@ -187,138 +173,7 @@ const SellerDashboard: React.FC = () => {
         </Grid>
       </Grid>
 
-      {/* <Button variant="contained" color="primary" className="mt-4" onClick={() => setOpenDialog(true)}>
-        <Plus /> Add Crop
-      </Button>
-
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-  <DialogTitle>Add New Crop</DialogTitle>
-  <DialogContent>
-    <DialogContentText>
-      Please enter the details of the new crop you want to add.
-    </DialogContentText>
-    <TextField
-      autoFocus
-      margin="dense"
-      name="name"
-      label="Crop Name"
-      type="text"
-      fullWidth
-      value={newCrop.cropType}
-      onChange={handleChange}
-    />
-    <TextField
-      margin="dense"
-      name="country"
-      label="Country"
-      type="text"
-      fullWidth
-      value={newCrop.country}
-      onChange={handleChange}
-    />
-    <TextField
-      margin="dense"
-      name="region"
-      label="Region"
-      type="text"
-      fullWidth
-      value={newCrop.region}
-      onChange={handleChange}
-    />
-    <TextField
-      margin="dense"
-      name="cropType"
-      label="Crop Type"
-      type="text"
-      fullWidth
-      value={newCrop.cropType}
-      onChange={handleChange}
-    />
-    <TextField
-      margin="dense"
-      name="quality"
-      label="Quality"
-      type="number"
-      fullWidth
-      value={newCrop.quality}
-      onChange={handleChange}
-    />
-    <TextField
-      margin="dense"
-      name="quantity"
-      label="Quantity"
-      type="number"
-      fullWidth
-      value={newCrop.quantity}
-      onChange={handleChange}
-    />
-    <TextField
-      margin="dense"
-      name="location"
-      label="Location"
-      type="text"
-      fullWidth
-      value={newCrop.location}
-      onChange={handleChange}
-    />
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={() => setOpenDialog(false)} color="primary">
-      Cancel
-    </Button>
-    <Button onClick={handleAddCrop} color="primary">
-      Add
-    </Button>
-  </DialogActions>
-</Dialog>
-
-
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
-        message={snackbarMessage}
-      /> */}
-
-      {/* <Typography variant="h5" gutterBottom className="mt-6">
-        Manage Crops
-      </Typography>
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        <table className="min-w-full bg-white">
-          <thead>
-            <tr>
-              <th className="py-2">Name</th>
-              <th className="py-2">Location</th>
-              <th className="py-2">Quality</th>
-              <th className="py-2">In Stock</th>
-              <th className="py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {crops.map((crop) => (
-              <tr key={crop.id}>
-                <td className="border px-4 py-2">{crop.cropType}</td>
-                <td className="border px-4 py-2">{crop.location}</td>
-                <td className="border px-4 py-2">{crop.quality}</td>
-                <td className="border px-4 py-2">
-                  <Switch
-                    checked={crop.inStock}
-                    onChange={() => handleToggleStock(crop.id, crop.inStock)}
-                    color="primary"
-                  />
-                </td>
-                <td className="border px-4 py-2">
-                  <IconButton onClick={() => handleDeleteCrop(crop.id)}>
-                    <Delete />
-                  </IconButton>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )} */}
+   
     </Container>
   );
 };
