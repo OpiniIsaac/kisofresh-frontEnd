@@ -20,9 +20,16 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Grid,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { useAppSelector } from "@/lib/hooks";
-import { approveQuote, fetchQuotesByUserId, rejectQuote } from "@/lib/actions/trader.actions";
+import {
+  approveQuote,
+  fetchQuotesByUserId,
+  rejectQuote,
+} from "@/lib/actions/trader.actions";
 
 type Quote = {
   _id: string;
@@ -42,16 +49,18 @@ const TraderQuotes: React.FC = () => {
   const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
   const user = useAppSelector((state) => state.auth.user);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     const fetchQuotes = async () => {
       if (user) {
         try {
           const quotesData = await fetchQuotesByUserId(user.uid);
-          // Filter out quotes with status QUOTE_APPROVED or QUOTE_REJECTED
           const filteredQuotes = quotesData.filter(
             (quote) =>
-              quote.status !== "QUOTE_APPROVED" && quote.status !== "QUOTE_REJECTED"
+              quote.status !== "QUOTE_APPROVED" &&
+              quote.status !== "QUOTE_REJECTED"
           );
           const formattedQuotesData = filteredQuotes.map((quote) => ({
             _id: quote._id.toString(),
@@ -83,11 +92,13 @@ const TraderQuotes: React.FC = () => {
         if (result.success) {
           setSnackbarMessage("Quote approved successfully!");
           setQuotes(
-            quotes.map((quote) =>
-              quote._id === selectedQuote._id
-                ? { ...quote, status: "QUOTE_APPROVED" }
-                : quote
-            ).filter((quote) => quote.status !== "QUOTE_APPROVED")
+            quotes
+              .map((quote) =>
+                quote._id === selectedQuote._id
+                  ? { ...quote, status: "QUOTE_APPROVED" }
+                  : quote
+              )
+              .filter((quote) => quote.status !== "QUOTE_APPROVED")
           );
         } else {
           setSnackbarMessage(result.message || "Error approving quote.");
@@ -108,11 +119,13 @@ const TraderQuotes: React.FC = () => {
         if (result.success) {
           setSnackbarMessage("Quote rejected successfully!");
           setQuotes(
-            quotes.map((quote) =>
-              quote._id === selectedQuote._id
-                ? { ...quote, status: "QUOTE_REJECTED" }
-                : quote
-            ).filter((quote) => quote.status !== "QUOTE_REJECTED")
+            quotes
+              .map((quote) =>
+                quote._id === selectedQuote._id
+                  ? { ...quote, status: "QUOTE_REJECTED" }
+                  : quote
+              )
+              .filter((quote) => quote.status !== "QUOTE_REJECTED")
           );
         } else {
           setSnackbarMessage(result.message || "Error rejecting quote.");
@@ -135,48 +148,59 @@ const TraderQuotes: React.FC = () => {
     <Container className="mt-20">
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6">Trader Quotes</Typography>
+          <Typography variant="h6" component="div">
+            Trader Quotes
+          </Typography>
         </Toolbar>
       </AppBar>
-      <Toolbar />
-      <Typography variant="h4" gutterBottom>
-        Your Quotes
-      </Typography>
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Crop</TableCell>
-                <TableCell>Quantity</TableCell>
-                <TableCell>Price</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {quotes.map((quote) => (
-                <TableRow key={quote._id}>
-                  <TableCell>{quote.crop}</TableCell>
-                  <TableCell>{quote.quantity}</TableCell>
-                  <TableCell>{quote.totalPrice}</TableCell>
-                  <TableCell>{quote.status}</TableCell>
-                  <TableCell>
-                    <Button
-                      variant="outlined"
-                      onClick={() => handleViewDetails(quote)}
-                    >
-                      View & Approve/Reject
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
+      <Grid container spacing={2} className="mt-4">
+        <Grid item xs={12}>
+          <Typography variant={isSmallScreen ? "h5" : "h4"} gutterBottom>
+            Your Quotes
+          </Typography>
+        </Grid>
+        {loading ? (
+          <Grid item xs={12}>
+            <CircularProgress />
+          </Grid>
+        ) : (
+          <Grid item xs={12}>
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Crop</TableCell>
+                    <TableCell>Quantity</TableCell>
+                    {!isSmallScreen && <TableCell>Price</TableCell>}
+                    <TableCell>Status</TableCell>
+                    <TableCell>Actions</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {quotes.map((quote) => (
+                    <TableRow key={quote._id}>
+                      <TableCell>{quote.crop}</TableCell>
+                      <TableCell>{quote.quantity}</TableCell>
+                      {!isSmallScreen && (
+                        <TableCell>{quote.totalPrice}</TableCell>
+                      )}
+                      <TableCell>{quote.status}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant="outlined"
+                          onClick={() => handleViewDetails(quote)}
+                        >
+                          View & Approve/Reject
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid>
+        )}
+      </Grid>
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
@@ -191,7 +215,9 @@ const TraderQuotes: React.FC = () => {
           </DialogContentText>
           <Typography>Crop: {selectedQuote?.crop}</Typography>
           <Typography>Quantity: {selectedQuote?.quantity}</Typography>
-          <Typography>Price: {selectedQuote?.pricePerUnitWithMarkup}</Typography>
+          <Typography>
+            Price: {selectedQuote?.pricePerUnitWithMarkup}
+          </Typography>
           <Typography>Status: {selectedQuote?.status}</Typography>
           <Typography>Total Cost: {selectedQuote?.totalPrice}</Typography>
         </DialogContent>
@@ -199,16 +225,10 @@ const TraderQuotes: React.FC = () => {
           <Button onClick={() => setOpenDialog(false)} color="primary">
             Cancel
           </Button>
-          <Button
-            onClick={handleApproveQuote}
-            color="primary"
-          >
+          <Button onClick={handleApproveQuote} color="primary">
             Approve
           </Button>
-          <Button
-            onClick={handleRejectQuote}
-            color="secondary"
-          >
+          <Button onClick={handleRejectQuote} color="secondary">
             Reject
           </Button>
         </DialogActions>

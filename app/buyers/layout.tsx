@@ -13,8 +13,8 @@ const BuyersLayout = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const metadata = {
-  title: "Admin - KisoIndex",
-  description: "Admin dashboard for managing KisoIndex data.",
+  title: "Buyers - KisoIndex",
+  description: "Buyers dashboard for managing KisoIndex data.",
 };
 
 export default BuyersLayout;
