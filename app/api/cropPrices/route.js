@@ -19,7 +19,7 @@ async function connectToDatabase() {
 export async function GET() {
   try {
     const client = await connectToDatabase();
-    const db = client.db('pricesTwo');
+    const db = client.db('priceFour');
     const collection = db.collection('crop_prices');
     const cropPrices = await collection.find({}).toArray();
     return NextResponse.json(cropPrices);

@@ -7,43 +7,49 @@ import { doc, getDoc } from "firebase/firestore";
 const { MongoClient , ObjectId} = require("mongodb");
 
 
-
 export async function fetchFarmersByCriteria({
   country,
-  // region,
+  region,
   cropType,
   quantity,
 }: {
-  country: string;
-  region: string;
-  cropType: string;
-  quantity: number;
+  country?: string;
+  region?: string;
+  cropType?: string;
+  quantity?: number;
 }) {
   const uri = process.env.TEST_DATABASE;
   const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
-  
 
   try {
     await client.connect();
     console.log("Connected to MongoDB");
 
-    const db = client.db('KisoIndex');
-    const collection = db.collection('crops');
+    const db = client.db("KisoIndex");
+    const collection = db.collection("crops");
+
+    // Build the query with filters
+    const query: any = {};
+
+    // Add case-insensitive text search on CropType if provided
+    if (cropType) {
+      query.CropType = { $regex: cropType, $options: "i" }; // Case-insensitive regex search for CropType
+    }
+
+    // Add country and region filters if provided (optional)
+    // if (country) {
+    //   query.Country = { $regex: country, $options: "i" }; // Case-insensitive country search
+    // }
+
+    // if (region) {
+    //   query.Region = { $regex: region, $options: "i" }; // Case-insensitive region search
+    // }
 
     // Fetch documents matching the criteria
-    const cursor = collection
-    .find({
-      'Country ': "Uganda",
-      $or: [
-        { 'YieldEstimation .result': { $exists: false } }, 
-        { 'YieldEstimation .result': { $gte: quantity } }  
-      ],
-      // Region: region,
-      CropType: cropType
-    });
+    const cursor = collection.find(query);
 
     // Convert cursor to array of documents
     const documents = await cursor.toArray();
@@ -52,12 +58,11 @@ export async function fetchFarmersByCriteria({
     return documents;
   } catch (error) {
     console.error("Error fetching farmers by criteria:", error);
+    return [];
   } finally {
     await client.close();
   }
 }
-
-
 
 
 export async function addCropToInventory({

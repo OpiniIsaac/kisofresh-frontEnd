@@ -96,7 +96,7 @@ const OnboardingScreen: React.FC = () => {
       } else if (selectedRole === 'buyer') {
         router.push('/buyers');
       } else if (selectedRole === 'trader') {
-        router.push('/traders');
+        router.push('/traders/products');
       }
     } catch (error) {
       console.error('Error saving user data:', error);

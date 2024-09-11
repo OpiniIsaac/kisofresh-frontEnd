@@ -55,7 +55,7 @@ export default function LoginPage() {
         } else if (userData.role === "buyer") {
           router.push("/buyers");
         } else if (userData.role === "trader") {
-          router.push("/traders");
+          router.push("/traders/products");
         }
       } else {
         console.error("No such user document!");

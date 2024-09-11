@@ -14,6 +14,7 @@ import Icon from "@/components/Icon";
 import FindingFarmers from "@/components/FindingFarmers";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { useAppSelector } from "@/lib/hooks";
+import { Input } from "@mui/material";
 
 
 
@@ -140,93 +141,18 @@ export default function CropInterestForm() {
             onSubmit={handleSubmit}
             className="bg-blue-500/10 flex flex-col md:flex-row justify-between border hover:shadow-lg rounded px-8 pt-6 pb-8 mb-4 w-full"
           >
-            {/* Form inputs */}
-            <div className="flex flex-col md:flex-row gap-4">
-              {/* Select Country */}
-              <div className="mb-4">
-                <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                  htmlFor="country"
-                >
-                  Select Country
-                </label>
-                <select
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="country"
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                >
-                  <option value="">--Please choose an option--</option>
-                  <option value="Uganda">Uganda</option>
-                  <option value="Kenya">Kenya</option>
-                  <option value="Tanzania">Tanzania</option>
-                </select>
-              </div>
-              {/* Select Region */}
-              <div className="mb-4">
-                <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                  htmlFor="region"
-                >
-                  Select Region
-                </label>
-                <select
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="region"
-                  value={region}
-                  onChange={(e) => setRegion(e.target.value)}
-                >
-                  <option value="">--Please choose an option--</option>
-                  <option value="Northern">Northern</option>
-                  <option value="Central">Central</option>
-                  <option value="Eastern">Eastern</option>
-                  <option value="Western">Western</option>
-                </select>
-              </div>
-              {/* Select Crop Type */}
-              <div className="mb-4">
-                <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                  htmlFor="cropType"
-                >
-                  Select Crop Type
-                </label>
-                <select
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="cropType"
-                  value={cropType}
-                  onChange={(e) => setCropType(e.target.value)}
-                >
-                  <option value="">--Please choose an option--</option>
-                  <option value="cotton">Cotton</option>
-                  <option value="Wheat">Wheat</option>
-                  <option value="Maize">Maize</option>
-                </select>
-              </div>
-              {/* Quantity input */}
-              <div className="mb-4">
-                <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                  htmlFor="quantity"
-                >
-                  Quantity(tons)
-                </label>
-                <input
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="quantity"
-                  type="number"
-                  placeholder="Enter quantity"
-                  value={quantity}
-                  onChange={(e) => setQuantity(parseFloat(e.target.value))}
-                />
-              </div>
-            </div>
+            {/* Input fields with state binding */}
+          
+            <Input
+              value={cropType}
+              onChange={(e) => setCropType(e.target.value)}
+              placeholder="Crop Type"
+            />
+         
 
             {/* Submit button */}
             <div className="flex items-center justify-end">
-              <Button type="submit" onClick={handlePage}>
-                Find Farmers
-              </Button>
+              <Button type="submit">Find Farmers</Button>
             </div>
           </form>
         </div>
@@ -242,97 +168,20 @@ export default function CropInterestForm() {
           {" "}
           <form
             onSubmit={handleSubmit}
-            className="bg-blue-500/10 flex flex-col md:flex-row  justify-between border hover:shadow-lg rounded px-8 pt-6 pb-8 mb-4 w-full"
+            className="bg-blue-500/10 flex flex-col md:flex-row justify-between border hover:shadow-lg rounded px-8 pt-6 pb-8 mb-4 w-full"
           >
-            {/* Form inputs */}
-            <div className="flex flex-col md:flex-row gap md:gap-4">
-              {/* Select Country */}
-              <div className="mb-4">
-                <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                  htmlFor="country"
-                >
-                  Select Country
-                </label>
-                <select
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="country"
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                >
-                  <option value="">--Please choose an option--</option>
-                  <option value="Uganda">Uganda</option>
-                  <option value="Kenya">Kenya</option>
-                  <option value="Tanzania">Tanzania</option>
-                </select>
-              </div>
-              {/* Select Region */}
-              <div className="mb-4">
-                <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                  htmlFor="region"
-                >
-                  Select Region
-                </label>
-                <select
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="region"
-                  value={region}
-                  onChange={(e) => setRegion(e.target.value)}
-                >
-                  <option value="">--Please choose an option--</option>
-                  <option value="Northern">Northern</option>
-                  <option value="Central">Central</option>
-                  <option value="Eastern">Eastern</option>
-                  <option value="Western">Western</option>
-                </select>
-              </div>
-              {/* Select Crop Type */}
-              <div className="mb-4">
-                <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                  htmlFor="cropType"
-                >
-                  Select Crop Type
-                </label>
-                <select
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="cropType"
-                  value={cropType}
-                  onChange={(e) => setCropType(e.target.value)}
-                >
-                  <option value="">--Please choose an option--</option>
-                  <option value="cotton">Cotton</option>
-                  <option value="Cocoa">Cocoa</option>
-                  <option value="Coffee">Coffee</option>
-                </select>
-              </div>
-              {/* Quantity input */}
-              {cropType === "cotton" && (
-                <div className="mb-4">
-                  <label
-                    className="block text-gray-700 text-sm font-bold mb-2"
-                    htmlFor="quantity"
-                  >
-                    Quantity(tons)
-                  </label>
-                  <input
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="quantity"
-                    type="number"
-                    placeholder="Enter quantity"
-                    value={quantity}
-                    onChange={(e) => setQuantity(parseFloat(e.target.value))}
-                  />
-                </div>
-              )}
-            </div>
+            {/* Input fields with state binding */}
+          
+            <Input
+              value={cropType}
+              onChange={(e) => setCropType(e.target.value)}
+              placeholder="Crop Type"
+            />
+        
 
             {/* Submit button */}
             <div className="flex items-center justify-end">
-              <Button type="submit" onClick={handlePage}>
-                Find Farmers
-              </Button>
+              <Button type="submit">Find Farmers</Button>
             </div>
           </form>
         </div>
