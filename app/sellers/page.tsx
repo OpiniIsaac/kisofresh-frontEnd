@@ -7,16 +7,8 @@ import {
   CardContent,
   Typography,
   Button,
-  IconButton,
-  Snackbar,
-  TextField,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   CircularProgress,
-  Switch
+  Snackbar
 } from '@mui/material';
 import { collection, addDoc, getDocs, onSnapshot, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '@/app/firebase/config';
@@ -25,7 +17,6 @@ import { useAppSelector } from '@/lib/hooks';
 
 type Crop = {
   id: string;
- 
   location: string;
   country: string;
   region: string;
@@ -35,12 +26,10 @@ type Crop = {
   inStock: boolean;
 };
 
-
 const SellerDashboard: React.FC = () => {
   const [crops, setCrops] = useState<Crop[]>([]);
   const [loading, setLoading] = useState(true);
   const [newCrop, setNewCrop] = useState<Omit<Crop, 'id' | 'inStock'>>({
- 
     location: '',
     quality: 0,
     country: '',
@@ -50,8 +39,6 @@ const SellerDashboard: React.FC = () => {
   });
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [openDialog, setOpenDialog] = useState(false);
-  // gettingthe 
   const user = useAppSelector((state) => state.auth.user);
 
   useEffect(() => {
@@ -93,9 +80,9 @@ const SellerDashboard: React.FC = () => {
       country: '',
       region: '',
       cropType: '',
-      quantity: 0,});
+      quantity: 0,
+    });
     setOpenSnackbar(true);
-    setOpenDialog(false);
   };
 
   const handleDeleteCrop = async (id: string) => {
@@ -121,39 +108,34 @@ const SellerDashboard: React.FC = () => {
   };
 
   return (
-    <Container className='mt-20 ml-56 '>
-      {/* <Typography variant="h3" gutterBottom>
-        Seller Dashboard
-      </Typography> */}
-      <Grid container spacing={3}>
+    <Container maxWidth="lg" className="mt-8">
+      <Grid container spacing={4}>
         {/* Key Metrics */}
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} sm={6}>
           <Card>
             <CardContent>
-              <Typography variant="h5" gutterBottom>
+              <Typography variant="h6" gutterBottom>
                 Key Metrics
               </Typography>
               <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <Card style={{ backgroundColor: '#bbdefb' }}>
+                <Grid item xs={12} sm={6}>
+                  <Card style={{ backgroundColor: '#e3f2fd' }}>
                     <CardContent>
-                      <Typography variant="h6">Total Crops Listed</Typography>
-                      <Typography variant="h4">{crops.length}</Typography>
+                      <Typography variant="body1">Total Crops Listed</Typography>
+                      <Typography variant="h4" className="font-bold">{crops.length}</Typography>
                     </CardContent>
                   </Card>
                 </Grid>
-                
-                
               </Grid>
             </CardContent>
           </Card>
         </Grid>
 
         {/* Recent Crops */}
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} sm={6}>
           <Card>
             <CardContent>
-              <Typography variant="h5" gutterBottom>
+              <Typography variant="h6" gutterBottom>
                 Recent Crops
               </Typography>
               {loading ? (
@@ -173,7 +155,12 @@ const SellerDashboard: React.FC = () => {
         </Grid>
       </Grid>
 
-   
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+        message={snackbarMessage}
+      />
     </Container>
   );
 };

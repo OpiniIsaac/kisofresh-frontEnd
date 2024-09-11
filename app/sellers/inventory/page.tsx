@@ -22,12 +22,13 @@ import {
   TableHead,
   TableRow,
   Paper,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import { Plus, Delete } from 'lucide-react';
 import { useAppSelector } from '@/lib/hooks';
 import { addCropToInventory, deleteCropFromInventory, fetchCropsByUserId} from '@/lib/actions/source.actions';
 
-// Define the Crop type
 type Crop = {
   _id: string;
   CropType: string;
@@ -45,6 +46,9 @@ const TraderInventory: React.FC = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
   const user = useAppSelector((state) => state.auth.user);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
     const fetchCrops = async () => {
@@ -75,7 +79,7 @@ const TraderInventory: React.FC = () => {
   };
 
   const handleAddCrop = async (e: React.FormEvent) => {
-    e.preventDefault(); // Prevent the page from refreshing
+    e.preventDefault();
     try {
       if (user) {
         const result = await addCropToInventory({
@@ -86,7 +90,7 @@ const TraderInventory: React.FC = () => {
 
         setSnackbarMessage('Crop added successfully!');
         setCrops([...crops, { ...newCrop, _id: result.insertedId, inStock: true }]);
-        setNewCrop({CropType:'',location:"",quantity:0})
+        setNewCrop({CropType:'', location:"", quantity:0})
       }
     } catch (error) {
       setSnackbarMessage('Error adding crop.');
@@ -95,49 +99,6 @@ const TraderInventory: React.FC = () => {
     setOpenSnackbar(true);
     setOpenDialog(false);
   };
-
-  // const handleEditCrop = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  
-  //   if (editCrop && user) {
-  //     try {
-  //       const updatedCrop = {
-  //         _id: editCrop._id,
-  //         CropType: newCrop.CropType || editCrop.CropType,
-  //         quantity: newCrop.quantity || editCrop.quantity,
-  //         location: newCrop.location || editCrop.location,
-  //       };
-  
-  //       const result = await updateCropInInventory({
-  //         cropId: updatedCrop._id,
-  //         name: updatedCrop.CropType,
-  //         quantity: updatedCrop.quantity,
-         
-  //       });
-  
-  //       if (result.success) {
-  //         setCrops((prevCrops) =>
-  //           prevCrops.map((crop) =>
-  //             crop._id === updatedCrop._id ? { ...updatedCrop, inStock: crop.inStock } : crop
-  //           )
-  //         );
-  //         setSnackbarMessage('Crop updated successfully!');
-  //       } else {
-  //         setSnackbarMessage(result.message || 'Error updating crop.');
-  //       }
-  //     } catch (error) {
-  //       setSnackbarMessage('Error updating crop.');
-  //       console.error('Error:', error);
-  //     }
-  
-  //     setOpenSnackbar(true);
-  //     setOpenDialog(false);
-  //     setEditCrop(null);
-  //     setNewCrop({ CropType: '', location: '', quantity: 0 }); // Reset newCrop
-  //   }
-  // };
-  
-  
 
   const handleDeleteCrop = async (id: string) => {
     try {
@@ -164,36 +125,42 @@ const TraderInventory: React.FC = () => {
   };
 
   return (
-    <Container className='mt-20 ml-50 pl-60'>
+    <Container maxWidth="lg" className="mt-10">
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6">Crop Trader Inventory</Typography>
+          <Typography variant={isMobile ? 'h6' : 'h5'}>Crop Trader Inventory</Typography>
         </Toolbar>
       </AppBar>
-      <Toolbar />
-      <Grid container spacing={2} alignItems="center" justifyContent="space-between">
+      
+      <Grid container spacing={2} alignItems="center" justifyContent="space-between" className="mt-4 mb-4">
         <Grid item>
-          <Typography variant="h4" gutterBottom>
-            Crop Trader Inventory
-          </Typography>
+          <Typography variant={isMobile ? 'h5' : 'h4'}>Manage Your Crops</Typography>
         </Grid>
         <Grid item>
-          <Button variant="contained" color="primary" onClick={() => { setNewCrop({ CropType: '', location: '', quantity: 0 }); setOpenDialog(true); }}>
-            <Plus /> Add Crop
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<Plus />}
+            onClick={() => { setNewCrop({ CropType: '', location: '', quantity: 0 }); setOpenDialog(true); }}
+            sx={{ textTransform: 'none', padding: isMobile ? '8px 16px' : '10px 20px' }}
+          >
+            Add Crop
           </Button>
         </Grid>
       </Grid>
+
       {loading ? (
-        <CircularProgress />
+        <Grid container justifyContent="center">
+          <CircularProgress />
+        </Grid>
       ) : (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} className={isMobile ? 'shadow-none' : 'shadow-lg'}>
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>Crop</TableCell>
                 <TableCell>Quantity</TableCell>
-                {/* <TableCell>Edit</TableCell> */}
-                <TableCell>Delete</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -201,13 +168,14 @@ const TraderInventory: React.FC = () => {
                 <TableRow key={crop._id}>
                   <TableCell>{crop.CropType}</TableCell>
                   <TableCell>{crop.quantity}</TableCell>
-                  {/* <TableCell>
-                    <Button onClick={() => handleEditClick(crop)} variant="outlined">
-                      Edit
-                    </Button>
-                  </TableCell> */}
                   <TableCell>
-                    <Button onClick={() => handleDeleteCrop(crop._id)} variant="outlined" color="error">
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      size={isMobile ? 'small' : 'medium'}
+                      startIcon={<Delete />}
+                      onClick={() => handleDeleteCrop(crop._id)}
+                    >
                       Delete
                     </Button>
                   </TableCell>
@@ -217,19 +185,19 @@ const TraderInventory: React.FC = () => {
           </Table>
         </TableContainer>
       )}
+
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
         onClose={() => setOpenSnackbar(false)}
         message={snackbarMessage}
       />
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+      
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth maxWidth="sm">
         <DialogTitle>{editCrop ? "Edit Crop" : "Add New Crop"}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {editCrop
-              ? "Please update the details of the crop."
-              : "Please enter the details of the new crop you want to add."}
+            {editCrop ? "Please update the crop details." : "Enter the details for the new crop."}
           </DialogContentText>
           <form onSubmit={handleAddCrop}>
             <TextField
@@ -239,8 +207,9 @@ const TraderInventory: React.FC = () => {
               label="Crop Name"
               type="text"
               fullWidth
-              value={editCrop ? editCrop.CropType : newCrop.CropType} // Use editCrop if editing
+              value={editCrop ? editCrop.CropType : newCrop.CropType}
               onChange={handleChange}
+              required
             />
             <TextField
               margin="dense"
@@ -248,15 +217,15 @@ const TraderInventory: React.FC = () => {
               label="Quantity"
               type="number"
               fullWidth
-              value={editCrop ? editCrop.quantity : newCrop.quantity} // Use editCrop if editing
+              value={editCrop ? editCrop.quantity : newCrop.quantity}
               onChange={handleChange}
+              required
             />
-          
             <DialogActions>
               <Button onClick={() => setOpenDialog(false)} color="primary">
                 Cancel
               </Button>
-              <Button type="submit" color="primary">
+              <Button type="submit" variant="contained" color="primary">
                 {editCrop ? "Update" : "Add"}
               </Button>
             </DialogActions>
