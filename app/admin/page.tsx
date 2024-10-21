@@ -1,85 +1,61 @@
-"use client"
-import React from 'react'
-import { LineChart, Line, PieChart, Pie, Cell, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts'
-
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
-
-const ordersData = [
-  { name: 'Completed Orders', value: 8 },
-  { name: 'Pending Orders', value: 5 }
-];
-
-const quotesData = [
-  { name: 'Approved Quotes', value: 2 },
-  { name: 'Pending Quotes', value: 1 }
-];
+"use client";
+import React from "react";
+import {
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  Legend,
+} from "recharts";
 
 const farmersData = [
-  { name: 'Active Farmers', value:7623 },
-  { name: 'New Farmers', value: 2123 }
+  { name: "Active Farmers", value: 7623 },
+  { name: "New Farmers", value: 2123 },
 ];
 
 const buyersData = [
-  { name: 'Active Buyers', value: 10 },
-  { name: 'New Buyers', value: 5 }
+  { name: "Active Buyers", value: 10 },
+  { name: "New Buyers", value: 5 },
 ];
 
 const Home = () => {
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-          <h2 className="text-2xl font-semibold mb-4 text-center">Orders Summary</h2>
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie data={ordersData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
-                {ordersData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-        
-        <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-          <h2 className="text-2xl font-semibold mb-4 text-center">Quotes Summary</h2>
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie data={quotesData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
-                {quotesData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-          <h2 className="text-2xl font-semibold mb-4 text-center">Farmers Summary</h2>
-          <ResponsiveContainer width="100%" height={250}>
+    <div className="p-6 bg-gray-100 min-h-screen flex flex-col items-center">
+      <h1 className="text-4xl font-bold text-gray-800 mb-8">Dashboard</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 w-full max-w-7xl">
+        {/* Farmers Summary */}
+        <div className="bg-white p-8 rounded-lg shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl duration-300">
+          <h2 className="text-xl font-bold mb-4 text-center text-gray-700">
+            Farmers Summary
+          </h2>
+          <ResponsiveContainer width="100%" height={300}>
             <BarChart data={farmersData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+              <XAxis dataKey="name" tick={{ fontSize: 12, fontWeight: 600 }} />
+              <YAxis tick={{ fontSize: 12, fontWeight: 600 }} />
               <Tooltip />
               <Legend />
-              <Bar dataKey="value" fill="#8884d8" />
+              <Bar dataKey="value" fill="#4f46e5" radius={[5, 5, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-          <h2 className="text-2xl font-semibold mb-4 text-center">Buyers Summary</h2>
-          <ResponsiveContainer width="100%" height={250}>
+        {/* Buyers Summary */}
+        <div className="bg-white p-8 rounded-lg shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl duration-300">
+          <h2 className="text-xl font-bold mb-4 text-center text-gray-700">
+            Buyers Summary
+          </h2>
+          <ResponsiveContainer width="100%" height={300}>
             <BarChart data={buyersData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+              <XAxis dataKey="name" tick={{ fontSize: 12, fontWeight: 600 }} />
+              <YAxis tick={{ fontSize: 12, fontWeight: 600 }} />
               <Tooltip />
               <Legend />
-              <Bar dataKey="value" fill="#82ca9d" />
+              <Bar dataKey="value" fill="#22c55e" radius={[5, 5, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
