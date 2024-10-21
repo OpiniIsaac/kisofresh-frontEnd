@@ -5,23 +5,23 @@ import { LineChart, Line, PieChart, Pie, Cell, CartesianGrid, XAxis, YAxis, Tool
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 const ordersData = [
-  { name: 'Completed Orders', value: 100 },
-  { name: 'Pending Orders', value: 30 }
+  { name: 'Completed Orders', value: 8 },
+  { name: 'Pending Orders', value: 5 }
 ];
 
 const quotesData = [
-  { name: 'Approved Quotes', value: 700 },
-  { name: 'Pending Quotes', value: 100 }
+  { name: 'Approved Quotes', value: 2 },
+  { name: 'Pending Quotes', value: 1 }
 ];
 
 const farmersData = [
-  { name: 'Active Farmers', value: 5000 },
-  { name: 'New Farmers', value: 150 }
+  { name: 'Active Farmers', value:7623 },
+  { name: 'New Farmers', value: 2123 }
 ];
 
 const buyersData = [
-  { name: 'Active Buyers', value: 50 },
-  { name: 'New Buyers', value: 10 }
+  { name: 'Active Buyers', value: 10 },
+  { name: 'New Buyers', value: 5 }
 ];
 
 const Home = () => {
