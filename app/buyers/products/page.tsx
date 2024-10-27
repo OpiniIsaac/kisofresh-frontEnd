@@ -15,12 +15,7 @@ import FindingFarmers from "@/components/FindingFarmers";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { useAppSelector } from "@/lib/hooks";
 
-
-
 export default function CropInterestForm() {
-
-  
-
   interface Farmer {
     _id: string;
     familyName: string;
@@ -30,9 +25,11 @@ export default function CropInterestForm() {
     Subcounty: string;
     Village: string;
     AcresCultivation: number;
-    "YieldEstimation ": {
-      result: number;
-    } | number;
+    "YieldEstimation ":
+      | {
+          result: number;
+        }
+      | number;
     CropType: string;
     Country: string;
     Region: string;
@@ -65,7 +62,7 @@ export default function CropInterestForm() {
   };
 
   handlePage;
- 
+
   //Function to handle next page click
   const handleNextClick = () => {
     const totalPages = Math.ceil(farmers.length / rowsPerPage);
@@ -80,9 +77,11 @@ export default function CropInterestForm() {
   };
   const handleRequestQuote = (crop: string) => {
     if (!user) {
-      router.push('/sign-up');
+      router.push("/sign-up");
     } else {
-      router.push(`/buyers/products/form?crop=${crop}&country=${country}&region=${region}&quantity=${quantity}`);
+      router.push(
+        `/buyers/products/form?crop=${crop}&country=${country}&region=${region}&quantity=${quantity}`
+      );
     }
   };
 
@@ -93,10 +92,7 @@ export default function CropInterestForm() {
       SetHasLoaded(false);
       SetIsLoading(true);
       const response = await fetchFarmersByCriteria({
-        country,
-        region,
         cropType,
-        quantity,
       });
       //  const response = await fetchUploadedData()
       console.log(response);
@@ -108,9 +104,8 @@ export default function CropInterestForm() {
       console.error("Error:", error);
     }
   };
- 
-  useEffect(() => {
 
+  useEffect(() => {
     handlePage;
   }, []);
 
@@ -123,13 +118,11 @@ export default function CropInterestForm() {
       ...prevState,
       [farmerId]: prevState[farmerId]
         ? prevState[farmerId].map((visible, index) =>
-          index === phoneNumberIndex ? !visible : visible
-        )
+            index === phoneNumberIndex ? !visible : visible
+          )
         : [true],
     }));
   };
-
-
 
   if (isLoading)
     return (
@@ -341,8 +334,9 @@ export default function CropInterestForm() {
         </div>
         {
           <div
-            className={`${!hasLoaded ? "hidden" : ""
-              } bg-blue-500/5 overflow-auto px-4 border rounded-md mb-10`}
+            className={`${
+              !hasLoaded ? "hidden" : ""
+            } bg-blue-500/5 overflow-auto px-4 border rounded-md mb-10`}
           >
             <h2 className="text-2xl font-bold mb-4 pt-20">
               Farmers Matching Criteria:
@@ -364,48 +358,47 @@ export default function CropInterestForm() {
                     >
                       District
                     </th>
-                    {
-                      cropType === "cotton" &&
+                    {cropType === "cotton" && (
                       <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
                         Subcounty
-                      </th>}
-                    {
-                      cropType !== "cotton" &&
+                      </th>
+                    )}
+                    {cropType !== "cotton" && (
                       <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
                         Yeild Estamtion
                       </th>
-                    }
+                    )}
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       {cropType === "cotton" ? " Village" : "Number of Farmers"}
                     </th>
-                    {
-                      cropType === "cotton" &&
+                    {cropType === "cotton" && (
                       <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
-                        {cropType === "cotton" ? "Yield Estimation Result" : "Type of Coffee"}
+                        {cropType === "cotton"
+                          ? "Yield Estimation Result"
+                          : "Type of Coffee"}
                       </th>
-                    }
+                    )}
 
-                    {
-                      cropType === "cotton" &&
+                    {cropType === "cotton" && (
                       <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
                         Yield Estimation Result
                       </th>
-                    }
+                    )}
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -416,53 +409,51 @@ export default function CropInterestForm() {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {farmers
-                    .slice(
-                      page * rowsPerPage,
-                      page * rowsPerPage + rowsPerPage
-                    )
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((farmer, index) => (
                       <tr key={index}>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          {cropType === "cotton" ? farmer["familyName"] +
-                            "  " +
-                            " " +
-                            farmer["otherName"] : farmer.name}
+                          {cropType === "cotton"
+                            ? farmer["familyName"] +
+                              "  " +
+                              " " +
+                              farmer["otherName"]
+                            : farmer.name}
                         </td>
 
                         <td className="px-6 py-4 whitespace-nowrap">
                           {farmer.Districk}
                         </td>
-                        {cropType === "cotton" &&
+                        {cropType === "cotton" && (
                           <td className="px-6 py-4 whitespace-nowrap">
                             {farmer.Subcounty}
-                          </td>}
-
+                          </td>
+                        )}
 
                         <td className="px-6 py-4 whitespace-nowrap">
                           {farmer.Village}
                         </td>
 
-
                         <td className="px-6 py-4 whitespace-nowrap">
                           {farmer["AcresCultivation"]}
                         </td>
-                        {
-                          cropType === "cotton" &&
+                        {cropType === "cotton" && (
                           <td className="border px-4 py-2">
                             {cropType === "cotton"
-                              ? (farmer["YieldEstimation "] as { result: number }).result
+                              ? (
+                                  farmer["YieldEstimation "] as {
+                                    result: number;
+                                  }
+                                ).result
                               : (farmer["YieldEstimation "] as number)}
                           </td>
-
-                        }
-
-
+                        )}
 
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <Button onClick={()=>handleRequestQuote(farmer.CropType)}>
-                            
-                              Request Quote
-                          
+                          <Button
+                            onClick={() => handleRequestQuote(farmer.CropType)}
+                          >
+                            Request Quote
                           </Button>
                         </td>
                       </tr>
@@ -473,8 +464,9 @@ export default function CropInterestForm() {
           </div>
         }
         <div
-          className={`${hasLoaded ? "flex justify-between my-4 px-4" : "hidden"
-            }`}
+          className={`${
+            hasLoaded ? "flex justify-between my-4 px-4" : "hidden"
+          }`}
         >
           <Button onClick={handlePrevClick}>Previous</Button>
           <p className="flex items-center">
