@@ -8,15 +8,10 @@ const { MongoClient , ObjectId} = require("mongodb");
 
 
 export async function fetchFarmersByCriteria({
-  country,
-  region,
+ 
   cropType,
-  quantity,
 }: {
-  country?: string;
-  region?: string;
   cropType?: string;
-  quantity?: number;
 }) {
   const uri = process.env.TEST_DATABASE;
   const client = new MongoClient(uri, {
@@ -39,14 +34,7 @@ export async function fetchFarmersByCriteria({
       query.CropType = { $regex: cropType, $options: "i" }; // Case-insensitive regex search for CropType
     }
 
-    // Add country and region filters if provided (optional)
-    // if (country) {
-    //   query.Country = { $regex: country, $options: "i" }; // Case-insensitive country search
-    // }
-
-    // if (region) {
-    //   query.Region = { $regex: region, $options: "i" }; // Case-insensitive region search
-    // }
+   
 
     // Fetch documents matching the criteria
     const cursor = collection.find(query);
@@ -263,5 +251,16 @@ export async function getUserCropCount(userId: string): Promise<{ count: number;
     return { count: 0, error: 'Failed to fetch crop count' };
   } finally {
     await client.close();
+  }
+}
+
+export async function fetchCropSuggestions(input: string) {
+  try {
+    const response = await fetch(`/api/crops?search=${input}`);
+    const data = await response.json();
+    return data.map((crop: any) => crop.name); // Adjust according to your database structure
+  } catch (error) {
+    console.error("Error fetching crop suggestions:", error);
+    return [];
   }
 }
