@@ -29,7 +29,7 @@ export default function CropInterestForm() {
     AcresCultivation: number;
     YieldEstimation: YieldEstimationType | number;
     CropType: string;
-    Country: string;
+    "Country ": string;
     Region: string;
     name: string;
   }
@@ -82,8 +82,8 @@ export default function CropInterestForm() {
    return farmers.filter((farmer) => {
      const matchesCountry =
        !filters.country ||
-       (typeof farmer.Country === "string" &&
-         farmer.Country.toLowerCase() === filters.country.toLowerCase());
+       (typeof farmer["Country "] === "string" &&
+         farmer["Country "].toLowerCase() === filters.country.toLowerCase());
      const matchesRegion =
        !filters.region ||
        (typeof farmer.Region === "string" &&
@@ -411,7 +411,7 @@ export default function CropInterestForm() {
                   <tr key={farmer._id} className="hover:bg-gray-50">
                     <td className="p-2">{`${farmer.familyName} ${farmer.otherName}`}</td>
                     <td className="p-2">{farmer.Districk}</td>
-                    <td className="p-2">{farmer.Country ?? "-"}</td>
+                    <td className="p-2">{farmer["Country "] ?? "-"}</td>
                     <td className="p-2">{farmer.Region ?? "-"}</td>
 
                     <td className="p-2">
