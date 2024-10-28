@@ -1,10 +1,10 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import swal from 'sweetalert';
-import { getFirestore, collection, addDoc } from "firebase/firestore"; 
-import { db } from '@/app/firebase/config';
-import { useAppSelector } from '@/lib/hooks';
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import swal from "sweetalert";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { db } from "@/app/firebase/config";
+import { useAppSelector } from "@/lib/hooks";
 
 interface Errors {
   desiredDeliveryDate?: string;
@@ -15,41 +15,60 @@ interface Errors {
 }
 
 const RequestQuoteForm: React.FC = () => {
-  const [quantity, setQuantity] = useState<string>('');
-  const [message, setMessage] = useState<string>('');
-  const [deliveryOption, setDeliveryOption] = useState<string>('delivery');
-  const [desiredDeliveryDate, setDesiredDeliveryDate] = useState<string>('');
-  const [deliveryLocation, setDeliveryLocation] = useState<string>('');
-  const [pickupDate, setPickupDate] = useState<string>('');
-  const [pickupQuantity, setPickupQuantity] = useState<string>('');
+  const [quantity, setQuantity] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
+  const [deliveryOption, setDeliveryOption] = useState<string>("delivery");
+  const [desiredDeliveryDate, setDesiredDeliveryDate] = useState<string>("");
+  const [deliveryLocation, setDeliveryLocation] = useState<string>("");
+  const [pickupDate, setPickupDate] = useState<string>("");
+  const [pickupQuantity, setPickupQuantity] = useState<string>("");
   const [dueDiligence, setDueDiligence] = useState<boolean>(false);
-  const [dueDiligenceTestType, setDueDiligenceTestType] = useState<string>('');
+  const [dueDiligenceTestType, setDueDiligenceTestType] = useState<string>("");
   const [errors, setErrors] = useState<Errors>({});
-  const [loading, setLoading] = useState<boolean>(false);  // Added loading state
+  const [loading, setLoading] = useState<boolean>(false); // Added loading state
 
   const [params, setParams] = useState<any>({});
   const user = useAppSelector((state) => state.auth.user);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
+
+    const decodedCrop = searchParams.get("crop")
+      ? Buffer.from(searchParams.get("crop")!, "base64").toString("utf-8")
+      : "";
+    const decodedPhoneNumber = searchParams.get("phoneNumber")
+      ? Buffer.from(searchParams.get("phoneNumber")!, "base64").toString(
+          "utf-8"
+        )
+      : "";
+    const decodedCountry = searchParams.get("country")
+      ? Buffer.from(searchParams.get("country")!, "base64").toString("utf-8")
+      : "";
+    const decodedRegion = searchParams.get("region")
+      ? Buffer.from(searchParams.get("region")!, "base64").toString("utf-8")
+      : "";
+
     setParams({
-      crop: searchParams.get('crop') || '',
-      country: searchParams.get('country') || '',
-      region: searchParams.get('region') || '',
-      quantity: searchParams.get('quantity') || ''
+      crop: decodedCrop,
+      phoneNumber: decodedPhoneNumber,
+      country: decodedCountry,
+      region: decodedRegion,
     });
   }, []);
 
   const validateForm = (): Errors => {
     const newErrors: Errors = {};
 
-    if (deliveryOption === 'delivery') {
-      if (!desiredDeliveryDate) newErrors.desiredDeliveryDate = "Desired delivery date is required";
-      if (!deliveryLocation) newErrors.deliveryLocation = "Delivery location is required";
+    if (deliveryOption === "delivery") {
+      if (!desiredDeliveryDate)
+        newErrors.desiredDeliveryDate = "Desired delivery date is required";
+      if (!deliveryLocation)
+        newErrors.deliveryLocation = "Delivery location is required";
       if (!quantity) newErrors.quantity = "Quantity is required";
-    } else if (deliveryOption === 'pickup') {
+    } else if (deliveryOption === "pickup") {
       if (!pickupDate) newErrors.pickupDate = "Pickup date is required";
-      if (!pickupQuantity) newErrors.pickupQuantity = "Pickup quantity is required";
+      if (!pickupQuantity)
+        newErrors.pickupQuantity = "Pickup quantity is required";
     }
 
     return newErrors;
@@ -57,7 +76,7 @@ const RequestQuoteForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);  // Disable the button and show loading state
+    setLoading(true); // Disable the button and show loading state
 
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
@@ -67,15 +86,15 @@ const RequestQuoteForm: React.FC = () => {
         text: "Please fill in all required fields.",
         icon: "error",
       });
-      setLoading(false);  // Re-enable the button if there are errors
+      setLoading(false);
       return;
     }
-  
+
     try {
-      const response = await fetch('/api/quotes', {
-        method: 'POST',
+      const response = await fetch("/api/quotes", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           crop: params.crop,
@@ -91,21 +110,21 @@ const RequestQuoteForm: React.FC = () => {
           dueDiligence,
           dueDiligenceTestType,
           userId: user?.uid,
-          userEmail:user?.email
+          userEmail: user?.email,
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
+
       const data = await response.json();
-  
+
       // Send email notification
-      await fetch('/api/send', {
-        method: 'POST',
+      await fetch("/api/send", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: user?.email,
@@ -113,12 +132,15 @@ const RequestQuoteForm: React.FC = () => {
           quantity,
           message,
           deliveryOption,
-          location: deliveryOption === 'delivery' ? deliveryLocation : '',
-          status: 'ORDER_RECIEVED',
-          desiredDeliveryDate, deliveryLocation, pickupDate, pickupQuantity
+          location: deliveryOption === "delivery" ? deliveryLocation : "",
+          status: "ORDER_RECIEVED",
+          desiredDeliveryDate,
+          deliveryLocation,
+          pickupDate,
+          pickupQuantity,
         }),
       });
-  
+
       swal({
         title: "Form Submitted",
         text: "Your quote request has been submitted successfully.",
@@ -126,30 +148,29 @@ const RequestQuoteForm: React.FC = () => {
       });
       resetForm();
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error("Error submitting form:", error);
       swal({
         title: "Submission Error",
         text: "There was an error submitting your request. Please try again.",
         icon: "error",
       });
     } finally {
-      setLoading(false);  // Re-enable the button after submission
+      setLoading(false); // Re-enable the button after submission
     }
   };
 
   const resetForm = () => {
-    setQuantity('');
-    setMessage('');
-    setDeliveryOption('delivery');
-    setDesiredDeliveryDate('');
-    setDeliveryLocation('');
-    setPickupDate('');
-    setPickupQuantity('');
+    setQuantity("");
+    setMessage("");
+    setDeliveryOption("delivery");
+    setDesiredDeliveryDate("");
+    setDeliveryLocation("");
+    setPickupDate("");
+    setPickupQuantity("");
     setDueDiligence(false);
-    setDueDiligenceTestType('');
+    setDueDiligenceTestType("");
     setErrors({});
   };
-
 
   return (
     <div className="flex items-center justify-center w-full h-full  m-5">
@@ -169,11 +190,16 @@ const RequestQuoteForm: React.FC = () => {
               onChange={(e) => setDueDiligence(e.target.checked)}
               className="mr-2"
             />
-            <label htmlFor="dueDiligence" className="text-gray-700">Request testing (e.g., avocado oil content, coffee quality)</label>
+            <label htmlFor="dueDiligence" className="text-gray-700">
+              Request testing (e.g., avocado oil content, coffee quality)
+            </label>
           </div>
           {dueDiligence && (
             <div className="mt-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="dueDiligenceTestType">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="dueDiligenceTestType"
+              >
                 Type of Test
               </label>
               <input
@@ -197,11 +223,13 @@ const RequestQuoteForm: React.FC = () => {
               id="delivery"
               name="deliveryOption"
               value="delivery"
-              checked={deliveryOption === 'delivery'}
+              checked={deliveryOption === "delivery"}
               onChange={(e) => setDeliveryOption(e.target.value)}
               className="mr-2"
             />
-            <label htmlFor="delivery" className="text-gray-700">Delivery</label>
+            <label htmlFor="delivery" className="text-gray-700">
+              Delivery
+            </label>
           </div>
           <div className="flex items-center">
             <input
@@ -209,18 +237,23 @@ const RequestQuoteForm: React.FC = () => {
               id="pickup"
               name="deliveryOption"
               value="pickup"
-              checked={deliveryOption === 'pickup'}
+              checked={deliveryOption === "pickup"}
               onChange={(e) => setDeliveryOption(e.target.value)}
               className="mr-2"
             />
-            <label htmlFor="pickup" className="text-gray-700">Pickup</label>
+            <label htmlFor="pickup" className="text-gray-700">
+              Pickup
+            </label>
           </div>
         </div>
 
-        {deliveryOption === 'delivery' && (
+        {deliveryOption === "delivery" && (
           <>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="desiredDeliveryDate">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="desiredDeliveryDate"
+              >
                 Desired Delivery Date
               </label>
               <input
@@ -230,10 +263,17 @@ const RequestQuoteForm: React.FC = () => {
                 value={desiredDeliveryDate}
                 onChange={(e) => setDesiredDeliveryDate(e.target.value)}
               />
-              {errors.desiredDeliveryDate && <p className="text-red-500 text-xs mt-1">{errors.desiredDeliveryDate}</p>}
+              {errors.desiredDeliveryDate && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.desiredDeliveryDate}
+                </p>
+              )}
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="deliveryLocation">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="deliveryLocation"
+              >
                 Location to be Delivered to
               </label>
               <input
@@ -243,10 +283,17 @@ const RequestQuoteForm: React.FC = () => {
                 value={deliveryLocation}
                 onChange={(e) => setDeliveryLocation(e.target.value)}
               />
-              {errors.deliveryLocation && <p className="text-red-500 text-xs mt-1">{errors.deliveryLocation}</p>}
+              {errors.deliveryLocation && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.deliveryLocation}
+                </p>
+              )}
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="quantity">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="quantity"
+              >
                 Quantity in tonnes
               </label>
               <input
@@ -256,15 +303,20 @@ const RequestQuoteForm: React.FC = () => {
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
               />
-              {errors.quantity && <p className="text-red-500 text-xs mt-1">{errors.quantity}</p>}
+              {errors.quantity && (
+                <p className="text-red-500 text-xs mt-1">{errors.quantity}</p>
+              )}
             </div>
           </>
         )}
 
-        {deliveryOption === 'pickup' && (
+        {deliveryOption === "pickup" && (
           <>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="pickupDate">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="pickupDate"
+              >
                 Desired Pickup Date
               </label>
               <input
@@ -274,10 +326,15 @@ const RequestQuoteForm: React.FC = () => {
                 value={pickupDate}
                 onChange={(e) => setPickupDate(e.target.value)}
               />
-              {errors.pickupDate && <p className="text-red-500 text-xs mt-1">{errors.pickupDate}</p>}
+              {errors.pickupDate && (
+                <p className="text-red-500 text-xs mt-1">{errors.pickupDate}</p>
+              )}
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="pickupQuantity">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="pickupQuantity"
+              >
                 Quantity in tonnes
               </label>
               <input
@@ -287,13 +344,20 @@ const RequestQuoteForm: React.FC = () => {
                 value={pickupQuantity}
                 onChange={(e) => setPickupQuantity(e.target.value)}
               />
-              {errors.pickupQuantity && <p className="text-red-500 text-xs mt-1">{errors.pickupQuantity}</p>}
+              {errors.pickupQuantity && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.pickupQuantity}
+                </p>
+              )}
             </div>
           </>
         )}
 
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="message">
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="message"
+          >
             Message
           </label>
           <textarea
@@ -305,8 +369,8 @@ const RequestQuoteForm: React.FC = () => {
         </div>
 
         <div className="flex items-center justify-center pt-6">
-        <Button type="submit" disabled={loading}>
-            {loading ? 'Submitting...' : 'Submit'}
+          <Button type="submit" disabled={loading}>
+            {loading ? "Submitting..." : "Submit"}
           </Button>
         </div>
       </form>

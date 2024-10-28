@@ -11,7 +11,7 @@ import FindingFarmers from "@/components/FindingFarmers";
 import { useAppSelector } from "@/lib/hooks";
 import { debounce } from "lodash";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
-
+import { Buffer } from "buffer";
 export default function CropInterestForm() {
   interface YieldEstimationType {
     result: number;
@@ -78,24 +78,20 @@ export default function CropInterestForm() {
   const user = useAppSelector((state) => state.auth.user);
 
   // Function to apply filters
- const applyFilters = (farmers: Farmer[]): Farmer[] => {
-   return farmers.filter((farmer) => {
-     const matchesCountry =
-       !filters.country ||
-       (typeof farmer["Country "] === "string" &&
-         farmer["Country "].toLowerCase() === filters.country.toLowerCase());
-     const matchesRegion =
-       !filters.region ||
-       (typeof farmer.Region === "string" &&
-         farmer.Region.toLowerCase() === filters.region.toLowerCase());
-     const matchesQuantity =
-       typeof farmer.AcresCultivation === "number" &&
-       farmer.AcresCultivation >= filters.minQuantity;
+  const applyFilters = (farmers: Farmer[]): Farmer[] => {
+    return farmers.filter((farmer) => {
+      const matchesCountry =
+        !filters.country ||
+        (typeof farmer["Country "] === "string" &&
+          farmer["Country "].toLowerCase() === filters.country.toLowerCase());
+      const matchesRegion =
+        !filters.region ||
+        (typeof farmer.Region === "string" &&
+          farmer.Region.toLowerCase() === filters.region.toLowerCase());
 
-     return matchesCountry && matchesRegion && matchesQuantity;
-   });
- };
-
+      return matchesCountry && matchesRegion;
+    });
+  };
 
   // Update active filters
   useEffect(() => {
@@ -145,13 +141,29 @@ export default function CropInterestForm() {
     }
   };
 
-  const handleRequestQuote = (crop: string) => {
-    if (!user) {
-      router.push("/sign-up");
-    } else {
-      router.push(`/traders/products/form?crop=${crop}`);
-    }
-  };
+const handleRequestQuote = (
+  crop: string,
+  phoneNumber: number,
+  country: string,
+  region: string
+): void => {
+  if (!user) {
+    router.push("/sign-up");
+  } else {
+    const encodedCrop = Buffer.from(crop, "utf-8").toString("base64");
+    const encodedPhoneNumber = Buffer.from(
+      phoneNumber.toString(),
+      "utf-8"
+    ).toString("base64");
+    const encodedCountry = Buffer.from(country, "utf-8").toString("base64");
+    const encodedRegion = Buffer.from(region, "utf-8").toString("base64");
+
+    router.push(
+      `/traders/products/form?crop=${encodedCrop}&phoneNumber=${encodedPhoneNumber}&country=${encodedCountry}&region=${encodedRegion}`
+    );
+  }
+};
+
 
   const fetchSuggestions = debounce(async (input: string) => {
     try {
@@ -166,20 +178,19 @@ export default function CropInterestForm() {
     }
   }, 300);
 
- const handleFilterChange = (
-   e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
- ) => {
-   const { name, value } = e.target;
-   setFilters((prev) => ({
-     ...prev,
-     [name]: name === "minQuantity" ? Number(value) : value,
-   }));
+  const handleFilterChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({
+      ...prev,
+      [name]: name === "minQuantity" ? Number(value) : value,
+    }));
 
-   if (name === "cropType") {
-     fetchSuggestions(value);
-   }
- };
-
+    if (name === "cropType") {
+      fetchSuggestions(value);
+    }
+  };
 
   const handleSuggestionClick = (suggestion: string) => {
     setFilters((prev) => ({ ...prev, cropType: suggestion }));
@@ -191,7 +202,6 @@ export default function CropInterestForm() {
       ...prev,
       country: "",
       region: "",
-      minQuantity: 0,
     }));
   };
 
@@ -356,22 +366,6 @@ export default function CropInterestForm() {
                     ))}
                   </select>
                 </div>
-
-                {/* Minimum Quantity Input */}
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Minimum Quantity (Optional)
-                  </label>
-                  <input
-                    type="number"
-                    name="minQuantity"
-                    value={filters.minQuantity}
-                    onChange={handleFilterChange}
-                    min="0"
-                    placeholder="Enter minimum quantity (tons)"
-                    className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
               </div>
 
               {/* Reset Filters Button */}
@@ -416,7 +410,14 @@ export default function CropInterestForm() {
 
                     <td className="p-2">
                       <Button
-                        onClick={() => handleRequestQuote(farmer.CropType)}
+                        onClick={() =>
+                          handleRequestQuote(
+                            farmer.CropType,
+                            farmer.PhoneNumber,
+                            farmer["Country "],
+                            farmer.Region
+                          )
+                        }
                         className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded transition duration-200"
                       >
                         Request Quote
