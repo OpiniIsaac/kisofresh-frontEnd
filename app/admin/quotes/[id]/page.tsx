@@ -206,6 +206,20 @@ KisoIndex Team`;
             </div>
 
             <div className="mb-4">
+              <strong>Buyer Name:</strong>
+              {quote.user.firstName}
+            </div>
+            <div className="mb-4">
+              <strong>Buyer Name:</strong>
+              {quote.user.lastName}
+            </div>
+
+            <div className="mb-4">
+              <strong>Buyer Name:</strong>
+              {quote.user.phoneNumber}
+            </div>
+
+            <div className="mb-4">
               <strong>Buyer Email</strong> {quote.userEmail}
             </div>
             <div className="mb-4">
@@ -213,6 +227,9 @@ KisoIndex Team`;
             </div>
             <div className="mb-4">
               <strong>Delivery Option:</strong> {quote.deliveryOption}
+            </div>
+            <div className="mb-4">
+              <strong>Farmers Contact:</strong> {quote.phoneNumber}
             </div>
             <div className="mb-4">
               <strong>Actual Price per Unit:</strong> ${pricePerUnit.toFixed(2)}

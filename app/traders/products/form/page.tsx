@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import swal from "sweetalert";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
-import { db } from "@/app/firebase/config";
+
 import { useAppSelector } from "@/lib/hooks";
 
 interface Errors {
@@ -101,6 +100,7 @@ const RequestQuoteForm: React.FC = () => {
           country: params.country,
           region: params.region,
           quantity,
+          phoneNumber: params.phoneNumber,
           message,
           deliveryOption,
           desiredDeliveryDate,
