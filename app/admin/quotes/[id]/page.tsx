@@ -12,6 +12,8 @@ import {
   DialogContent,
   DialogActions,
   FormLabel,
+  Typography,
+  Divider,
 } from "@mui/material";
 import { CircularProgress as Spinner } from "@mui/material";
 import swal from "sweetalert";
@@ -190,60 +192,71 @@ KisoIndex Team`;
 
   return (
     <div className="p-10">
-      <h1 className="text-3xl font-bold mb-6">Quote Details</h1>
+      <Typography variant="h4" gutterBottom>
+        Quote Details
+      </Typography>
       <Card className="p-6 mb-6">
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
-            <div className="mb-4">
+            <Typography variant="h6">Quote Information</Typography>
+            <Divider className="mb-4" />
+            <div>
               <strong>Crop:</strong> {quote.crop}
             </div>
-            <div className="mb-4">
+            <div>
+              <strong>Farmer Name:</strong> {quote.farmerName}
+            </div>
+            <div>
+              <strong>Farmer Contact:</strong> {quote.phoneNumber}
+            </div>
+            <div>
               <strong>Country:</strong> {quote.country}
             </div>
-            <div className="mb-4">
-              <strong>Region:</strong>
-              {quote.region}
+            <div>
+              <strong>Region:</strong> {quote.region}
             </div>
-
-            <div className="mb-4">
-              <strong>Buyer Name:</strong>
-              {quote.user.firstName}
-            </div>
-            <div className="mb-4">
-              <strong>Buyer Name:</strong>
-              {quote.user.lastName}
-            </div>
-
-            <div className="mb-4">
-              <strong>Buyer Name:</strong>
-              {quote.user.phoneNumber}
-            </div>
-
-            <div className="mb-4">
-              <strong>Buyer Email</strong> {quote.userEmail}
-            </div>
-            <div className="mb-4">
+            <div>
               <strong>Quantity:</strong> {quote.quantity}
             </div>
-            <div className="mb-4">
+            <div>
               <strong>Delivery Option:</strong> {quote.deliveryOption}
             </div>
-            <div className="mb-4">
-              <strong>Farmers Contact:</strong> {quote.phoneNumber}
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <Typography variant="h6">Buyer Information</Typography>
+            <Divider className="mb-4" />
+            <div>
+              <strong>Name:</strong> {quote.user.firstName}{" "}
+              {quote.user.lastName}
             </div>
-            <div className="mb-4">
-              <strong>Actual Price per Unit:</strong> ${pricePerUnit.toFixed(2)}
+            <div>
+              <strong>Email:</strong> {quote.userEmail}
             </div>
-            <div className="mb-4">
+            <div>
+              <strong>Phone:</strong> {quote.user.phoneNumber}
+            </div>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <Typography variant="h6" className="mt-4">
+              Pricing Details
+            </Typography>
+            <Divider className="mb-4" />
+            <div>
+              <strong>Price per Unit:</strong> ${pricePerUnit.toFixed(2)}
+            </div>
+            <div>
               <strong>Price per Unit (with Markup):</strong> $
               {pricePerUnitWithMarkup.toFixed(2)}
             </div>
-            <div className="mb-4">
+            <div>
               <strong>Total Price:</strong> ${totalPrice.toFixed(2)}
             </div>
           </Grid>
+
           <Grid item xs={12} md={6}>
-            <FormLabel htmlFor="pricePerUnit">Price per Unit:</FormLabel>
+            <FormLabel htmlFor="pricePerUnit">Edit Price per Unit</FormLabel>
             <TextField
               id="pricePerUnit"
               type="number"
@@ -252,7 +265,9 @@ KisoIndex Team`;
               className="mb-4 w-full"
             />
 
-            <FormLabel htmlFor="markupPercentage">Markup Percentage:</FormLabel>
+            <FormLabel htmlFor="markupPercentage">
+              Edit Markup Percentage
+            </FormLabel>
             <TextField
               id="markupPercentage"
               type="number"
@@ -261,16 +276,13 @@ KisoIndex Team`;
               className="mb-4 w-full"
             />
 
-            <Button onClick={handleSave} className="w-full">
-              Save Changes
-            </Button>
+            <Button onClick={handleSave}>Save Changes</Button>
           </Grid>
         </Grid>
       </Card>
 
       <div className="flex space-x-4 mt-6">
         <Button
-          color="success"
           onClick={() => {
             setConfirmAction("accept");
             setShowConfirmModal(true);
@@ -279,7 +291,6 @@ KisoIndex Team`;
           Accept Quote
         </Button>
         <Button
-          color="danger"
           onClick={() => {
             setConfirmAction("reject");
             setShowConfirmModal(true);
@@ -297,16 +308,13 @@ KisoIndex Team`;
           {confirmAction === "accept" ? "Accept Quote" : "Reject Quote"}
         </DialogTitle>
         <DialogContent>
-          <p>Are you sure you want to {confirmAction} this quote?</p>
+          Are you sure you want to {confirmAction} this quote?
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setShowConfirmModal(false)} variant="outline">
+          <Button onClick={() => setShowConfirmModal(false)} color="primary">
             Cancel
           </Button>
-          <Button
-            onClick={handleConfirm}
-            color={confirmAction === "accept" ? "primary" : "secondary"}
-          >
+          <Button onClick={handleConfirm} color="secondary">
             Confirm
           </Button>
         </DialogActions>
