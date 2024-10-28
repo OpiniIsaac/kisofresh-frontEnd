@@ -140,12 +140,13 @@ export default function CropInterestForm() {
       setIsLoading(false);
     }
   };
-
 const handleRequestQuote = (
   crop: string,
   phoneNumber: number,
   country: string,
-  region: string
+  region: string,
+  firstName: string,
+  secondName: string
 ): void => {
   if (!user) {
     router.push("/sign-up");
@@ -157,12 +158,18 @@ const handleRequestQuote = (
     ).toString("base64");
     const encodedCountry = Buffer.from(country, "utf-8").toString("base64");
     const encodedRegion = Buffer.from(region, "utf-8").toString("base64");
+    const farmerName = `${firstName} ${secondName}`;
+    const encodedFarmerName = Buffer.from(farmerName, "utf-8").toString(
+      "base64"
+    );
 
     router.push(
-      `/traders/products/form?crop=${encodedCrop}&phoneNumber=${encodedPhoneNumber}&country=${encodedCountry}&region=${encodedRegion}`
+      `/traders/products/form?crop=${encodedCrop}&phoneNumber=${encodedPhoneNumber}&country=${encodedCountry}&region=${encodedRegion}&farmerName=${encodedFarmerName}`
     );
   }
 };
+
+
 
 
   const fetchSuggestions = debounce(async (input: string) => {
@@ -415,7 +422,10 @@ const handleRequestQuote = (
                             farmer.CropType,
                             farmer.PhoneNumber,
                             farmer["Country "],
-                            farmer.Region
+                            farmer.Region,
+                            farmer.familyName,
+                            farmer.otherName
+                            
                           )
                         }
                         className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded transition duration-200"

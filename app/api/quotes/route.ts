@@ -28,7 +28,8 @@ export async function POST(request: Request) {
       dueDiligence,
       dueDiligenceTestType,
       userId,
-      userEmail
+      farmerName,
+      userEmail,
     } = data;
 
     const result = await collection.insertOne({
@@ -38,13 +39,14 @@ export async function POST(request: Request) {
       phoneNumber,
       quantity,
       message,
+      farmerName,
       deliveryOption,
       desiredDeliveryDate,
       deliveryLocation,
       pickupDate,
       pickupQuantity,
       dueDiligence,
-      status:"ORDER_RECIEVED",
+      status: "ORDER_RECIEVED",
       userId,
       userEmail,
       dueDiligenceTestType,

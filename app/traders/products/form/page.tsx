@@ -46,12 +46,18 @@ const RequestQuoteForm: React.FC = () => {
     const decodedRegion = searchParams.get("region")
       ? Buffer.from(searchParams.get("region")!, "base64").toString("utf-8")
       : "";
+     const decodedfarmerName = searchParams.get("farmerName")
+       ? Buffer.from(searchParams.get("farmerName")!, "base64").toString(
+           "utf-8"
+         )
+       : "";
 
     setParams({
       crop: decodedCrop,
       phoneNumber: decodedPhoneNumber,
       country: decodedCountry,
       region: decodedRegion,
+      farmerName:decodedfarmerName
     });
   }, []);
 
@@ -102,6 +108,7 @@ const RequestQuoteForm: React.FC = () => {
           quantity,
           phoneNumber: params.phoneNumber,
           message,
+          farmerName:params.farmerName,
           deliveryOption,
           desiredDeliveryDate,
           deliveryLocation,
