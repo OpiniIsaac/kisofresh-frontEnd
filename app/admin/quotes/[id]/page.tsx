@@ -133,9 +133,9 @@ const QuoteDetails = ({ params }: { params: { id: string } }) => {
 
       // Prepare email details based on the action
       const userEmail = quote?.userEmail;
-      const emailSubject =
-        confirmAction === "accept" ? "Quote Accepted" : "Quote Rejected";
-      const emailText = `Dear User,
+      const emailSubject = "Quote";
+      confirmAction === "accept" ? "Quote Accepted" : "Quote Rejected";
+      const emailText = `Dear ${quote?.user.firstName},
 
 Your quote has been ${status}. Here are the details:
 - Price per Unit: ${pricePerUnit}
